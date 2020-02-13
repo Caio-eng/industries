@@ -1,13 +1,16 @@
 
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:industries/Home.dart';
 import 'package:industries/model/Imovel.dart';
+import 'package:industries/model/Mensagem.dart';
 import 'package:industries/model/Usuario.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -21,6 +24,11 @@ class CadastroImoveis extends StatelessWidget {
   TextEditingController _controllerTipoImovel = TextEditingController();
   File _imagem;
   String _mensagemErro = "";
+  Firestore db = Firestore.instance;
+
+  List<Image> listaTela = List();
+
+  CarouselSlider instance;
 
   _validarCampos() {
     String logadouro = _controllerLogadouro.text;
@@ -36,6 +44,8 @@ class CadastroImoveis extends StatelessWidget {
           imovel.complemento = complemento;
           imovel.tipoImovel = tipoImovel;
           imovel.idUser = uid;
+
+
 
           _cadastrarImovel (imovel);
         }else {
@@ -63,20 +73,24 @@ class CadastroImoveis extends StatelessWidget {
 
   }
 
-  Future _recuperarImagem(String origemImagem) async {
+  Future _recuperarImagem(bool daCamera) async {
 
     File imagemSelecionada;
-    switch( origemImagem ) {
-      case "camera" :
-        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.camera);
-        break;
-
-      case "galeria" :
-        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
-        break;
+    if( daCamera ) {
+      imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.camera);
+    } else {
+      imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
     }
+
     _imagem = imagemSelecionada;
+    listaTela.add(Image.file(imagemSelecionada));
+    listaTela.add(Image.file(imagemSelecionada));
+    listaTela.add(Image.file(imagemSelecionada));
+    listaTela.add(Image.file(imagemSelecionada));
+    listaTela.add(Image.file(imagemSelecionada));
+
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,6 +168,7 @@ class CadastroImoveis extends StatelessWidget {
                     children: <Widget>[
                       RaisedButton(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Text(
                               "Galeria",
@@ -163,26 +178,52 @@ class CadastroImoveis extends StatelessWidget {
                           ],
                         ),
                         onPressed: () {
-                          _recuperarImagem("galeria");
+                          _recuperarImagem(false);
                         },
                         color: Colors.blue,
                         padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
                       ),
-
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: RaisedButton(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "Camera",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              //Icon(Icons.file_upload, color: Colors.white, size: 30,),
+                            ],
+                          ),
+                          onPressed: () {
+                            _recuperarImagem(true);
+                          },
+                          color: Colors.blue,
+                          padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                Row(
-                  children: <Widget>[
-                    CircleAvatar(
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: instance = CarouselSlider(
+                    autoPlay: true,
+                    autoPlayAnimationDuration: Duration(seconds: 3),
+                    height: 150.0,
+                    items: listaTela.map((i) {
+                      return Container(
+                        
+                      );
+                    }).toList(),
 
-                    ),
-                    CircleAvatar(
+                  ),
 
-                    ),
-                  ],
                 ),
+
                 Padding(
                   padding: EdgeInsets.only(top: 10, bottom: 10),
                   child: RaisedButton(

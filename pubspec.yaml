@@ -34,6 +34,7 @@ dependencies:
   google_sign_in: ^4.1.1
   font_awesome_flutter: ^8.2.0
   image_picker: ^0.6.3+1 # selecionar imagens
+  carousel_slider: ^1.3.0
 
 dev_dependencies:
   flutter_test:

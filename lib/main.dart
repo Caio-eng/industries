@@ -92,6 +92,7 @@ class _MainState extends State<Main>  {
       setState(() {
         this.account = account;
       });
+      //_onLoginStatusChange(true);
       if (this.account != null) {
         setState(() {
           this.user = this.account.displayName;
@@ -139,7 +140,7 @@ class _MainState extends State<Main>  {
     setState(() {
       this.user = profile['name'];
       this.emai = profile['email'];
-      this.photo = profile['url'];
+      this.photo = profile['picture'];
       this.uid = profile['id'];
     });
     print(user);
@@ -196,16 +197,16 @@ class _MainState extends State<Main>  {
     setState(() {
       user = 'name';
       emai = 'email';
-      photo = 'url';
+      photo = 'picture';
       uid = 'id';
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return account == null
-    ? new Login(googleSignIn, logarPorFacebbok)
-    : new Home(googleSignOut, logout, user, emai, photo, uid);
+    return _isLoggedIn || account != null
+    ? new Home(googleSignOut, logout, user, emai, photo, uid)
+    : new Login(googleSignIn, logarPorFacebbok);
   }
 
 }

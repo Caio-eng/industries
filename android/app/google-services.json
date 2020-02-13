@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "228853815546",
+    "firebase_url": "https://industries-6e1c0.firebaseio.com",
+    "project_id": "industries-6e1c0",
+    "storage_bucket": "industries-6e1c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228853815546:android:fa2bf3011677a514891143",
+        "android_client_info": {
+          "package_name": "com.imoveis.kc.industries"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "228853815546-6ssvlb584b023d8jdnubf226a9kpvnvb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.imoveis.kc.industries",
+            "certificate_hash": "d52c584ca5b06e18bc5c812fae193ab64abee706"
+          }
+        },
+        {
+          "client_id": "228853815546-fos3j2gehbiddvub4fiakgp0uu863ng1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCutmCS1a8oPTShmXTsNtGtLQ01ejkSzZ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "228853815546-fos3j2gehbiddvub4fiakgp0uu863ng1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

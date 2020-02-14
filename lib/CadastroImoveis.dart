@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -22,6 +23,7 @@ class CadastroImoveis extends StatelessWidget {
   TextEditingController _controllerLogadouro = TextEditingController();
   TextEditingController _controllerComplemento = TextEditingController();
   TextEditingController _controllerTipoImovel = TextEditingController();
+  int _current = 0;
   File _imagem;
   String _mensagemErro = "";
   Firestore db = Firestore.instance;
@@ -84,10 +86,10 @@ class CadastroImoveis extends StatelessWidget {
 
     _imagem = imagemSelecionada;
     listaTela.add(Image.file(imagemSelecionada));
-    listaTela.add(Image.file(imagemSelecionada));
-    listaTela.add(Image.file(imagemSelecionada));
-    listaTela.add(Image.file(imagemSelecionada));
-    listaTela.add(Image.file(imagemSelecionada));
+    //listaTela.add(Image.file(imagemSelecionada));
+    //listaTela.add(Image.file(imagemSelecionada));
+    //listaTela.add(Image.file(imagemSelecionada));
+    //listaTela.add(Image.file(imagemSelecionada));
 
   }
 
@@ -210,17 +212,11 @@ class CadastroImoveis extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: instance = CarouselSlider(
-                    autoPlay: true,
-                    autoPlayAnimationDuration: Duration(seconds: 3),
+                  child: CarouselSlider(
                     height: 150.0,
-                    items: listaTela.map((i) {
-                      return Container(
-                        
-                      );
-                    }).toList(),
+                    items: listaTela,
 
-                  ),
+                  )
 
                 ),
 

@@ -140,10 +140,13 @@ class _MainState extends State<Main>  {
     setState(() {
       this.user = profile['name'];
       this.emai = profile['email'];
-      this.photo = profile['picture'];
+      this.photo = profile['picture']['data']['url'];
       this.uid = profile['id'];
     });
-    print(user);
+    print('Nome: $user');
+    print('Email: $emai');
+    print('ID: $uid');
+    print('Photo: $photo');
     print(profile.toString());
   }
 

@@ -1,5 +1,7 @@
 
 
+import 'dart:js';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,7 +30,7 @@ class CadastroImoveis extends StatelessWidget {
   String _mensagemErro = "";
   Firestore db = Firestore.instance;
 
-  List<Image> listaTela = List();
+
 
   CarouselSlider instance;
 
@@ -86,12 +88,14 @@ class CadastroImoveis extends StatelessWidget {
 
     _imagem = imagemSelecionada;
     listaTela.add(Image.file(imagemSelecionada));
-    //listaTela.add(Image.file(imagemSelecionada));
-    //listaTela.add(Image.file(imagemSelecionada));
-    //listaTela.add(Image.file(imagemSelecionada));
-    //listaTela.add(Image.file(imagemSelecionada));
+    listaTela.add(Image.file(imagemSelecionada));
+    listaTela.add(Image.file(imagemSelecionada));
+    listaTela.add(Image.file(imagemSelecionada));
+    listaTela.add(Image.file(imagemSelecionada));
 
   }
+
+  List<Image> listaTela = List();
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +220,7 @@ class CadastroImoveis extends StatelessWidget {
                     height: 150.0,
                     items: listaTela,
 
-                  )
+                  ),
 
                 ),
 

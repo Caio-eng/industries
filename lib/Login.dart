@@ -12,6 +12,7 @@ import 'package:industries/sidebar/sidebar_layout.dart';
 import 'Home.dart';
 import 'model/Usuario.dart';
 import 'ResetPasswordPage.dart';
+
 /*
 class Login extends StatefulWidget {
   final Function signIn;
@@ -27,18 +28,17 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
   ],
 );*/
 class Login extends StatelessWidget {
-
   //TextEditingController _controllerEmail = TextEditingController();
- // TextEditingController _controllerSenha = TextEditingController();
+  // TextEditingController _controllerSenha = TextEditingController();
   String _mensagemErro = "";
- // bool isLoggedIn = false;
+  // bool isLoggedIn = false;
   //bool _lembreme = false;
- // String user;
+  // String user;
   final Function signIn;
   final Function signInFB;
 
   Login(this.signIn, this.signInFB);
- // var profile;
+  // var profile;
   /*
   _validarCampos() {
     //Recuperar os dados do campo
@@ -66,7 +66,7 @@ class Login extends StatelessWidget {
     }
   }*/
 
- /* _logarUsuario( Usuario usuario ) {
+  /* _logarUsuario( Usuario usuario ) {
 
     FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -150,7 +150,6 @@ class Login extends StatelessWidget {
     }
   }*/
 
-
 /*
   @override
   void initState() {
@@ -159,10 +158,8 @@ class Login extends StatelessWidget {
   }
 */
 
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(color: Colors.white),
@@ -273,59 +270,62 @@ class Login extends StatelessWidget {
                     ],
                   ),
                 ),*/
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 60,
-                width: 60,
-                alignment: Alignment.centerLeft,
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(32),
-                  ),
-                ),
-                child: SizedBox.expand(
-                  child: FlatButton(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          "Logar com Google",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                        Container(
-                          child: Row(
-                            children: <Widget>[
-                              SizedBox(
-                                child: Image.asset("imagens/google.png"),
-                                height: 28,
-                                width: 28,
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    height: 60,
+                    width: 60,
+                    alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(32),
+                      ),
                     ),
-                    onPressed: () {
-                      signIn();
-                     // googleSignIn();
-                    },
+                    child: SizedBox.expand(
+                      child: FlatButton(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              "Logar com Google",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                            Container(
+                              child: Row(
+                                children: <Widget>[
+                                  SizedBox(
+                                    child: Image.asset("imagens/google.png"),
+                                    height: 28,
+                                    width: 28,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        onPressed: () {
+                          signIn();
+                          // googleSignIn();
+                        },
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-             Center(
-               child: Column(
-                 children: <Widget>[
-                   Text("OU", style: TextStyle(color: Colors.black, fontSize: 16),),
-                 ],
-               ),
-             ) ,
+                Center(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        "OU",
+                        style: TextStyle(color: Colors.black, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
@@ -362,7 +362,7 @@ class Login extends StatelessWidget {
                         ),
                         onPressed: () {
                           signInFB();
-                         // _logarPorFacebbok();
+                          // _logarPorFacebbok();
                         },
                       ),
                     ),
@@ -393,10 +393,7 @@ class Login extends StatelessWidget {
                   child: Center(
                     child: Text(
                       _mensagemErro,
-                      style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 20
-                      ),
+                      style: TextStyle(color: Colors.red, fontSize: 20),
                     ),
                   ),
                 )

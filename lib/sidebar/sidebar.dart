@@ -17,6 +17,7 @@ class SideBar extends StatefulWidget {
 
 class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<SideBar> {
   String uid;
+  PageController pageController;
   AnimationController _animationController;
   StreamController<bool> isSidebarOpenedStreamController;
   Stream<bool> isSidebarOpenedStream;

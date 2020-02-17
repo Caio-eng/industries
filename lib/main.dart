@@ -87,7 +87,6 @@ class _MainState extends State<Main>  {
   @override
   void initState() {
     super.initState();
-
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       setState(() {
         this.account = account;

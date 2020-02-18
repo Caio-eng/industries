@@ -142,11 +142,11 @@ class _MainState extends State<Main>  {
       this.photo = profile['picture']['data']['url'];
       this.uid = profile['id'];
     });
-    print('Nome: $user');
-    print('Email: $emai');
-    print('ID: $uid');
-    print('Photo: $photo');
-    print(profile.toString());
+    //print('Nome: $user');
+    //print('Email: $emai');
+    //print('ID: $uid');
+    //print('Photo: $photo');
+    //print(profile.toString());
   }
 
 

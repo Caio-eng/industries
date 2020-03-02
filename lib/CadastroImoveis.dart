@@ -85,15 +85,15 @@ class CadastroImoveis extends StatelessWidget {
     }
 
     _imagem = imagemSelecionada;
-    listaTela.add(Image.file(imagemSelecionada));
-    listaTela.add(Image.file(imagemSelecionada));
-    listaTela.add(Image.file(imagemSelecionada));
-    listaTela.add(Image.file(imagemSelecionada));
-    listaTela.add(Image.file(imagemSelecionada));
+    listaTela.add(imagemSelecionada);
+    //listaTela.add(Image.file(imagemSelecionada));
+    //listaTela.add(Image.file(imagemSelecionada));
+    //listaTela.add(Image.file(imagemSelecionada));
+    //listaTela.add(Image.file(imagemSelecionada));
 
   }
 
-  List<Image> listaTela = List();
+  List<File> listaTela = List();
 
   @override
   Widget build(BuildContext context) {
@@ -216,8 +216,21 @@ class CadastroImoveis extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: CarouselSlider(
                     height: 150.0,
-                    items: listaTela,
-
+                    items: listaTela.map((i) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin: EdgeInsets.symmetric(horizontal: 5.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.blue
+                              ),
+                              child: Image.file(i),
+                              //child: _imagem,
+                          );
+                        },
+                      );
+                    }).toList(),
                   ),
 
                 ),

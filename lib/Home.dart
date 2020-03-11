@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,6 +13,7 @@ import 'package:industries/model/Imovel.dart';
 import 'CadastroImoveis.dart';
 import 'CadastroImoveis.dart';
 import 'Login.dart';
+
 /*
 class Home extends StatefulWidget {
   final Function signOut;
@@ -35,12 +34,12 @@ class Home extends StatelessWidget {
   final String photo;
   final String uid;
 
-  Home(this.signOut, this.signOutFB, this.user, this.emai, this.photo, this.uid);
+  Home(
+      this.signOut, this.signOutFB, this.user, this.emai, this.photo, this.uid);
   Firestore db = Firestore.instance;
   bool isLoggedIn = false;
 
   var profile;
-
 
 /*
   Future _recuperarDadosUsuario() async {
@@ -55,7 +54,6 @@ class Home extends StatelessWidget {
     });
 
   }*/
-
 
 /*
   _deslogarUsuario() async {
@@ -111,9 +109,16 @@ class Home extends StatelessWidget {
           },
           child: Icon(Icons.keyboard_arrow_right),
         ),*/
-        onTap: () =>  Navigator.push(context, MaterialPageRoute(builder: (context) => Detalhes())),
-        title: Text(document['logadouro'], textAlign: TextAlign.center,),
-        subtitle: Text(document['complemento'], textAlign: TextAlign.center,),
+        onTap: () => Navigator.push(
+            context, MaterialPageRoute(builder: (context) => Detalhes())),
+        title: Text(
+          document['logadouro'],
+          textAlign: TextAlign.center,
+        ),
+        subtitle: Text(
+          document['complemento'],
+          textAlign: TextAlign.center,
+        ),
         leading: Icon(Icons.home),
       ),
     );
@@ -123,16 +128,19 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:  Center(
-          child:  Text(
-          "IndustriesKC",
+        title: Center(
+          child: Text(
+            "IndustriesKC",
           ),
         ),
         actions: <Widget>[
           GestureDetector(
             onTap: () {
-             Navigator.push(context, MaterialPageRoute(builder: (context) => CadastroImoveis(uid)));
-             /* showDialog(
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CadastroImoveis(uid)));
+              /* showDialog(
                   context: context,
                 //barrierDismissible: false,
                 builder: (BuildContext ctx) {
@@ -180,7 +188,9 @@ class Home extends StatelessWidget {
             },
             child: Icon(Icons.add),
           ),
-          Padding(padding: EdgeInsets.only(right: 20),),
+          Padding(
+            padding: EdgeInsets.only(right: 20),
+          ),
           /*PopupMenuButton<String>(
             onSelected: _escolhaMenuItem,
             itemBuilder: (context) {
@@ -205,11 +215,260 @@ class Home extends StatelessWidget {
                 backgroundImage: NetworkImage('$photo'),
               ),
             ),
-            CustomListTitle(Icons.person, 'Perfil', () => {}),
-            CustomListTitle(Icons.notifications, 'Notificações', () => {}),
-            CustomListTitle(Icons.send, 'Mensagens', () => {}/*_cadastrarImoveis()*/),
-            CustomListTitle(Icons.settings, 'Configurações', () => {}),
-            CustomListTitle(Icons.exit_to_app, 'Sair', () => {signOut(), signOutFB()} ),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade400))),
+                child: InkWell(
+                  splashColor: Colors.blue,
+                  onTap: () => {},
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.person,
+                              color: Colors.blue,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Perfil',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_right,
+                          color: Colors.blue,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade400))),
+                child: InkWell(
+                  splashColor: Colors.blue,
+                  onTap: () => {},
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.notifications,
+                              color: Colors.blue,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Notificações',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_right,
+                          color: Colors.blue,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade400))),
+                child: InkWell(
+                  splashColor: Colors.blue,
+                  onTap: () => {},
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.send,
+                              color: Colors.blue,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Mensagens',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_right,
+                          color: Colors.blue,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade400))),
+                child: InkWell(
+                  splashColor: Colors.blue,
+                  onTap: () => {},
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.settings,
+                              color: Colors.blue,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Configurações',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_right,
+                          color: Colors.blue,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade400))),
+                child: InkWell(
+                  splashColor: Colors.blue,
+                  onTap: () => {},
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.help,
+                              color: Colors.blue,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Sobre',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_right,
+                          color: Colors.blue,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade400))),
+                child: InkWell(
+                  splashColor: Colors.red,
+                  onTap: () => {signOut(), signOutFB()},
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.exit_to_app,
+                              color: Colors.red,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Sair',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_right,
+                          color: Colors.blue,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            //CustomListTitle(Icons.person, 'Perfil', () => {}),
+            //CustomListTitle(Icons.notifications, 'Notificações', () => {}),
+            //CustomListTitle(Icons.send, 'Mensagens', () => {}/*_cadastrarImoveis()*/),
+            //Divider(),
+            // CustomListTitle(Icons.settings, 'Configurações', () => {}),
+            //CustomListTitle(Icons.help, 'Sobre', ()=>{}),
+            //CustomListTitle(Icons.exit_to_app,  'Sair', () => {signOut(), signOutFB()} ),
           ],
         ),
       ),
@@ -232,12 +491,13 @@ class Home extends StatelessWidget {
     );
   }
 }
-
+/*
 class CustomListTitle extends StatelessWidget {
 
   IconData icon;
   String text;
   Function onTap;
+
 
   CustomListTitle(this.icon, this.text, this.onTap);
 
@@ -260,6 +520,7 @@ class CustomListTitle extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Icon(icon),
+
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(text, style: TextStyle(
@@ -277,3 +538,4 @@ class CustomListTitle extends StatelessWidget {
     );
   }
 }
+*/

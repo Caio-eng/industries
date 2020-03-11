@@ -11,6 +11,8 @@ class Detalhes extends StatelessWidget {
         title: Text("Detalhes do Imovel"),
     ),
 
+
+
     );
   }
 }

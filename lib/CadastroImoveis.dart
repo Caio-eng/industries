@@ -1,5 +1,6 @@
 
 
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,19 +17,29 @@ import 'package:industries/model/Usuario.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class CadastroImoveis extends StatelessWidget {
+class CadastroImoveis extends StatefulWidget {
   final String uid;
   CadastroImoveis(this.uid);
-  //Controladores
+
+  @override
+  _CadastroImoveisState createState() => _CadastroImoveisState();
+}
+
+class _CadastroImoveisState extends State<CadastroImoveis> {
   TextEditingController _controllerLogadouro = TextEditingController();
+
   TextEditingController _controllerComplemento = TextEditingController();
+
   TextEditingController _controllerTipoImovel = TextEditingController();
-  int _current = 0;
+
+  bool _subindoImagem = false;
+  String _urlImagemRecuperada;
+
   File _imagem;
+
   String _mensagemErro = "";
+
   Firestore db = Firestore.instance;
-
-
 
   CarouselSlider instance;
 
@@ -45,7 +56,7 @@ class CadastroImoveis extends StatelessWidget {
           imovel.logadouro = logadouro;
           imovel.complemento = complemento;
           imovel.tipoImovel = tipoImovel;
-          imovel.idUser = uid;
+          imovel.idUser = widget.uid;
 
 
 
@@ -75,25 +86,78 @@ class CadastroImoveis extends StatelessWidget {
 
   }
 
-  Future _recuperarImagem(bool daCamera) async {
+  Future _recuperarImagem(String origemImagem) async {
 
     File imagemSelecionada;
-    if( daCamera ) {
-      imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.camera);
-    } else {
-      imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
+    switch( origemImagem ) {
+      case "camera" :
+        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.camera);
+        break;
+      case "galeria" :
+        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
+        break;
     }
 
-    _imagem = imagemSelecionada;
-    listaTela.add(imagemSelecionada);
-    //listaTela.add(Image.file(imagemSelecionada));
-    //listaTela.add(Image.file(imagemSelecionada));
-    //listaTela.add(Image.file(imagemSelecionada));
-    //listaTela.add(Image.file(imagemSelecionada));
+    setState(() {
+      _imagem = imagemSelecionada;
+      if(_imagem != null) {
+        _subindoImagem = true;
+        _uploadImagem();
+      }
+    });
 
   }
 
-  List<File> listaTela = List();
+  Future _uploadImagem() {
+
+    FirebaseStorage storage = FirebaseStorage.instance;
+    StorageReference pastaRaiz = storage.ref();
+    StorageReference arquivo = pastaRaiz
+      .child("fotos")
+      .child(widget.uid + ".jpg");
+
+    //Upload da imagem
+    StorageUploadTask task = arquivo.putFile(_imagem);
+
+    //Controlar processo do upload
+    task.events.listen((StorageTaskEvent storageEvent){
+
+      if( storageEvent.type == StorageTaskEventType.progress ){
+        setState(() {
+          _subindoImagem = true;
+        });
+      }else if( storageEvent.type == StorageTaskEventType.success ){
+        setState(() {
+          _subindoImagem = false;
+        });
+      }
+
+    });
+
+    //Recupera url da imagem
+    task.onComplete.then((StorageTaskSnapshot snapshot){
+      _recuperaUrlImagem(snapshot);
+    });
+  }
+  
+  Future _recuperaUrlImagem(StorageTaskSnapshot snapshot) async {
+
+    String url = await snapshot.ref.getDownloadURL();
+
+    setState(() {
+      _urlImagemRecuperada = url;
+    });
+  }
+
+
+  List<File> listaTela = new List();
+
+  @override
+  void initState() {
+    super.initState();
+
+    listaTela.add(_imagem);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +169,7 @@ class CadastroImoveis extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
-          
+
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -182,7 +246,7 @@ class CadastroImoveis extends StatelessWidget {
                           ],
                         ),
                         onPressed: () {
-                          _recuperarImagem(false);
+                          _recuperarImagem("galeria");
                         },
                         color: Colors.blue,
                         padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
@@ -202,7 +266,7 @@ class CadastroImoveis extends StatelessWidget {
                             ],
                           ),
                           onPressed: () {
-                            _recuperarImagem(true);
+                            _recuperarImagem("camera");
                           },
                           color: Colors.blue,
                           padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
@@ -212,9 +276,15 @@ class CadastroImoveis extends StatelessWidget {
                     ],
                   ),
                 ),
+                /*_subindoImagem
+                  ? CircularProgressIndicator()
+                  :Container(),*/
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: CarouselSlider(
+                  child: _imagem == null
+                    ? Container()
+                      :Image.file(_imagem),
+                  /*CarouselSlider(
                     height: 150.0,
                     items: listaTela.map((i) {
                       return Builder(
@@ -225,13 +295,14 @@ class CadastroImoveis extends StatelessWidget {
                               decoration: BoxDecoration(
                                   color: Colors.blue
                               ),
-                              child: Image.file(i),
+                              child: Image.file(_imagem),
+
                               //child: _imagem,
                           );
                         },
                       );
                     }).toList(),
-                  ),
+                  ),*/
 
                 ),
 
@@ -248,6 +319,7 @@ class CadastroImoveis extends StatelessWidget {
                         borderRadius: BorderRadius.circular(32)),
                     onPressed: () {
                       _validarCampos();
+                      _uploadImagem();
                       Navigator.pop(context);
                     },
                   ),
@@ -268,6 +340,4 @@ class CadastroImoveis extends StatelessWidget {
       ),
     );
   }
-
-
 }

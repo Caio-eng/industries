@@ -31,7 +31,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   TextEditingController _controllerComplemento = TextEditingController();
 
   TextEditingController _controllerTipoImovel = TextEditingController();
-
+  String _idUsuario;
   bool _subindoImagem = false;
   String _urlImagemRecuperada;
 
@@ -108,13 +108,18 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
   }
 
+  _recuperarDadosUsuario() async {
+    _idUsuario = widget.uid;
+
+  }
+
   Future _uploadImagem() {
 
     FirebaseStorage storage = FirebaseStorage.instance;
     StorageReference pastaRaiz = storage.ref();
     StorageReference arquivo = pastaRaiz
       .child("fotos")
-      .child(widget.uid + ".jpg");
+      .child( _idUsuario + ".jpg");
 
     //Upload da imagem
     StorageUploadTask task = arquivo.putFile(_imagem);
@@ -139,7 +144,9 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
       _recuperaUrlImagem(snapshot);
     });
   }
-  
+
+
+
   Future _recuperaUrlImagem(StorageTaskSnapshot snapshot) async {
 
     String url = await snapshot.ref.getDownloadURL();
@@ -155,8 +162,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   @override
   void initState() {
     super.initState();
-
-    listaTela.add(_imagem);
+    _recuperarDadosUsuario();
+    //listaTela.add(_imagem);
   }
 
   @override
@@ -276,9 +283,9 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     ],
                   ),
                 ),
-                /*_subindoImagem
+                _subindoImagem
                   ? CircularProgressIndicator()
-                  :Container(),*/
+                  :Container(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: _imagem == null

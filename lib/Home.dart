@@ -13,6 +13,9 @@ import 'package:industries/model/Imovel.dart';
 import 'CadastroImoveis.dart';
 import 'CadastroImoveis.dart';
 import 'Login.dart';
+import 'package:square_in_app_payments/models.dart';
+import 'package:square_in_app_payments/in_app_payments.dart';
+
 
 /*
 class Home extends StatefulWidget {
@@ -40,6 +43,22 @@ class Home extends StatelessWidget {
   bool isLoggedIn = false;
 
   var profile;
+
+  void _pay() async {
+    await InAppPayments.setSquareApplicationId('sq0idp-UkcOHgc5KG3UEa7DTrwrTg');
+    await InAppPayments.startCardEntryFlow(
+      onCardNonceRequestSuccess: (CardDetails result) {
+        try {
+          print('success!');
+        } on Exception catch (ex) {
+          print("ERROR");
+          InAppPayments.showCardNonceProcessingError(ex.toString());
+        }
+      },
+      onCardEntryCancel: () {}
+    );
+  }
+
 
 /*
   Future _recuperarDadosUsuario() async {
@@ -388,6 +407,49 @@ class Home extends StatelessWidget {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
+                  onTap: () => {
+                   // _pay(),
+                  },
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.payment,
+                              color: Colors.blue,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Cartão',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_right,
+                          color: Colors.blue,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade400))),
+                child: InkWell(
+                  splashColor: Colors.blue,
                   onTap: () => {},
                   child: Container(
                     height: 50,
@@ -421,6 +483,7 @@ class Home extends StatelessWidget {
                 ),
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
               child: Container(
@@ -487,6 +550,12 @@ class Home extends StatelessWidget {
             },
           );
         },
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: _pay,
+        tooltip: 'Payment',
+        child: Icon(Icons.payment),
       ),
     );
   }

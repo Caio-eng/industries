@@ -1,4 +1,3 @@
-
 import 'dart:convert' as JSON;
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,20 +10,7 @@ import 'Home.dart';
 import 'Login.dart';
 import 'package:http/http.dart' as http;
 
-/*
-void main() {
 
-
-  runApp(MaterialApp(
-    home: Login(),
-    theme: ThemeData(
-      primaryColor: Colors.blue,
-      accentColor: Colors.blue,
-      scaffoldBackgroundColor: Colors.white,
-    ),
-    debugShowCheckedModeBanner: false,
-  ));
-}*/
 GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: <String>[
       'email',

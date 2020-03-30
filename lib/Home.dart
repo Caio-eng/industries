@@ -1,34 +1,10 @@
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
 import 'package:industries/Detalhes.dart';
-import 'package:industries/model/Imovel.dart';
 import 'CadastroImoveis.dart';
-import 'CadastroImoveis.dart';
-import 'Login.dart';
-import 'package:square_in_app_payments/models.dart';
-import 'package:square_in_app_payments/in_app_payments.dart';
 
-
-/*
-class Home extends StatefulWidget {
-  final Function signOut;
-
-  Home(this.signOut);
-
-
-
-  @override
-  _HomeState createState() => _HomeState();
-}
-*/
 class Home extends StatelessWidget {
   final Function signOut;
   final Function signOutFB;
@@ -44,90 +20,10 @@ class Home extends StatelessWidget {
 
   var profile;
 
-  void _pay() async {
-    await InAppPayments.setSquareApplicationId('sq0idp-UkcOHgc5KG3UEa7DTrwrTg');
-    await InAppPayments.startCardEntryFlow(
-      onCardNonceRequestSuccess: (CardDetails result) {
-        try {
-          print('success!');
-        } on Exception catch (ex) {
-          print("ERROR");
-          InAppPayments.showCardNonceProcessingError(ex.toString());
-        }
-      },
-      onCardEntryCancel: () {}
-    );
-  }
-
-
-/*
-  Future _recuperarDadosUsuario() async {
-
-    FirebaseAuth auth = FirebaseAuth.instance;
-    FirebaseUser usuarioLogado = await auth.currentUser();
-
-
-    setState(() {
-      _emailUsuario = usuarioLogado.email;
-      _nomeUsuario = usuarioLogado.displayName;
-    });
-
-  }*/
-
-/*
-  _deslogarUsuario() async {
-
-    FirebaseAuth auth = FirebaseAuth.instance;
-
-    await auth.signOut();
-    var login = FacebookLogin();
-    login.logOut();
-
-
-  }*/
-
-/*
-
-  List<String> itensMenu = [
-    "Outros","Duvidas", "Sobre"
-  ];
-
-  _escolhaMenuItem( String escolha ) {
-
-    switch( escolha ) {
-      case "Outros" :
-        break;
-      case "Perfil" :
-      setState(() {
-        print('Ola');
-      });
-        break;
-      case "Duvidas" :
-        break;
-    }
-
-  }*/
-
-/*
-  @override
-  void initState() {
-    _recuperarDadosUsuario();
-    super.initState();
-
-  }*/
-
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: ListTile(
-        /*
-        trailing: InkWell(
-          splashColor: Colors.blue,
-          onTap: () {
-            print(document['tipoImovel']);
-          },
-          child: Icon(Icons.keyboard_arrow_right),
-        ),*/
         onTap: () => Navigator.push(
             context, MaterialPageRoute(builder: (context) => Detalhes())),
         title: Text(
@@ -159,69 +55,12 @@ class Home extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => CadastroImoveis(uid)));
-              /* showDialog(
-                  context: context,
-                //barrierDismissible: false,
-                builder: (BuildContext ctx) {
-
-                    final input = TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Logadouro',
-                        contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10 ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(32)
-                        )
-                      ),
-                    );
-
-                    return AlertDialog(
-                      title: Text('Cadastrar Imoveis', style: TextStyle(color: Colors.black),),
-                      content: SingleChildScrollView(
-                        child: ListBody(
-                          children: <Widget>[
-                           // Text('Logadouro'),
-                            input
-                          ],
-                        ),
-                      ),
-                      actions: <Widget>[
-                         RaisedButton(
-                          color: Colors.red,
-                          child: Text('Cancelar', style: TextStyle(color: Colors.white),),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          },
-                        ),
-                        RaisedButton(
-                          color: Colors.blue,
-                          child: Text('Salvar', style: TextStyle(color: Colors.white),),
-                          onPressed: () {
-                            print(input.controller.value);
-                            Navigator.of(ctx).pop();
-                          },
-                        ),
-                      ],
-                    );
-                }
-              );*/
             },
             child: Icon(Icons.add),
           ),
           Padding(
             padding: EdgeInsets.only(right: 20),
           ),
-          /*PopupMenuButton<String>(
-            onSelected: _escolhaMenuItem,
-            itemBuilder: (context) {
-
-              return itensMenu.map((String item){
-                return PopupMenuItem<String>(
-                  value: item,
-                  child: Text(item),
-                );
-              }).toList();
-            },
-          )*/
         ],
       ),
       drawer: Drawer(
@@ -550,12 +389,6 @@ class Home extends StatelessWidget {
             },
           );
         },
-      ),
-
-      floatingActionButton: FloatingActionButton(
-        onPressed: _pay,
-        tooltip: 'Payment',
-        child: Icon(Icons.payment),
       ),
     );
   }

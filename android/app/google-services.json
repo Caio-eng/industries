@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "228853815546-98pd220kiao7mqhktn2s9n6junkb2fgi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.imoveis.kc.industries",
+            "certificate_hash": "beaf55ff6e0806d50b092fadc29cb17b8382ee9a"
+          }
+        },
+        {
           "client_id": "228853815546-6ssvlb584b023d8jdnubf226a9kpvnvb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

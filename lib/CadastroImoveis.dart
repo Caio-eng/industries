@@ -32,7 +32,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
   TextEditingController _controllerTipoImovel = TextEditingController();
   String _idUsuario;
-  bool _subindoImagem = false;
   String _urlImagemRecuperada;
 
   File _imagem;
@@ -100,10 +99,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
     setState(() {
       _imagem = imagemSelecionada;
-      if(_imagem != null) {
-        _subindoImagem = true;
         _uploadImagem();
-      }
     });
 
   }
@@ -122,39 +118,11 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
       .child( _idUsuario + ".jpg");
 
     //Upload da imagem
-    StorageUploadTask task = arquivo.putFile(_imagem);
+    arquivo.putFile(_imagem);
 
-    //Controlar processo do upload
-    task.events.listen((StorageTaskEvent storageEvent){
-
-      if( storageEvent.type == StorageTaskEventType.progress ){
-        setState(() {
-          _subindoImagem = true;
-        });
-      }else if( storageEvent.type == StorageTaskEventType.success ){
-        setState(() {
-          _subindoImagem = false;
-        });
-      }
-
-    });
-
-    //Recupera url da imagem
-    task.onComplete.then((StorageTaskSnapshot snapshot){
-      _recuperaUrlImagem(snapshot);
-    });
   }
 
 
-
-  Future _recuperaUrlImagem(StorageTaskSnapshot snapshot) async {
-
-    String url = await snapshot.ref.getDownloadURL();
-
-    setState(() {
-      _urlImagemRecuperada = url;
-    });
-  }
 
 
   List<File> listaTela = new List();
@@ -283,9 +251,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     ],
                   ),
                 ),
-                _subindoImagem
-                  ? CircularProgressIndicator()
-                  :Container(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: _imagem == null
@@ -326,7 +291,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                         borderRadius: BorderRadius.circular(32)),
                     onPressed: () {
                       _validarCampos();
-                      _uploadImagem();
                       Navigator.pop(context);
                     },
                   ),

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/Detalhes.dart';
+import 'package:industries/MensagemUsuraio.dart';
 import 'CadastroImoveis.dart';
 
 class Home extends StatelessWidget {
@@ -164,7 +165,12 @@ class Home extends StatelessWidget {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {},
+                  onTap: () => {
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => MensagemUsuario(emai))),
+                  },
                   child: Container(
                     height: 50,
                     child: Row(

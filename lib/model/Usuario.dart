@@ -11,6 +11,7 @@ class Usuario {
   String _senha;
   bool _estadoCivil;
   bool _contaCartao;
+  String _photo;
 
   Usuario();
 
@@ -18,6 +19,7 @@ class Usuario {
     Map<String, dynamic> map = {
       "nome" : this.nome,
       "email" : this.email,
+      "photo" : this.photo,
     };
 
     return map;
@@ -82,6 +84,12 @@ class Usuario {
 
   set nome(String value) {
     _nome = value;
+  }
+
+  String get photo => _photo;
+
+  set photo(String value) {
+    _photo = value;
   }
 
 

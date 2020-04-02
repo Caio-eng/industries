@@ -1,10 +1,13 @@
 import 'dart:convert' as JSON;
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:industries/CadastroImoveis.dart';
+import 'package:industries/model/Usuario.dart';
 import 'package:industries/sidebar/sidebar_layout.dart';
 import 'Home.dart';
 import 'Login.dart';
@@ -86,13 +89,26 @@ class _MainState extends State<Main>  {
           this.uid = this.account.id;
         });
       }
+
+      Usuario usuario = Usuario();
+      usuario.nome = this.account.displayName;
+      usuario.email = this.account.email;
+      usuario.photo = this.account.photoUrl;
+      //this.account = profile;
+      Firestore db = Firestore.instance;
+      db.collection("usuarios")
+          .document(this.account.id)
+          .setData(usuario.toMap());
+
     });
+
     _googleSignIn.signInSilently();
   }
 
   Future<void> logarPorFacebbok () async {
     var login = FacebookLogin();
     var result = await login.logInWithReadPermissions(['email']);
+
 
     switch(result.status) {
       case FacebookLoginStatus.error:
@@ -120,7 +136,6 @@ class _MainState extends State<Main>  {
         'https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=${token}');
     var profile = json.decode(graphResponse.body);
 
-    //this.account = profile;
 
     setState(() {
       this.user = profile['name'];
@@ -128,6 +143,15 @@ class _MainState extends State<Main>  {
       this.photo = profile['picture']['data']['url'];
       this.uid = profile['id'];
     });
+    Usuario usuario = Usuario();
+    usuario.nome = profile['name'];
+    usuario.email = profile['email'];
+    usuario.photo = profile['picture']['data']['url'];
+    //this.account = profile;
+    Firestore db = Firestore.instance;
+    db.collection("usuarios")
+        .document(profile['id'])
+        .setData(usuario.toMap());
     //print('Nome: $user');
     //print('Email: $emai');
     //print('ID: $uid');

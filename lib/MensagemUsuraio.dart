@@ -5,8 +5,12 @@ import 'package:industries/telas/AbaContatos.dart';
 import 'package:industries/telas/AbaConversas.dart';
 
 class MensagemUsuario extends StatefulWidget {
+  final String user;
+  final String photo;
   final String emai;
-  MensagemUsuario(this.emai);
+  final String uid;
+
+  MensagemUsuario(this.user, this.photo, this.emai, this.uid);
 
   @override
   _MensagemUsuarioState createState() => _MensagemUsuarioState();
@@ -54,7 +58,7 @@ class _MensagemUsuarioState extends State<MensagemUsuario> with SingleTickerProv
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Configuracoes(widget.emai)
+                builder: (context) => Configuracoes(widget.user, widget.photo, widget.emai, widget.uid)
             )
         );
         break;

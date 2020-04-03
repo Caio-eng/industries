@@ -169,7 +169,7 @@ class Home extends StatelessWidget {
                     Navigator.push(
                     context,
                     MaterialPageRoute(
-                    builder: (context) => MensagemUsuario(emai))),
+                    builder: (context) => MensagemUsuario(user, emai, photo, uid))),
                   },
                   child: Container(
                     height: 50,

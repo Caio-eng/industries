@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:industries/Configuracoes.dart';
 import 'package:industries/telas/AbaContatos.dart';
 import 'package:industries/telas/AbaConversas.dart';
 
@@ -50,7 +51,12 @@ class _MensagemUsuarioState extends State<MensagemUsuario> with SingleTickerProv
        print("perfil");
        break;
       case "Configurações":
-        print("Configurações");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Configuracoes(widget.emai)
+            )
+        );
         break;
     }
 

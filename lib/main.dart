@@ -90,15 +90,7 @@ class _MainState extends State<Main>  {
         });
       }
 
-      Usuario usuario = Usuario();
-      usuario.nome = this.account.displayName;
-      usuario.email = this.account.email;
-      usuario.photo = this.account.photoUrl;
-      //this.account = profile;
-      Firestore db = Firestore.instance;
-      db.collection("usuarios")
-          .document(this.account.id)
-          .setData(usuario.toMap());
+
 
     });
 
@@ -143,15 +135,7 @@ class _MainState extends State<Main>  {
       this.photo = profile['picture']['data']['url'];
       this.uid = profile['id'];
     });
-    Usuario usuario = Usuario();
-    usuario.nome = profile['name'];
-    usuario.email = profile['email'];
-    usuario.photo = profile['picture']['data']['url'];
-    //this.account = profile;
-    Firestore db = Firestore.instance;
-    db.collection("usuarios")
-        .document(profile['id'])
-        .setData(usuario.toMap());
+
     //print('Nome: $user');
     //print('Email: $emai');
     //print('ID: $uid');

@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 
+import 'model/Usuario.dart';
+
 class Configuracoes extends StatefulWidget {
   final String user;
   final String photo;
@@ -90,19 +92,28 @@ class _ConfiguracoesState extends State<Configuracoes> {
   }
 
   _atualizarUrlImagemFirestore(String url){
-    
-    Firestore db = Firestore.instance;
 
+    String nome = _controllerNome.text;
     Map<String, dynamic> dadosAtualizar = {
-      "urlImagem" : url
+      "urlImagem" : url,
+      "nome" : nome
     };
 
+    Usuario usuario = Usuario();
+    //usuario.nome = widget.user;
+    usuario.email = widget.emai;
+    usuario.photo = widget.photo;
+    //this.account = profile;
+    Firestore db = Firestore.instance;
     db.collection("usuarios")
-    .document(widget.uid)
-    .updateData( dadosAtualizar );
+        .document(widget.uid)
+        .setData(usuario.toMap());
+    db.collection("usuarios")
+      .document(widget.uid)
+      .updateData(dadosAtualizar);
 
   }
-
+/*
   _atualizarNomeFirestore(){
 
     String nome = _controllerNome.text;
@@ -111,16 +122,19 @@ class _ConfiguracoesState extends State<Configuracoes> {
     Map<String, dynamic> dadosAtualizar = {
       "nome" : nome
     };
-
+    Usuario usuario = Usuario();
+    usuario.nome = nome;
     db.collection("usuarios")
         .document(widget.uid)
         .updateData( dadosAtualizar );
 
-  }
 
+  }
+*/
   _recuperarDadosUsuario() async {
 
     _idUsuarioLogado = widget.uid;
+
     
     Firestore db = Firestore.instance;
     DocumentSnapshot snapshot = await db.collection("usuarios")
@@ -192,6 +206,10 @@ class _ConfiguracoesState extends State<Configuracoes> {
                     autofocus: true,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 20),
+                    /*
+                    onChanged: (texto) {
+                      _atualizarUrlImagemFirestore(_urlImagemRecuperada, texto);
+                    },*/
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
                       hintText: "Nome",
@@ -216,8 +234,9 @@ class _ConfiguracoesState extends State<Configuracoes> {
                       borderRadius: BorderRadius.circular(32)
                     ),
                     onPressed: () {
-                      _atualizarNomeFirestore();
+                      //_atualizarNomeFirestore();
                       _atualizarUrlImagemFirestore(_urlImagemRecuperada);
+                      Navigator.pop(context);
                     },
                   ),
                 ),

@@ -3,19 +3,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/Detalhes.dart';
-import 'package:industries/MensagemUsuraio.dart';
+import 'package:industries/Chat.dart';
 import 'CadastroImoveis.dart';
 
 class Home extends StatelessWidget {
   final Function signOut;
-  final Function signOutFB;
   final String user;
-  final String emai;
   final String photo;
+  final String emai;
   final String uid;
 
-  Home(
-      this.signOut, this.signOutFB, this.user, this.emai, this.photo, this.uid);
+  Home(this.signOut, this.user, this.photo, this.emai, this.uid);
   Firestore db = Firestore.instance;
   bool isLoggedIn = false;
 
@@ -55,7 +53,7 @@ class Home extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CadastroImoveis(uid)));
+                      builder: (context) => CadastroImoveis(user, photo, emai, uid)));
             },
             child: Icon(Icons.add),
           ),
@@ -337,7 +335,7 @@ class Home extends StatelessWidget {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.red,
-                  onTap: () => {signOut(), signOutFB()},
+                  onTap: () => {signOut()},
                   child: Container(
                     height: 50,
                     child: Row(

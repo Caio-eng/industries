@@ -103,7 +103,7 @@ class _MensagemUsuarioState extends State<MensagemUsuario> with SingleTickerProv
         controller: _tabController,
         children: <Widget>[
           AbaConversas(),
-          AbaContatos(),
+          AbaContatos(widget.user, widget.photo, widget.emai, widget.uid),
         ],
       ),
     );

@@ -52,7 +52,7 @@ class _ConfiguracoesState extends State<Configuracoes> {
     StorageReference pastaRaiz = storage.ref();
     StorageReference arquivo = pastaRaiz
       .child("perfil")
-      .child(widget.user + ".jpg");
+      .child(widget.uid + ".jpg");
     print("Usuario: " + widget.user);
     print("id: " + widget.uid);
 

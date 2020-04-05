@@ -12,6 +12,7 @@ class Usuario {
   bool _estadoCivil;
   bool _contaCartao;
   String _photo;
+  String _urlImagem;
 
   Usuario();
 
@@ -24,6 +25,13 @@ class Usuario {
 
     return map;
 
+  }
+
+
+  String get urlImagem => _urlImagem;
+
+  set urlImagem(String value) {
+    _urlImagem = value;
   }
 
   bool get contaCartao => _contaCartao;

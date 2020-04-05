@@ -35,9 +35,8 @@ class Login extends StatelessWidget {
   //bool _lembreme = false;
   // String user;
   final Function signIn;
-  final Function signInFB;
 
-  Login(this.signIn, this.signInFB);
+  Login(this.signIn);
   // var profile;
   /*
   _validarCampos() {
@@ -163,14 +162,14 @@ class Login extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(color: Colors.white),
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(20),
         child: Center(
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(15),
                   child: Center(
                     child: Text(
                       "Industries KC Imoveis",
@@ -179,7 +178,7 @@ class Login extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.only(bottom: 30),
                   child: Image.asset(
                     "imagens/logo.png",
                     width: 200,
@@ -271,7 +270,7 @@ class Login extends StatelessWidget {
                   ),
                 ),*/
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10),
                   child: Container(
                     height: 60,
                     width: 60,
@@ -316,6 +315,7 @@ class Login extends StatelessWidget {
                     ),
                   ),
                 ),
+                /*
                 Center(
                   child: Column(
                     children: <Widget>[
@@ -367,7 +367,7 @@ class Login extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
+                ),*/
                 SizedBox(
                   height: 10,
                 ),

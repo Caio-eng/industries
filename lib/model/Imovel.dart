@@ -6,7 +6,8 @@ class Imovel {
   String _cidade;
   String _estado;
   String _bairro;
-  String _idUser;
+  String _idUsuario;
+  String _urlImagens;
 
   Imovel();
 
@@ -15,11 +16,25 @@ class Imovel {
       "logadouro" : this.logadouro,
       "complemento" : this.complemento,
       "tipoImovel" : this.tipoImovel,
-      "idUser" : this.idUser
+      "idUsuario" : this._idUsuario,
+      "urlImagens" : this.urlImagens
     };
 
     return map;
 
+  }
+
+
+  String get idUsuario => _idUsuario;
+
+  set idUsuario(String value) {
+    _idUsuario = value;
+  }
+
+  String get urlImagens => _urlImagens;
+
+  set urlImagens(String value) {
+    _urlImagens = value;
   }
 
   String get bairro => _bairro;
@@ -56,12 +71,6 @@ class Imovel {
 
   set logadouro(String value) {
     _logadouro = value;
-  }
-
-  String get idUser => _idUser;
-
-  set idUser(String value) {
-    _idUser = value;
   }
 
 

@@ -16,6 +16,9 @@ class SideBar extends StatefulWidget {
 }
 
 class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<SideBar> {
+  String user;
+  String emai;
+  String photo;
   String uid;
   PageController pageController;
   AnimationController _animationController;
@@ -55,7 +58,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
   _cadastrarImoveis() {
     Navigator.pushReplacement(context,
         MaterialPageRoute(
-            builder: (context) => CadastroImoveis(uid)
+            builder: (context) => CadastroImoveis(user, emai, photo, uid)
         )
     );
   }

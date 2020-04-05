@@ -18,8 +18,11 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class CadastroImoveis extends StatefulWidget {
+  final String user;
+  final String photo;
+  final String emai;
   final String uid;
-  CadastroImoveis(this.uid);
+  CadastroImoveis(this.user, this.photo, this.emai,  this.uid);
 
   @override
   _CadastroImoveisState createState() => _CadastroImoveisState();
@@ -31,8 +34,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   TextEditingController _controllerComplemento = TextEditingController();
 
   TextEditingController _controllerTipoImovel = TextEditingController();
+  TextEditingController _controllerNome = TextEditingController();
   String _idUsuario;
   String _urlImagemRecuperada;
+  bool _subindoImagem = false;
 
   File _imagem;
 
@@ -55,7 +60,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
           imovel.logadouro = logadouro;
           imovel.complemento = complemento;
           imovel.tipoImovel = tipoImovel;
-          imovel.idUser = widget.uid;
+          imovel.idUsuario = widget.uid;
+          imovel.urlImagens = _urlImagemRecuperada;
 
 
 
@@ -104,23 +110,76 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
   }
 
+  Future _uploadImagem() async {
+
+    FirebaseStorage storage = FirebaseStorage.instance;
+    StorageReference pastaRaiz = storage.ref();
+    StorageReference arquivo = pastaRaiz
+        .child("imoveis")
+        .child(widget.user + ".jpg");
+    print("Usuario: " + widget.user);
+    print("id: " + widget.uid);
+
+    //Upload da imagem
+    StorageUploadTask task = arquivo.putFile(_imagem);
+
+    //Controlar progresso do upload
+    task.events.listen((StorageTaskEvent storageEvent) {
+
+      if( storageEvent.type == StorageTaskEventType.progress ) {
+        setState(() {
+          _subindoImagem = true;
+        });
+      } else if( storageEvent.type == StorageTaskEventType.success ) {
+        setState(() {
+          _subindoImagem = false;
+        });
+      }
+
+    });
+
+    //Recuperar url da imagem
+    task.onComplete.then((StorageTaskSnapshot snapshot) {
+      _recuperarUrlImagem(snapshot);
+    });
+  }
+
+  Future _recuperarUrlImagem(StorageTaskSnapshot snapshot) async {
+
+    String url = await snapshot.ref.getDownloadURL();
+    _atualizarUrlImagemFirestore( url );
+
+    setState(() {
+      _urlImagemRecuperada = url;
+    });
+
+  }
+
+  _atualizarUrlImagemFirestore(String url){
+
+
+    Map<String, dynamic> dadosAtualizar = {
+      "urlImagens" : url
+    };
+
+    //Usuario usuario = Usuario();
+    //usuario.nome = widget.user;
+    //usuario.email = widget.emai;
+    //usuario.photo = widget.photo;
+    //this.account = profile;
+    Firestore db = Firestore.instance;
+    db.collection("imovel")
+        .document(widget.uid)
+        .updateData(dadosAtualizar);
+
+  }
+
   _recuperarDadosUsuario() async {
     _idUsuario = widget.uid;
 
   }
 
-  Future _uploadImagem() {
 
-    FirebaseStorage storage = FirebaseStorage.instance;
-    StorageReference pastaRaiz = storage.ref();
-    StorageReference arquivo = pastaRaiz
-      .child("fotos")
-      .child( _idUsuario + ".jpg");
-
-    //Upload da imagem
-    arquivo.putFile(_imagem);
-
-  }
 
 
 
@@ -290,6 +349,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32)),
                     onPressed: () {
+                      _atualizarUrlImagemFirestore(_urlImagemRecuperada);
                       _validarCampos();
                       Navigator.pop(context);
                     },

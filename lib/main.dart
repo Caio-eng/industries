@@ -70,7 +70,7 @@ class _MainState extends State<Main>  {
   GoogleSignInAccount account;
   bool _isLoggedIn = false;
   Map userProfile;
-  final facebookLogin = FacebookLogin();
+  //final facebookLogin = FacebookLogin();
 
 
   @override
@@ -96,7 +96,7 @@ class _MainState extends State<Main>  {
 
     _googleSignIn.signInSilently();
   }
-
+/*
   Future<void> logarPorFacebbok () async {
     var login = FacebookLogin();
     var result = await login.logInWithReadPermissions(['email']);
@@ -112,6 +112,7 @@ class _MainState extends State<Main>  {
       case FacebookLoginStatus.loggedIn:
         _getUserInfo(result);
         _onLoginStatusChange(true);
+
         break;
     }
   }
@@ -134,6 +135,7 @@ class _MainState extends State<Main>  {
       this.emai = profile['email'];
       this.photo = profile['picture']['data']['url'];
       this.uid = profile['id'];
+
     });
 
     //print('Nome: $user');
@@ -145,12 +147,12 @@ class _MainState extends State<Main>  {
 
 
     Future<void> logout() {
-    facebookLogin.logOut();
+    //facebookLogin.logOut();
     setState(() {
       _isLoggedIn = false;
     });
   }
-
+*/
   Future<void> googleSignIn() async {
     try {
 
@@ -179,7 +181,7 @@ class _MainState extends State<Main>  {
       uid = 'id';
     });
   }
-
+/*
   void signOutFB() {
     setState(() {
       user = null;
@@ -197,12 +199,12 @@ class _MainState extends State<Main>  {
       uid = 'id';
     });
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     return _isLoggedIn || account != null
-    ? new Home(googleSignOut, logout, user, emai, photo, uid)
-    : new Login(googleSignIn, logarPorFacebbok);
+    ? new Home(googleSignOut, user, photo, emai, uid)
+    : new Login(googleSignIn);
   }
 
 }

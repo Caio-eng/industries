@@ -31,6 +31,7 @@ class _AbaContatosState extends State<AbaContatos> {
       if (dados['email'] == widget.emai) continue;
 
       Usuario usuario = Usuario();
+      usuario.idUsuario = item.documentID;
       usuario.email = dados["email"];
       usuario.nome = dados["nome"];
       usuario.urlImagem = dados["urlImagem"];
@@ -83,7 +84,7 @@ class _AbaContatosState extends State<AbaContatos> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Mensagens(usuario)));
+                              builder: (context) => Mensagens(usuario, widget.user, widget.photo, widget.emai, widget.uid)));
                     },
                     contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                     leading: CircleAvatar(

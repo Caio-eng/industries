@@ -17,9 +17,9 @@ class Mensagens extends StatefulWidget {
 }
 
 class _MensagensState extends State<Mensagens> {
-
   String _idUsuarioLogado;
   String _idUsuarioDestinatario;
+  Firestore db = Firestore.instance;
 
   List<String> listaMensagens = [
     "Oi, tudo bem ?",
@@ -33,30 +33,30 @@ class _MensagensState extends State<Mensagens> {
   TextEditingController _controllerMensagem = TextEditingController();
 
   _enviarMensagem() {
-
     String textoMensagem = _controllerMensagem.text;
-    if( textoMensagem.isNotEmpty ) {
-
+    if (textoMensagem.isNotEmpty) {
       Mensagem mensagem = Mensagem();
       mensagem.idUsuario = _idUsuarioLogado;
       mensagem.mensagem = textoMensagem;
       mensagem.urlImagem = "";
       mensagem.tipo = "texto";
 
+      //Salvar mensagem para remetente
       _salvarMensagem(_idUsuarioLogado, _idUsuarioDestinatario, mensagem);
 
-    }
+      //Salvar mensagem para o destinatário
+      _salvarMensagem(_idUsuarioDestinatario, _idUsuarioLogado, mensagem);
 
+    }
   }
 
-  _salvarMensagem(String idRemetente, String idDestinatario, Mensagem msg) async {
-    
-    Firestore db = Firestore.instance;
-    
-    await db.collection("mensagens")
-    .document( idRemetente )
-    .collection( idDestinatario )
-    .add( msg.toMap() );
+  _salvarMensagem(
+      String idRemetente, String idDestinatario, Mensagem msg) async {
+    await db
+        .collection("mensagens")
+        .document(idRemetente)
+        .collection(idDestinatario)
+        .add(msg.toMap());
 
     //Limpar texto
     _controllerMensagem.clear();
@@ -69,16 +69,11 @@ class _MensagensState extends State<Mensagens> {
      */
   }
 
-  _enviarFoto() {
-
-  }
+  _enviarFoto() {}
 
   _recuperarDadosUsuario() async {
-
     _idUsuarioLogado = widget.uid;
     _idUsuarioDestinatario = widget.contato.idUsuario;
-
-
   }
 
   @override
@@ -87,11 +82,8 @@ class _MensagensState extends State<Mensagens> {
     _recuperarDadosUsuario();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
     var caixaMensagem = Container(
       padding: EdgeInsets.all(8),
       child: Row(
@@ -110,8 +102,7 @@ class _MensagensState extends State<Mensagens> {
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32)
-                  ),
+                      borderRadius: BorderRadius.circular(32)),
                   prefixIcon: IconButton(
                     icon: Icon(Icons.camera_alt),
                     onPressed: _enviarFoto,
@@ -122,7 +113,10 @@ class _MensagensState extends State<Mensagens> {
           ),
           FloatingActionButton(
             backgroundColor: Colors.blue,
-            child: Icon(Icons.send, color: Colors.white,),
+            child: Icon(
+              Icons.send,
+              color: Colors.white,
+            ),
             mini: true,
             onPressed: _enviarMensagem,
           ),
@@ -130,11 +124,87 @@ class _MensagensState extends State<Mensagens> {
       ),
     );
 
+    var stream = StreamBuilder(
+      stream: db
+          .collection("mensagens")
+          .document(_idUsuarioLogado)
+          .collection(_idUsuarioDestinatario)
+          .snapshots(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+            return Center(
+              child: Column(
+                children: <Widget>[
+                  Text("Carregando mensagens"),
+                  CircularProgressIndicator()
+                ],
+              ),
+            );
+            break;
+          case ConnectionState.active:
+          case ConnectionState.done:
+            QuerySnapshot querySnapshot = snapshot.data;
+
+            if (snapshot.hasError) {
+              return Expanded(
+                child: Text("Erro ao carregar os dados!"),
+              );
+            } else {
+              return Expanded(
+                child: ListView.builder(
+                    itemCount: querySnapshot.documents.length,
+                    itemBuilder: (context, indice) {
+
+                      // recupera mensagem
+                      List<DocumentSnapshot> mensagens = querySnapshot.documents.toList();
+                      DocumentSnapshot item = mensagens[indice];
+
+                      double larguraContainer =
+                          MediaQuery.of(context).size.width * 0.8;
+
+
+                      //Define cores e alinhamentos
+                      Alignment alinhamento = Alignment.centerRight;
+                      Color cor = Color(0xffd2ffa5);
+                      if ( _idUsuarioLogado != item["idUsuario"] ) {
+                        //par
+                        alinhamento = Alignment.centerLeft;
+                        cor = Colors.white;
+                      }
+
+                      return Align(
+                        alignment: alinhamento,
+                        child: Padding(
+                          padding: EdgeInsets.all(6),
+                          child: Container(
+                            width: larguraContainer,
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                                color: cor,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
+                            child: Text(
+                              item["mensagem"],
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              );
+            }
+
+            break;
+        }
+      },
+    );
+
     var listView = Expanded(
       child: ListView.builder(
-        itemCount: listaMensagens.length,
+          itemCount: listaMensagens.length,
           itemBuilder: (context, indice) {
-
             double larguraContainer = MediaQuery.of(context).size.width * 0.8;
 
             //larguraContainer   -> 100
@@ -143,7 +213,8 @@ class _MensagensState extends State<Mensagens> {
             //Define cores e alinhamentos
             Alignment alinhamento = Alignment.centerRight;
             Color cor = Color(0xffd2ffa5);
-            if ( indice % 2 == 0 ) { //par
+            if (indice % 2 == 0) {
+              //par
               alinhamento = Alignment.centerLeft;
               cor = Colors.white;
             }
@@ -156,19 +227,16 @@ class _MensagensState extends State<Mensagens> {
                   width: larguraContainer,
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: cor,
-                    borderRadius: BorderRadius.all(Radius.circular(8))
-                  ),
+                      color: cor,
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
                   child: Text(
-                      listaMensagens[indice],
+                    listaMensagens[indice],
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
               ),
             );
-
-          }
-      ),
+          }),
     );
 
     return Scaffold(
@@ -191,17 +259,14 @@ class _MensagensState extends State<Mensagens> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage("imagens/tela.png"),
-            fit: BoxFit.cover
-          )
-        ),
+            image: DecorationImage(
+                image: AssetImage("imagens/tela.png"), fit: BoxFit.cover)),
         child: SafeArea(
           child: Container(
             padding: EdgeInsets.all(8),
             child: Column(
               children: <Widget>[
-                listView,
+                stream,
                 caixaMensagem,
                 //listview
                 //caixa de mesagem

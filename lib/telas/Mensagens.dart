@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:industries/model/Conversa.dart';
 import 'package:industries/model/Mensagem.dart';
 import 'package:industries/model/Usuario.dart';
 
@@ -25,8 +28,10 @@ class _MensagensState extends State<Mensagens> {
   String _idUsuarioLogado;
   String _idUsuarioDestinatario;
   Firestore db = Firestore.instance;
-
   TextEditingController _controllerMensagem = TextEditingController();
+
+  final _controller = StreamController<QuerySnapshot>.broadcast();
+  ScrollController _scrollController = ScrollController();
 
   _enviarMensagem() {
     String textoMensagem = _controllerMensagem.text;
@@ -43,32 +48,49 @@ class _MensagensState extends State<Mensagens> {
       //Salvar mensagem para o destinatário
       _salvarMensagem(_idUsuarioDestinatario, _idUsuarioLogado, mensagem);
 
+      //Salvar conversa
+      _salvarConversa(mensagem);
     }
   }
 
-  _salvarMensagem(
-      String idRemetente, String idDestinatario, Mensagem msg) async {
+  _salvarConversa(Mensagem msg) {
+    //Salvar conversa remetente
+    Conversa cRemetente = Conversa();
+    cRemetente.idRemetente = _idUsuarioLogado;
+    cRemetente.idDestinatario = _idUsuarioDestinatario;
+    cRemetente.mensagem = msg.mensagem;
+    cRemetente.nome = widget.contato.nome;
+    cRemetente.caminhoFoto = widget.contato.urlImagem;
+    cRemetente.tipoMensagem = msg.tipo;
+    cRemetente.salvar();
+
+    //Salvar conversa destinatario
+    Conversa cDestinatario = Conversa();
+    cDestinatario.idRemetente = _idUsuarioDestinatario;
+    cDestinatario.idDestinatario = _idUsuarioLogado;
+    cDestinatario.mensagem = msg.mensagem;
+    cDestinatario.nome = widget.contato.nome;
+    cDestinatario.caminhoFoto = widget.contato.urlImagem;
+    cDestinatario.tipoMensagem = msg.tipo;
+    cDestinatario.salvar();
+  }
+
+  _salvarMensagem(String idRemetente, String idDestinatario,
+      Mensagem msg) async {
     await db
         .collection("mensagens")
         .document(idRemetente)
         .collection(idDestinatario)
         .add(msg.toMap());
 
-    //Limpar texto
+    //Limpa texto
     _controllerMensagem.clear();
-    /*
-    + mensagens
-      + caio
-        + outra pessoa
-          + indentificadorFirebase
-            <mensagem>
-     */
   }
 
   _enviarFoto() async {
-
     File imagemSelecionada;
-    imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
+    imagemSelecionada =
+    await ImagePicker.pickImage(source: ImageSource.gallery);
 
     _subindoImagem = true;
     String nomeImagem = DateTime.now().millisecondsSinceEpoch.toString();
@@ -76,27 +98,23 @@ class _MensagensState extends State<Mensagens> {
     StorageReference pastaRaiz = storage.ref();
     StorageReference arquivo = pastaRaiz
         .child("mensagens")
-        .child( _idUsuarioLogado )
-        .child(nomeImagem  + ".jpg");
-    print("Usuario: " + widget.user);
-    print("id: " + widget.uid);
+        .child(_idUsuarioLogado)
+        .child(nomeImagem + ".jpg");
 
     //Upload da imagem
-    StorageUploadTask task = arquivo.putFile( imagemSelecionada );
+    StorageUploadTask task = arquivo.putFile(imagemSelecionada);
 
     //Controlar progresso do upload
     task.events.listen((StorageTaskEvent storageEvent) {
-
-      if( storageEvent.type == StorageTaskEventType.progress ) {
+      if (storageEvent.type == StorageTaskEventType.progress) {
         setState(() {
           _subindoImagem = true;
         });
-      } else if( storageEvent.type == StorageTaskEventType.success ) {
+      } else if (storageEvent.type == StorageTaskEventType.success) {
         setState(() {
           _subindoImagem = false;
         });
       }
-
     });
 
     //Recuperar url da imagem
@@ -106,7 +124,6 @@ class _MensagensState extends State<Mensagens> {
   }
 
   Future _recuperarUrlImagem(StorageTaskSnapshot snapshot) async {
-
     String url = await snapshot.ref.getDownloadURL();
 
     Mensagem mensagem = Mensagem();
@@ -120,12 +137,29 @@ class _MensagensState extends State<Mensagens> {
 
     //Salvar mensagem para o destinatário
     _salvarMensagem(_idUsuarioDestinatario, _idUsuarioLogado, mensagem);
-
   }
 
   _recuperarDadosUsuario() async {
     _idUsuarioLogado = widget.uid;
     _idUsuarioDestinatario = widget.contato.idUsuario;
+
+    _adicionarListenerMensagens();
+  }
+
+  Stream<QuerySnapshot> _adicionarListenerMensagens() {
+
+    final stream = db.collection("mensagens")
+        .document(_idUsuarioLogado)
+        .collection(_idUsuarioDestinatario)
+        .snapshots();
+
+    stream.listen((dados) {
+      _controller.add( dados );
+      Timer(Duration(seconds: 1), (){
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      });
+    });
+
   }
 
   @override
@@ -149,42 +183,41 @@ class _MensagensState extends State<Mensagens> {
                 keyboardType: TextInputType.text,
                 style: TextStyle(fontSize: 20),
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(32, 8, 32, 8),
-                  hintText: "Digite uma mensagem...",
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(32)),
-                  prefixIcon:
-                  _subindoImagem
-                      ? CircularProgressIndicator()
-                      : IconButton(
-                          icon: Icon(Icons.camera_alt),
-                          onPressed: _enviarFoto,
-                        ),
-                      ),
-                  ),
+                    contentPadding: EdgeInsets.fromLTRB(32, 8, 32, 8),
+                    hintText: "Digite uma mensagem...",
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32)),
+                    prefixIcon:
+                    _subindoImagem
+                        ? CircularProgressIndicator()
+                        : IconButton(
+                        icon: Icon(Icons.camera_alt), onPressed: _enviarFoto)
+                ),
+              ),
             ),
           ),
-          FloatingActionButton(
-            backgroundColor: Colors.blue,
+          Platform.isIOS
+              ? CupertinoButton(
+            child: Text("Enviar"),
+            onPressed: _enviarMensagem,
+          )
+              : FloatingActionButton(
+            backgroundColor: Color(0xff075E54),
             child: Icon(
               Icons.send,
               color: Colors.white,
             ),
             mini: true,
             onPressed: _enviarMensagem,
-          ),
+          )
         ],
       ),
     );
 
     var stream = StreamBuilder(
-      stream: db
-          .collection("mensagens")
-          .document(_idUsuarioLogado)
-          .collection(_idUsuarioDestinatario)
-          .snapshots(),
+      stream: _controller.stream,
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
@@ -203,28 +236,28 @@ class _MensagensState extends State<Mensagens> {
             QuerySnapshot querySnapshot = snapshot.data;
 
             if (snapshot.hasError) {
-              return Expanded(
-                child: Text("Erro ao carregar os dados!"),
-              );
+              return Text("Erro ao carregar os dados!");
             } else {
               return Expanded(
                 child: ListView.builder(
+                    controller: _scrollController,
                     itemCount: querySnapshot.documents.length,
                     itemBuilder: (context, indice) {
-
-                      // recupera mensagem
-                      List<DocumentSnapshot> mensagens = querySnapshot.documents.toList();
+                      //recupera mensagem
+                      List<DocumentSnapshot> mensagens = querySnapshot.documents
+                          .toList();
                       DocumentSnapshot item = mensagens[indice];
 
                       double larguraContainer =
-                          MediaQuery.of(context).size.width * 0.8;
-
+                          MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.8;
 
                       //Define cores e alinhamentos
                       Alignment alinhamento = Alignment.centerRight;
                       Color cor = Color(0xffd2ffa5);
-                      if ( _idUsuarioLogado != item["idUsuario"] ) {
-                        //par
+                      if (_idUsuarioLogado != item["idUsuario"]) {
                         alinhamento = Alignment.centerLeft;
                         cor = Colors.white;
                       }
@@ -239,11 +272,11 @@ class _MensagensState extends State<Mensagens> {
                             decoration: BoxDecoration(
                                 color: cor,
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(8))),
+                                BorderRadius.all(Radius.circular(8))),
                             child:
-                            item["tipo"] == "texto"
-                              ? Text(item["mensagem"], style: TextStyle(fontSize: 18),)
-                              : Image.network(item["urlImagem"]),
+                            item['tipo'] == "texto"
+                                ? Text(item["mensagem"], style: TextStyle(fontSize: 18),)
+                                : Image.network(item["urlImagem"]),
                           ),
                         ),
                       );
@@ -269,28 +302,28 @@ class _MensagensState extends State<Mensagens> {
             Padding(
               padding: EdgeInsets.only(left: 8),
               child: Text(widget.contato.nome),
-            ),
+            )
           ],
         ),
       ),
       body: Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
         decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage("imagens/tela.png"), fit: BoxFit.cover)),
         child: SafeArea(
-          child: Container(
-            padding: EdgeInsets.all(8),
-            child: Column(
-              children: <Widget>[
-                stream,
-                caixaMensagem,
-                //listview
-                //caixa de mesagem
-              ],
-            ),
-          ),
-        ),
+            child: Container(
+              padding: EdgeInsets.all(8),
+              child: Column(
+                children: <Widget>[
+                  stream,
+                  caixaMensagem,
+                ],
+              ),
+            )),
       ),
     );
   }

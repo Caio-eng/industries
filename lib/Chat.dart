@@ -10,6 +10,7 @@ class MensagemUsuario extends StatefulWidget {
   final String emai;
   final String uid;
 
+
   MensagemUsuario(this.user, this.photo, this.emai, this.uid);
 
   @override
@@ -20,7 +21,7 @@ class _MensagemUsuarioState extends State<MensagemUsuario> with SingleTickerProv
 
   TabController _tabController;
   List<String> itensMenu = [
-    "Perfil", "Configurações"
+    "Configurações"
   ];
 
   String _emailUsuario= "";
@@ -51,9 +52,6 @@ class _MensagemUsuarioState extends State<MensagemUsuario> with SingleTickerProv
   _escolhaMenuItem(String itemEscolhido) {
 
     switch ( itemEscolhido ){
-      case "Perfil":
-       print("perfil");
-       break;
       case "Configurações":
         Navigator.push(
             context,

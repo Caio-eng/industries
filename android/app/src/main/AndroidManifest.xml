@@ -2,6 +2,8 @@
     package="com.imoveis.kc.industries">
 
 
+
+
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that

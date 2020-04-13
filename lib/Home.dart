@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +5,7 @@ import 'package:industries/Detalhes.dart';
 import 'package:industries/Chat.dart';
 import 'CadastroImoveis.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   final Function signOut;
   final String user;
   final String photo;
@@ -14,28 +13,82 @@ class Home extends StatelessWidget {
   final String uid;
 
   Home(this.signOut, this.user, this.photo, this.emai, this.uid);
-  Firestore db = Firestore.instance;
-  bool isLoggedIn = false;
 
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  Firestore db = Firestore.instance;
+
+  bool isLoggedIn = false;
+  String _idUsuarioLogado = "";
+  String _id = "";
+  String _url;
   var profile;
+
+
 
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: ListTile(
-        onTap: () => Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Detalhes())),
-        title: Text(
-          document['logadouro'],
-          textAlign: TextAlign.center,
-        ),
-        subtitle: Text(
-          document['complemento'],
-          textAlign: TextAlign.center,
-        ),
-        leading: Icon(Icons.home),
-      ),
+      child: document['idUsuario'] != _idUsuarioLogado
+        ? ListTile(
+          onTap: () =>
+              Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Detalhes(document, widget.user, widget.photo, widget.emai, widget.uid))),
+          title: Text(
+            document['logadouro'],
+            textAlign: TextAlign.center,
+          ),
+          subtitle: Text(
+            document['complemento'],
+            textAlign: TextAlign.center,
+          ),
+          leading: CircleAvatar(
+            radius: 25,
+            backgroundImage: NetworkImage(document['urlImagens']),
+          ),
+        )
+          : ListTile(
+              title: Text(
+                document['logadouro'],
+                textAlign: TextAlign.center,
+              ),
+              subtitle: Text(
+                document['complemento'],
+                textAlign: TextAlign.center,
+              ),
+            leading: Icon(Icons.home),
+            /*
+            leading:CircleAvatar(
+              radius: 25,
+              backgroundImage: NetworkImage(document['urlImagens']),
+            ),*/
+      )
     );
+  }
+
+  _recuperarDados() async {
+    _idUsuarioLogado = widget.uid;
+
+    Firestore db = Firestore.instance;
+    DocumentSnapshot snapshot =
+        await db.collection("imoveis").document(_idUsuarioLogado).get();
+
+    Map<String, dynamic> dados = snapshot.data;
+    setState(() {
+      _id = dados['idUsuario'];
+      print("_id: " + _id);
+      _url = dados['urlImagens'];
+    });
+
+  }
+
+  @override
+  void initState() {
+    _recuperarDados();
+    super.initState();
   }
 
   @override
@@ -53,12 +106,13 @@ class Home extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CadastroImoveis(user, photo, emai, uid)));
+                      builder: (context) => CadastroImoveis(
+                          widget.user, widget.photo, widget.emai, widget.uid)));
             },
             child: Icon(Icons.add),
           ),
           Padding(
-            padding: EdgeInsets.only(right: 20),
+            padding: EdgeInsets.only(right: 18),
           ),
         ],
       ),
@@ -66,10 +120,10 @@ class Home extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text('$user'),
-              accountEmail: Text("$emai"),
+              accountName: Text('${widget.user}'),
+              accountEmail: Text("${widget.emai}"),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: NetworkImage('$photo'),
+                backgroundImage: NetworkImage('${widget.photo}'),
               ),
             ),
 
@@ -81,7 +135,9 @@ class Home extends StatelessWidget {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {},
+                  onTap: () => {
+
+                  },
                   child: Container(
                     height: 50,
                     child: Row(
@@ -90,13 +146,13 @@ class Home extends StatelessWidget {
                         Row(
                           children: <Widget>[
                             Icon(
-                              Icons.person,
+                              Icons.home,
                               color: Colors.blue,
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Perfil',
+                                'Meu Imóvel',
                                 style: TextStyle(
                                   fontSize: 16.0,
                                 ),
@@ -165,9 +221,10 @@ class Home extends StatelessWidget {
                   splashColor: Colors.blue,
                   onTap: () => {
                     Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                    builder: (context) => MensagemUsuario(user, emai, photo, uid))),
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MensagemUsuario(widget.user,
+                                widget.emai, widget.photo, widget.uid))),
                   },
                   child: Container(
                     height: 50,
@@ -251,7 +308,7 @@ class Home extends StatelessWidget {
                 child: InkWell(
                   splashColor: Colors.blue,
                   onTap: () => {
-                   // _pay(),
+
                   },
                   child: Container(
                     height: 50,
@@ -335,7 +392,7 @@ class Home extends StatelessWidget {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.red,
-                  onTap: () => {signOut()},
+                  onTap: () => {widget.signOut()},
                   child: Container(
                     height: 50,
                     child: Row(
@@ -379,7 +436,7 @@ class Home extends StatelessWidget {
         ),
       ),
       body: StreamBuilder(
-        stream: Firestore.instance.collection('Imovel').snapshots(),
+        stream: Firestore.instance.collection('imoveis').snapshots(),
         //print an integer every 2secs, 10 times
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -389,6 +446,7 @@ class Home extends StatelessWidget {
             itemExtent: 80.0,
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, index) {
+
               return _buildList(context, snapshot.data.documents[index]);
             },
           );

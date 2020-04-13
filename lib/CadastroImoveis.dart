@@ -1,5 +1,3 @@
-
-
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +14,7 @@ import 'package:industries/model/Mensagem.dart';
 import 'package:industries/model/Usuario.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class CadastroImoveis extends StatefulWidget {
   final String user;
@@ -28,6 +27,8 @@ class CadastroImoveis extends StatefulWidget {
   _CadastroImoveisState createState() => _CadastroImoveisState();
 }
 
+enum Character {Apartamento, Casa, KitNet}
+
 class _CadastroImoveisState extends State<CadastroImoveis> {
   TextEditingController _controllerLogadouro = TextEditingController();
 
@@ -35,10 +36,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
   TextEditingController _controllerTipoImovel = TextEditingController();
   TextEditingController _controllerNome = TextEditingController();
+  var controller = new MoneyMaskedTextController(leftSymbol: 'R\$ ');
   String _idUsuario;
   String _urlImagemRecuperada;
   bool _subindoImagem = false;
-
   File _imagem;
 
   String _mensagemErro = "";
@@ -47,27 +48,60 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
   CarouselSlider instance;
 
+
+
+  Character _character = Character.Apartamento;
+
+  String _radioValue;
+  String choice;
+
+  void radioButtonChanges(String value) {
+    setState(() {
+      _radioValue = value;
+      switch (value) {
+        case 'Apartamento':
+          choice = value;
+          break;
+        case 'Casa':
+          choice = value;
+          break;
+        case 'KitNet':
+          choice = value;
+          break;
+      }
+    });
+  }
+
+
   _validarCampos() {
     String logadouro = _controllerLogadouro.text;
     String complemento = _controllerComplemento.text;
-    String tipoImovel = _controllerTipoImovel.text;
+    String tipoImovel = choice;
+    String valor = controller.text;
 
 
     if (logadouro.isNotEmpty && logadouro.length > 6) {
       if (complemento.isNotEmpty) {
         if (tipoImovel.isNotEmpty) {
-          Imovel imovel = Imovel();
-          imovel.logadouro = logadouro;
-          imovel.complemento = complemento;
-          imovel.tipoImovel = tipoImovel;
-          imovel.idUsuario = widget.uid;
-          imovel.urlImagens = _urlImagemRecuperada;
+          if (valor.isNotEmpty ) {
+            Imovel imovel = Imovel();
+            imovel.logadouro = logadouro;
+            imovel.complemento = complemento;
+            imovel.tipoImovel = tipoImovel;
+            imovel.valor = valor;
+            imovel.urlImagens = _urlImagemRecuperada;
+            imovel.idUsuario = widget.uid;
 
 
 
-          _cadastrarImovel (imovel);
+            _cadastrarImovel (imovel);
+          } else{
+            _mensagemErro = "Digite um valor";
+          }
         }else {
-          _mensagemErro = "O Tipo do Imóvel é obrigatorio";
+          setState(() {
+            _mensagemErro = "O Tipo do Imóvel é obrigatorio";
+          });
         }
       }else {
         _mensagemErro = "O complemento é obrigatorio";
@@ -85,7 +119,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     //Salvar dados do Imovel
     Firestore db = Firestore.instance;
 
-    db.collection("Imovel")
+    db.collection("imoveis")
         .document()
         .setData(imovel.toMap());
 
@@ -111,15 +145,13 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   }
 
   Future _uploadImagem() async {
-
+    String nomeImagem = DateTime.now().millisecondsSinceEpoch.toString();
     FirebaseStorage storage = FirebaseStorage.instance;
     StorageReference pastaRaiz = storage.ref();
     StorageReference arquivo = pastaRaiz
         .child("imoveis")
-        .child(widget.user + ".jpg");
-    print("Usuario: " + widget.user);
-    print("id: " + widget.uid);
-
+        .child(widget.uid)
+        .child(nomeImagem + ".jpg");
     //Upload da imagem
     StorageUploadTask task = arquivo.putFile(_imagem);
 
@@ -168,7 +200,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     //usuario.photo = widget.photo;
     //this.account = profile;
     Firestore db = Firestore.instance;
-    db.collection("imovel")
+    db.collection("imoveis")
         .document(widget.uid)
         .updateData(dadosAtualizar);
 
@@ -180,12 +212,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   }
 
 
-
-
-
-
-  List<File> listaTela = new List();
-
   @override
   void initState() {
     super.initState();
@@ -193,12 +219,13 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     //listaTela.add(_imagem);
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text (
-        "Cadastre seu Imóvel"
+            "Cadastre seu Imóvel"
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -228,7 +255,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32)
+                          borderRadius: BorderRadius.circular(32)
                       ),
                     ),
                   ),
@@ -250,14 +277,72 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                   ),
                 ),
                 Padding(
+                  padding: EdgeInsets.only(bottom: 8, top: 3),
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Selecione o Tipo do Imóvel:',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Radio(
+                              value: 'Apartamento',
+                              groupValue: _radioValue,
+                              onChanged: radioButtonChanges,
+                            ),
+                            Text(
+                              'Apartamento',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Radio(
+                              value: 'Casa',
+                              groupValue: _radioValue,
+                              onChanged: radioButtonChanges,
+                            ),
+                            Text(
+                              'Casa',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Radio(
+                              value: 'KitNet',
+                              groupValue: _radioValue,
+                              onChanged: radioButtonChanges,
+                            ),
+                            Text(
+                              'KitNet',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
                   padding: EdgeInsets.only(bottom: 8),
                   child: TextField(
-                    controller: _controllerTipoImovel,
+                    controller: controller,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: "Tipo do Imóvel",
+                        hintText: "Valor",
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
@@ -313,7 +398,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: _imagem == null
-                    ? Container()
+                      ? Container()
                       :Image.file(_imagem),
                   /*CarouselSlider(
                     height: 150.0,
@@ -327,7 +412,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                   color: Colors.blue
                               ),
                               child: Image.file(_imagem),
-
                               //child: _imagem,
                           );
                         },
@@ -349,7 +433,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32)),
                     onPressed: () {
-                      _atualizarUrlImagemFirestore(_urlImagemRecuperada);
                       _validarCampos();
                       Navigator.pop(context);
                     },
@@ -372,3 +455,4 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     );
   }
 }
+

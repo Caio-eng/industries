@@ -173,7 +173,7 @@ class Login extends StatelessWidget {
                   child: Center(
                     child: Text(
                       "Industries KC Imoveis",
-                      style: TextStyle(color: Colors.black, fontSize: 30),
+                      style: TextStyle(color: Colors.black, fontSize: 28),
                     ),
                   ),
                 ),

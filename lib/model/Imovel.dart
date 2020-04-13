@@ -8,6 +8,7 @@ class Imovel {
   String _bairro;
   String _idUsuario;
   String _urlImagens;
+  String _valor;
 
   Imovel();
 
@@ -16,6 +17,7 @@ class Imovel {
       "logadouro" : this.logadouro,
       "complemento" : this.complemento,
       "tipoImovel" : this.tipoImovel,
+      "valor" : this.valor,
       "idUsuario" : this._idUsuario,
       "urlImagens" : this.urlImagens
     };
@@ -24,6 +26,12 @@ class Imovel {
 
   }
 
+
+  String get valor => _valor;
+
+  set valor(String value) {
+    _valor = value;
+  }
 
   String get idUsuario => _idUsuario;
 

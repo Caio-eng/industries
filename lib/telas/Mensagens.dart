@@ -164,8 +164,8 @@ class _MensagensState extends State<Mensagens> {
 
   @override
   void initState() {
-    super.initState();
     _recuperarDadosUsuario();
+    super.initState();
   }
 
   @override

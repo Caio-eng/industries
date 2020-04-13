@@ -28,7 +28,7 @@ class _MyOrdersPageState extends State<MyOrdersPage> with NavigationStates {
           Imovel imovel = Imovel();
           imovel.logadouro = logadouro;
           imovel.complemento = complemento;
-          imovel.tipoImovel = tipoImovel;
+          //imovel.tipoImovel = tipoImovel;
 
           _cadastrarImovel (imovel);
         }else {

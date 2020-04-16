@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/Detalhes.dart';
 import 'package:industries/Chat.dart';
+import 'package:industries/ImovelAlugado.dart';
+import 'package:industries/model/AluguarImovel.dart';
 import 'CadastroImoveis.dart';
 
 class Home extends StatefulWidget {
@@ -26,6 +28,7 @@ class _HomeState extends State<Home> {
   String _id = "";
   String _url;
   var profile;
+
 
 
 
@@ -65,7 +68,7 @@ class _HomeState extends State<Home> {
               radius: 25,
               backgroundImage: NetworkImage(document['urlImagens']),
             ),*/
-      )
+      ),
     );
   }
 
@@ -136,7 +139,7 @@ class _HomeState extends State<Home> {
                 child: InkWell(
                   splashColor: Colors.blue,
                   onTap: () => {
-
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ImovelAlugado(widget.user, widget.photo, widget.emai, widget.uid)))
                   },
                   child: Container(
                     height: 50,
@@ -152,7 +155,7 @@ class _HomeState extends State<Home> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Meu Imóvel',
+                                'Imóvel Alugado',
                                 style: TextStyle(
                                   fontSize: 16.0,
                                 ),

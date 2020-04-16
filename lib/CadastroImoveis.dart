@@ -139,7 +139,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
     setState(() {
       _imagem = imagemSelecionada;
-        _uploadImagem();
+      _uploadImagem();
     });
 
   }
@@ -218,6 +218,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     _recuperarDadosUsuario();
     //listaTela.add(_imagem);
   }
+
 
 
   @override

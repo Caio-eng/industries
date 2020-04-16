@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:industries/AluguelImovel.dart';
 
 import 'Home.dart';
 
@@ -115,7 +116,10 @@ class _DetalhesState extends State<Detalhes>  {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32)),
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AluguelImovel(widget.document, widget.user, widget.photo, widget.emai, widget.uid))
+                      );
                     },
                   ),
 
@@ -133,7 +137,7 @@ class _DetalhesState extends State<Detalhes>  {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32)),
                     onPressed: () {
-                      Navigator.pop(context);
+                      print(_idImovel);
                     },
                   ),
                 ),

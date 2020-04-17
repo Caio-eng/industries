@@ -59,8 +59,10 @@ class _AluguelImovelState extends State<AluguelImovel> {
 
     //Salvar dados do Imovel
     Firestore db = Firestore.instance;
-
+    //String nomeImovel = DateTime.now().millisecondsSinceEpoch.toString();
     db.collection("imovelAlugado")
+        .document(widget.uid)
+        .collection("Detalhes")
         .document()
         .setData(alugarImovel.toMap());
 

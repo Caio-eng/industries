@@ -33,7 +33,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
 
 
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
-    if ( document['idLocatario'] == widget.uid ) {
       return Padding(
           padding: const EdgeInsets.all(16),
           child: ListTile(
@@ -62,13 +61,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
             ),
           )
       );
-    }
 
-    else {
-      return Center(
-        child: Text("Tratar dado"),
-      );
-    }
 
   }
 
@@ -123,7 +116,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
         title: Text("Imóvel Alugado"),
       ),
       body: StreamBuilder(
-        stream: Firestore.instance.collection('imovelAlugado').snapshots(),
+        stream: Firestore.instance.collection('imovelAlugado').document(widget.uid).collection("Detalhes").snapshots(),
         //print an integer every 2secs, 10 times
         builder: (context, snapshot) {
           if (!snapshot.hasData) {

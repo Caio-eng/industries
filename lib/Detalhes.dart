@@ -24,7 +24,10 @@ class _DetalhesState extends State<Detalhes>  {
   String _log = "";
   String _comp = "";
   String _tipo = "";
+  String _nomeUsuario = "";
   String _valor = "";
+  String _deta = "";
+  String _estado = "";
   Firestore db = Firestore.instance;
 
 
@@ -41,18 +44,15 @@ class _DetalhesState extends State<Detalhes>  {
     _comp = widget.document['complemento'];
     _tipo = widget.document['tipoImovel'];
     _valor = widget.document['valor'];
-
+    _deta = widget.document['detalhes'];
+    _estado = widget.document['estado'];
 
     DocumentSnapshot snapshot =
-        await db.collection("imoveis").document(_idUsuarioLogado).get();
+        await db.collection("usuarios").document(_idImovel).get();
 
     Map<String, dynamic> dados = snapshot.data;
-    _idImovel = dados['idUsuario'];
-    _url = dados['urlImagens'];
-    _log = dados['logadouro'];
-    _comp = dados['complemento'];
-    _tipo = dados['tipoImovel'];
-    _valor= dados['valor'];
+    print(dados['nome']);
+    _nomeUsuario = dados['nome'];
   }
 
   @override
@@ -74,30 +74,29 @@ class _DetalhesState extends State<Detalhes>  {
                     backgroundImage: NetworkImage(_url),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 8,
                   ),
                   Text(
-                    _log,
+                    _log + " - " + _comp,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 17),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 8,
                   ),
                   Text(
-                    _comp,
+                    "Valor do Imóvel: " + _valor,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 17, ),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 8,
                   ),
                   Text(
-                    _tipo + " " + _valor,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16),
+                      "Detalhes: " + _deta + " localizada em ${_estado}",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14, ),
                   ),
-
 
                 ],
               ),
@@ -105,7 +104,7 @@ class _DetalhesState extends State<Detalhes>  {
             Row(
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: 10,  right: 10, left: 20),
+                  padding: EdgeInsets.only(top: 10, bottom: 10,  right: 10, left: 30),
                   child: RaisedButton(
                     child: Text(
                       "Alugar",
@@ -125,10 +124,10 @@ class _DetalhesState extends State<Detalhes>  {
 
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: 10, right: 10, left: 60),
+                  padding: EdgeInsets.only(top: 10, bottom: 10, right: 10, left: 40),
                   child: RaisedButton(
                     child: Text(
-                      "Enviar",
+                      "Contato",
 
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
@@ -138,6 +137,7 @@ class _DetalhesState extends State<Detalhes>  {
                         borderRadius: BorderRadius.circular(32)),
                     onPressed: () {
                       print(_idImovel);
+                      print(_nomeUsuario);
                     },
                   ),
                 ),

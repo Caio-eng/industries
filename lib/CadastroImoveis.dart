@@ -1,17 +1,11 @@
-import 'package:carousel_pro/carousel_pro.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:industries/Home.dart';
 import 'package:industries/model/Imovel.dart';
-import 'package:industries/model/Mensagem.dart';
-import 'package:industries/model/Usuario.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -27,15 +21,53 @@ class CadastroImoveis extends StatefulWidget {
   _CadastroImoveisState createState() => _CadastroImoveisState();
 }
 
-enum Character {Apartamento, Casa, KitNet}
+class Estado {
+  int id;
+  String nome;
+  String sigla;
+
+  Estado(this.id, this.nome, this.sigla);
+
+  static List<Estado> getEstados() {
+    return <Estado>[
+      Estado(1, 'Acre', 'AC'),
+      Estado(2, 'Alagoas', 'AL'),
+      Estado(3, 'Amapá', 'AP'),
+      Estado(4, 'Amazonas', 'AM'),
+      Estado(5, 'Bahia', 'BA'),
+      Estado(6, 'Ceará', 'CE'),
+      Estado(7, 'Distrito Federal', 'DF'),
+      Estado(8, 'Espírito Santo', 'ES'),
+      Estado(9, 'Goiás', 'GO'),
+      Estado(10, 'Maranhão', 'MA'),
+      Estado(11, 'Mato Grosso', 'MT'),
+      Estado(12, 'Mato Grosso do Sul', 'MS'),
+      Estado(13, 'Minas Gerais', 'MG'),
+      Estado(14, 'Pará', 'PA'),
+      Estado(15, 'Paraíba', 'PB'),
+      Estado(16, 'Paraná', 'PR'),
+      Estado(17, 'Pernambuco', 'PE'),
+      Estado(18, 'Piauí', 'PI'),
+      Estado(19, 'Rio de Janeiro', 'RJ'),
+      Estado(20, 'Rio Grande do Norte', 'RN'),
+      Estado(21, 'Rio Grande do Sul', 'RS'),
+      Estado(22, 'Rondônia', 'RO'),
+      Estado(23, 'Roraima', 'RR'),
+      Estado(24, 'Santa Catarina', 'SC'),
+      Estado(25, 'São Paulo', 'SP'),
+      Estado(26, 'Sergipe', 'SE'),
+      Estado(27, 'Tocantins', 'TO'),
+
+    ];
+  }
+}
 
 class _CadastroImoveisState extends State<CadastroImoveis> {
   TextEditingController _controllerLogadouro = TextEditingController();
 
   TextEditingController _controllerComplemento = TextEditingController();
 
-  TextEditingController _controllerTipoImovel = TextEditingController();
-  TextEditingController _controllerNome = TextEditingController();
+  TextEditingController _controllerDetalhes = TextEditingController();
   var controller = new MoneyMaskedTextController(leftSymbol: 'R\$ ');
   String _idUsuario;
   String _urlImagemRecuperada;
@@ -47,10 +79,9 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   Firestore db = Firestore.instance;
 
   CarouselSlider instance;
-
-
-
-  Character _character = Character.Apartamento;
+  List<Estado> _estados = Estado.getEstados();
+  List<DropdownMenuItem<Estado>> _dropdownMenuItens;
+  Estado _selectedEstado;
 
   String _radioValue;
   String choice;
@@ -78,23 +109,31 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     String complemento = _controllerComplemento.text;
     String tipoImovel = choice;
     String valor = controller.text;
+    String detalhes = _controllerDetalhes.text;
+    int i = _selectedEstado.id;
+    String estado = _selectedEstado.nome;
+    String sigl = _selectedEstado.sigla;
 
 
-    if (logadouro.isNotEmpty && logadouro.length > 6) {
+    if (logadouro.isNotEmpty && logadouro.length > 4) {
       if (complemento.isNotEmpty) {
         if (tipoImovel.isNotEmpty) {
           if (valor.isNotEmpty ) {
-            Imovel imovel = Imovel();
-            imovel.logadouro = logadouro;
-            imovel.complemento = complemento;
-            imovel.tipoImovel = tipoImovel;
-            imovel.valor = valor;
-            imovel.urlImagens = _urlImagemRecuperada;
-            imovel.idUsuario = widget.uid;
+            if (_urlImagemRecuperada.isNotEmpty) {
+              Imovel imovel = Imovel();
+              imovel.estado = estado;
+              imovel.logadouro = logadouro;
+              imovel.complemento = complemento;
+              imovel.tipoImovel = tipoImovel;
+              imovel.valor = valor;
+              imovel.detalhes = detalhes;
+              imovel.urlImagens = _urlImagemRecuperada;
+              imovel.idUsuario = widget.uid;
 
-
-
-            _cadastrarImovel (imovel);
+              _cadastrarImovel (imovel);
+            } else {
+              _mensagemErro = "Selecioce uma imagem";
+            }
           } else{
             _mensagemErro = "Digite um valor";
           }
@@ -113,15 +152,14 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
   _cadastrarImovel (Imovel imovel) {
 
-    FirebaseAuth auth = FirebaseAuth.instance;
-    var _user = auth.currentUser;
-    print(_user);
     //Salvar dados do Imovel
     Firestore db = Firestore.instance;
 
     db.collection("imoveis")
         .document()
         .setData(imovel.toMap());
+    Navigator.pop(context);
+
 
   }
 
@@ -201,7 +239,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     //this.account = profile;
     Firestore db = Firestore.instance;
     db.collection("imoveis")
-        .document(widget.uid)
+        .document()
         .updateData(dadosAtualizar);
 
   }
@@ -214,12 +252,31 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
   @override
   void initState() {
+    _dropdownMenuItens = buildDropdownMenuItens(_estados);
+    _selectedEstado = _dropdownMenuItens[0].value;
     super.initState();
     _recuperarDadosUsuario();
     //listaTela.add(_imagem);
   }
 
+  List<DropdownMenuItem<Estado>> buildDropdownMenuItens(List estados) {
+    List<DropdownMenuItem<Estado>> items = List();
+    for (Estado estado in estados) {
+      items.add(
+        DropdownMenuItem(
+          value: estado,
+          child: Text(estado.nome),
+        ),
+      );
+    }
+    return items;
+  }
 
+  onCgangeDropdownItem(Estado selectedEstado) {
+    setState(() {
+      _selectedEstado = selectedEstado;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -245,9 +302,35 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(bottom: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('Selecione um estado:', style: TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),),
+                      SizedBox(height: 20,),
+                      DropdownButton(
+                        icon: Icon(Icons.arrow_downward, color: Colors.blue,),
+                        value: _selectedEstado,
+                        items: _dropdownMenuItens,
+                        onChanged: onCgangeDropdownItem,
+                        underline: Container(
+                          height: 2,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      /*
+                      SizedBox(height: 20,),
+                      Text('Selecione: ${_selectedEstado.nome}'),
+                        */
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8),
                   child: TextField(
                     controller: _controllerLogadouro,
-                    autofocus: true,
+                    //autofocus: true,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
@@ -351,6 +434,21 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                   ),
                 ),
                 Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: TextField(
+                    controller: _controllerDetalhes,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(fontSize: 20),
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                        hintText: "Detalhes do Imóvel",
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(32))),
+                  ),
+                ),
+                Padding(
                   padding: EdgeInsets.all(8),
                   child: Row(
                     children: <Widget>[
@@ -396,6 +494,9 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     ],
                   ),
                 ),
+                _subindoImagem
+                    ? CircularProgressIndicator()
+                    : Container(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: _imagem == null
@@ -419,7 +520,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       );
                     }).toList(),
                   ),*/
-
                 ),
 
                 Padding(
@@ -435,7 +535,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                         borderRadius: BorderRadius.circular(32)),
                     onPressed: () {
                       _validarCampos();
-                      Navigator.pop(context);
                     },
                   ),
                 ),

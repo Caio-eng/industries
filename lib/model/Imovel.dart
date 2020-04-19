@@ -6,6 +6,7 @@ class Imovel {
   String _cidade;
   String _estado;
   String _bairro;
+  String _detalhes;
   String _idUsuario;
   String _urlImagens;
   String _valor;
@@ -14,18 +15,26 @@ class Imovel {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
+      "estado" : this.estado,
       "logadouro" : this.logadouro,
       "complemento" : this.complemento,
       "tipoImovel" : this.tipoImovel,
       "valor" : this.valor,
       "idUsuario" : this._idUsuario,
-      "urlImagens" : this.urlImagens
+      "urlImagens" : this.urlImagens,
+      'detalhes' : this.detalhes,
     };
 
     return map;
 
   }
 
+
+  String get detalhes => _detalhes;
+
+  set detalhes(String value) {
+    _detalhes = value;
+  }
 
   String get valor => _valor;
 

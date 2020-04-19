@@ -8,6 +8,7 @@ class AlugarImovel {
   String _tipoImovelImovelAlugado;
   String _valorImovelAlugado;
   String _urlImagensImovelAlugado;
+  String _detalhesImovelAlugado;
 
   AlugarImovel();
 
@@ -27,6 +28,12 @@ class AlugarImovel {
 
   }
 
+
+  String get detalhesImovelAlugado => _detalhesImovelAlugado;
+
+  set detalhesImovelAlugado(String value) {
+    _detalhesImovelAlugado = value;
+  }
 
   String get complementoImovelAlugado => _complementoImovelAlugado;
 

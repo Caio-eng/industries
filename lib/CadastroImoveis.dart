@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:industries/model/Estado.dart' as prefix0;
 import 'package:industries/model/Imovel.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -111,7 +112,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     String valor = controller.text;
     String detalhes = _controllerDetalhes.text;
     int i = _selectedEstado.id;
-    String estado = _selectedEstado.nome;
+    String estad = _selectedEstado.nome;
     String sigl = _selectedEstado.sigla;
 
 
@@ -121,7 +122,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
           if (valor.isNotEmpty ) {
             if (_urlImagemRecuperada.isNotEmpty) {
               Imovel imovel = Imovel();
-              imovel.estado = estado;
+              imovel.estado = estad;
               imovel.logadouro = logadouro;
               imovel.complemento = complemento;
               imovel.tipoImovel = tipoImovel;
@@ -129,6 +130,13 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
               imovel.detalhes = detalhes;
               imovel.urlImagens = _urlImagemRecuperada;
               imovel.idUsuario = widget.uid;
+
+              prefix0.Estado esta = prefix0.Estado();
+              esta.id = i;
+              esta.nome = estad;
+              esta.sigla = sigl;
+
+              _cadastrarEstado(esta);
 
               _cadastrarImovel (imovel);
             } else {
@@ -161,6 +169,14 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     Navigator.pop(context);
 
 
+  }
+
+  _cadastrarEstado(prefix0.Estado esta) {
+    Firestore db = Firestore.instance;
+
+    db.collection("estados")
+      .document()
+      .setData(esta.toMap());
   }
 
   Future _recuperarImagem(String origemImagem) async {
@@ -301,14 +317,14 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  padding: EdgeInsets.only(bottom: 8, left: 10),
+                  child: Row(
+                    //crossAxisAlignment: CrossAxisAlignment.center,
+                    //mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text('Selecione um estado:', style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),),
-                      SizedBox(height: 20,),
+                      Text('Estado de: ', style: TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold), ),
+                      SizedBox(width: 30,),
                       DropdownButton(
                         icon: Icon(Icons.arrow_downward, color: Colors.blue,),
                         value: _selectedEstado,
@@ -441,7 +457,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: "Detalhes do Imóvel",
+                        hintText: "Descrição",
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(

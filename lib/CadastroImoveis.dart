@@ -74,6 +74,9 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   String _urlImagemRecuperada;
   bool _subindoImagem = false;
   File _imagem;
+  int _id;
+  String _nome;
+  String _sigla;
 
   String _mensagemErro = "";
 
@@ -131,12 +134,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
               imovel.urlImagens = _urlImagemRecuperada;
               imovel.idUsuario = widget.uid;
 
-              prefix0.Estado esta = prefix0.Estado();
-              esta.id = i;
-              esta.nome = estad;
-              esta.sigla = sigl;
-
-              _cadastrarEstado(esta);
 
               _cadastrarImovel (imovel);
             } else {
@@ -169,14 +166,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     Navigator.pop(context);
 
 
-  }
-
-  _cadastrarEstado(prefix0.Estado esta) {
-    Firestore db = Firestore.instance;
-
-    db.collection("estados")
-      .document()
-      .setData(esta.toMap());
   }
 
   Future _recuperarImagem(String origemImagem) async {
@@ -261,6 +250,11 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   }
 
   _recuperarDadosUsuario() async {
+    DocumentSnapshot snapshot =
+    await db.collection("estados").document().get();
+
+    Map<String, dynamic> dados = snapshot.data;
+    print('Estados' + dados['id']);
     _idUsuario = widget.uid;
 
   }

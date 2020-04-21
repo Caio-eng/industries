@@ -269,7 +269,8 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {},
+                  onTap: () => {
+                  },
                   child: Container(
                     height: 50,
                     child: Row(

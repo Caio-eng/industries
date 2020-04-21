@@ -66,9 +66,18 @@ class _DetalhesState extends State<Detalhes>  {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(
+                "Estado: " + _estado,
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.all(50),
               child: Column(
                 children: <Widget>[
+                  SizedBox(
+                    height: 3,
+                  ),
                   CircleAvatar(
                     radius: 110,
                     backgroundImage: NetworkImage(_url),
@@ -93,7 +102,7 @@ class _DetalhesState extends State<Detalhes>  {
                     height: 8,
                   ),
                   Text(
-                      "Detalhes: " + _deta + " localizada em ${_estado}",
+                      _deta,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 14, ),
                   ),

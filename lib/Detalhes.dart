@@ -66,15 +66,13 @@ class _DetalhesState extends State<Detalhes>  {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Text(
-                "Estado: " + _estado,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(50),
+              padding: const EdgeInsets.all(40),
               child: Column(
                 children: <Widget>[
+                  Text(
+                      "Localização: " + _estado,
+                      style: TextStyle(fontSize: 16),
+                    ),
                   SizedBox(
                     height: 3,
                   ),

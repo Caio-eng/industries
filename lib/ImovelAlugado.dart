@@ -1,7 +1,9 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:industries/Home.dart';
 
 class ImovelAlugado extends StatefulWidget {
   final String user;
@@ -114,6 +116,12 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("Imóvel Alugado"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.white,
+
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: StreamBuilder(
         stream: Firestore.instance.collection('imovelAlugado').document(widget.uid).collection("Detalhes").snapshots(),

@@ -9,6 +9,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:industries/CadastroImoveis.dart';
 import 'package:industries/model/Usuario.dart';
 import 'package:industries/sidebar/sidebar_layout.dart';
+import 'package:intl/date_symbol_data_file.dart';
+import 'package:intl/intl.dart';
 import 'Home.dart';
 import 'Login.dart';
 import 'package:http/http.dart' as http;
@@ -19,12 +21,17 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
       'email',
     ],
 );
-void main() => runApp(Industries());
+
+void main() => runApp(
+    Industries(),
+
+);
 
 class Industries extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'IndustriesKC',
       home: Main(title: 'IndustriesKC',),
@@ -76,6 +83,7 @@ class _MainState extends State<Main>  {
   @override
   void initState() {
     super.initState();
+    Intl.defaultLocale = 'pt_BR';
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       setState(() {
         this.account = account;

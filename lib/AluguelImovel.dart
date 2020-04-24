@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:industries/ImovelAlugado.dart';
 import 'package:industries/model/AluguarImovel.dart';
 import 'package:industries/model/Imovel.dart';
+import 'package:intl/date_symbol_data_file.dart';
+
 
 class AluguelImovel extends StatefulWidget {
-  Function signOut;
   final String user;
   final String photo;
   final String emai;
@@ -19,7 +21,30 @@ class AluguelImovel extends StatefulWidget {
   _AluguelImovelState createState() => _AluguelImovelState();
 }
 
+
+
 class _AluguelImovelState extends State<AluguelImovel> {
+
+  DateTime _date = new DateTime.now();
+
+  TimeOfDay _time = new TimeOfDay.now();
+  
+  Future<Null> _selectedDate(BuildContext context)async {
+    final DateTime picked = await showDatePicker(
+        context: context, 
+        initialDate: _date, 
+        firstDate: new DateTime(2020),
+        lastDate: new DateTime(2028)
+    );
+
+    if(picked != null && picked != _date) {
+      print(formatDate(_date, [dd, '-', mm, '-', yyyy]));
+      setState(() {
+        _date = picked;
+      });
+    }
+  }
+  
   var controller = new MaskedTextController(mask: '000.000.000-00');
   String _idUsuarioLogado = "";
   String _idDono = "";
@@ -32,11 +57,14 @@ class _AluguelImovelState extends State<AluguelImovel> {
 
   Firestore db = Firestore.instance;
 
+
+
   _validarCampos() {
 
     String _cpfUsuario = controller.text;
 
     if (_cpfUsuario.isNotEmpty && _cpfUsuario.length == 14) {
+
       AlugarImovel alugarImovel = AlugarImovel();
       Imovel imovel= Imovel();
       alugarImovel.ididLocatario = _idUsuarioLogado;
@@ -47,6 +75,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
       alugarImovel.tipoImovelImovelAlugado = _tipo;
       alugarImovel.valorImovelAlugado = _valor;
       alugarImovel.urlImagensImovelAlugado = _url;
+      alugarImovel.dataInicio = formatDate (_date, [dd, '/', mm, '/', yyyy]).toString();
       _cadastrarAluguel( alugarImovel );
       _excluirImovel( imovel );
     }else {
@@ -102,8 +131,12 @@ class _AluguelImovelState extends State<AluguelImovel> {
     _valor= dados['valor'];
   }
 
+
+
+
   @override
   void initState() {
+
     _recuperarDados();
     super.initState();
   }
@@ -122,6 +155,40 @@ class _AluguelImovelState extends State<AluguelImovel> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(bottom: 8, left: 10),
+                child: Row(
+                  //crossAxisAlignment: CrossAxisAlignment.center,
+                  //mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text('Data Inicial: ', style: TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold), ),
+                    SizedBox(width: 0,),
+                    InkWell(
+                      onTap: () {
+                        _selectedDate(context); },
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                '${formatDate(_date, [dd, '/', mm, '/', yyyy])}',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Icon(
+                              Icons.calendar_today,
+                            ),
+                          ],
+                        ),
+                      splashColor: Colors.blue,
+                    ),
+                  ],
+                ),
+              ),
               Padding(
                 padding: EdgeInsets.only(bottom: 8),
                 child: TextField(
@@ -170,5 +237,6 @@ class _AluguelImovelState extends State<AluguelImovel> {
         ),
       ),
     );
+
   }
 }

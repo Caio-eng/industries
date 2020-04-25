@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:industries/Detalhes.dart';
 import 'package:industries/Chat.dart';
 import 'package:industries/ImovelAlugado.dart';
+import 'package:industries/MeuImovel.dart';
 import 'package:industries/model/AluguarImovel.dart';
 import 'CadastroImoveis.dart';
 
@@ -23,75 +24,161 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Firestore db = Firestore.instance;
 
+  TextEditingController controller = TextEditingController();
   bool isLoggedIn = false;
   String _idUsuarioLogado = "";
   String _id = "";
   String _url;
+  String filter;
   var profile;
 
 
 
-
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: document['idUsuario'] != _idUsuarioLogado
-        ? ListTile(
-          onTap: () =>
-              Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Detalhes(document, widget.user, widget.photo, widget.emai, widget.uid))),
-          title: Text(
-            document['logadouro'],
-            textAlign: TextAlign.center,
-          ),
-          subtitle: Text(
-            document['complemento'],
-            textAlign: TextAlign.center,
-          ),
-          leading: CircleAvatar(
-            radius: 25,
-            backgroundImage: NetworkImage(document['urlImagens']),
-          ),
-        )
-          : ListTile(
-              title: Text(
-                document['logadouro'],
-                textAlign: TextAlign.center,
+    _deletarImovel() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Deletar Imóvel', textAlign: TextAlign.center,),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Você deseja deletar este imóvel se sim, você clicara em Excluir se não clicara em cancelar!'),
+
+                ],
               ),
-              subtitle: Text(
-                document['complemento'],
-                textAlign: TextAlign.center,
+            ),
+            actions: <Widget>[
+              Row(
+                children: <Widget>[
+                  FlatButton(
+                    child: Text('Cancelar'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('Excluir'),
+                    onPressed: () {
+                      db.collection("imoveis").document(document.documentID).delete();
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
               ),
-            leading: Icon(Icons.home),
-            /*
-            leading:CircleAvatar(
-              radius: 25,
-              backgroundImage: NetworkImage(document['urlImagens']),
-            ),*/
-      ),
+            ],
+          );
+        },
+      );
+
+    }
+
+    List<String> itensMenu = ["Editar", "Deletar"];
+    _escolhaMenuItem(String itemEscolhido) {
+      switch (itemEscolhido) {
+        case "Editar":
+          print("Editar");
+          break;
+        case "Deletar":
+          print("Deletar");
+          _deletarImovel();
+          break;
+      }
+    }
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 8,
+        ),
+        document['idUsuario'] != _idUsuarioLogado
+            ? ListTile(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Detalhes(document, widget.user,
+                            widget.photo, widget.emai, widget.uid))),
+                title: Text(
+                  document['logadouro'],
+                  textAlign: TextAlign.center,
+                ),
+                subtitle: Text(
+                  document['complemento'],
+                  textAlign: TextAlign.center,
+                ),
+                leading: CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage(document['urlImagens']),
+                ),
+              )
+            : ListTile(
+                title: Text(
+                  document['logadouro'],
+                  textAlign: TextAlign.center,
+                ),
+                subtitle: Text(
+                  document['complemento'],
+                  textAlign: TextAlign.center,
+                ),
+                leading: Icon(Icons.home),
+                trailing: PopupMenuButton<String>(
+                  onSelected: _escolhaMenuItem,
+                  itemBuilder: (context) {
+                    return itensMenu.map((String item) {
+                      return PopupMenuItem<String>(
+                        value: item,
+                        child: Text(item),
+                      );
+                    }).toList();
+                  },
+                ),
+                /*
+                leading:CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage(document['urlImagens']),
+                ),*/
+              ),
+      ],
     );
+
+
   }
+
+
+
+
 
   _recuperarDados() async {
     _idUsuarioLogado = widget.uid;
 
-    Firestore db = Firestore.instance;
-    DocumentSnapshot snapshot =
-        await db.collection("imoveis").document(_idUsuarioLogado).get();
-
-    Map<String, dynamic> dados = snapshot.data;
-    setState(() {
-      _id = dados['idUsuario'];
-      print("_id: " + _id);
-      _url = dados['urlImagens'];
-    });
-
+//    Firestore db = Firestore.instance;
+//    DocumentSnapshot snapshot =
+//        await db.collection("imoveis").document(_idUsuarioLogado).get();
+//
+//    Map<String, dynamic> dados = snapshot.data;
+//    setState(() {
+//      _id = dados['idUsuario'];
+//      print("_id: " + _id);
+//      _url = dados['urlImagens'];
+//    });
   }
 
   @override
   void initState() {
     _recuperarDados();
+    controller.addListener(() {
+      setState(() {
+        filter = controller.text;
+      });
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -99,9 +186,22 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(
-            "IndustriesKC",
-          ),
+          child: Text("IndustriesKC"),
+//          child: TextField(
+//            style: TextStyle(color: Colors.white),
+//            textAlign: TextAlign.center,
+//            decoration: InputDecoration(
+//              labelText: "Pesquisar Imóvel",
+//
+//              fillColor: Colors.white,
+//              focusColor: Colors.white,
+//              suffixIcon: Icon(Icons.search, color: Colors.white,),
+//              labelStyle:TextStyle(color: Colors.white,),
+//              hintStyle: TextStyle(color: Colors.blue),
+//
+//            ),
+//            controller: controller,
+//          ),
         ),
         actions: <Widget>[
           GestureDetector(
@@ -139,7 +239,11 @@ class _HomeState extends State<Home> {
                 child: InkWell(
                   splashColor: Colors.blue,
                   onTap: () => {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ImovelAlugado(widget.user, widget.photo, widget.emai, widget.uid)))
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ImovelAlugado(widget.user,
+                                widget.photo, widget.emai, widget.uid)))
                   },
                   child: Container(
                     height: 50,
@@ -181,7 +285,13 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {},
+                  onTap: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MeuImovel(widget.user,
+                                widget.photo, widget.emai, widget.uid)))
+                  },
                   child: Container(
                     height: 50,
                     child: Row(
@@ -190,13 +300,13 @@ class _HomeState extends State<Home> {
                         Row(
                           children: <Widget>[
                             Icon(
-                              Icons.notifications,
+                              Icons.business,
                               color: Colors.blue,
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Notificações',
+                                'Meu Imóvel',
                                 style: TextStyle(
                                   fontSize: 16.0,
                                 ),
@@ -269,8 +379,7 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {
-                  },
+                  onTap: () => {},
                   child: Container(
                     height: 50,
                     child: Row(
@@ -311,9 +420,7 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {
-
-                  },
+                  onTap: () => {},
                   child: Container(
                     height: 50,
                     child: Row(
@@ -396,7 +503,10 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.red,
-                  onTap: () => {widget.signOut()},
+                  onTap: () => {
+                    widget.signOut(),
+                    Navigator.pop(context)
+                  },
                   child: Container(
                     height: 50,
                     child: Row(
@@ -439,22 +549,24 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-      body: StreamBuilder(
-        stream: Firestore.instance.collection('imoveis').snapshots(),
-        //print an integer every 2secs, 10 times
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Text("Loading..");
-          }
-          return ListView.builder(
-            itemExtent: 80.0,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-
-              return _buildList(context, snapshot.data.documents[index]);
-            },
-          );
-        },
+      body: Material(
+        shadowColor: Colors.black,
+        child: StreamBuilder(
+          stream: Firestore.instance.collection('imoveis').snapshots(),
+          //print an integer every 2secs, 10 times
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Text("Loading..");
+            }
+            return ListView.builder(
+              itemExtent: 80.0,
+              itemCount: snapshot.data.documents.length,
+              itemBuilder: (context, index) {
+                return _buildList(context, snapshot.data.documents[index]);
+              },
+            );
+          },
+        ),
       ),
     );
   }

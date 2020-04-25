@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:industries/ImovelAlugado.dart';
 import 'package:industries/model/AluguarImovel.dart';
+import 'package:industries/model/DonoDoImovel.dart';
 import 'package:industries/model/Imovel.dart';
 import 'package:intl/date_symbol_data_file.dart';
 
@@ -54,6 +55,8 @@ class _AluguelImovelState extends State<AluguelImovel> {
   String _comp = "";
   String _tipo = "";
   String _valor = "";
+  String _detalhes = "";
+  String _estado = "";
 
   Firestore db = Firestore.instance;
 
@@ -64,22 +67,43 @@ class _AluguelImovelState extends State<AluguelImovel> {
     String _cpfUsuario = controller.text;
 
     if (_cpfUsuario.isNotEmpty && _cpfUsuario.length == 14) {
-
+      // Para quem alugou
       AlugarImovel alugarImovel = AlugarImovel();
       Imovel imovel= Imovel();
-      alugarImovel.ididLocatario = _idUsuarioLogado;
+      alugarImovel.idLocatario = _idUsuarioLogado;
       alugarImovel.cpfUsuario = _cpfUsuario;
       alugarImovel.idDono = _idDono;
       alugarImovel.logadouroImovelAlugado = _log;
       alugarImovel.complementoImovelAlugado = _comp;
       alugarImovel.tipoImovelImovelAlugado = _tipo;
       alugarImovel.valorImovelAlugado = _valor;
+      alugarImovel.detalhesImovelAlugado = _detalhes;
+      alugarImovel.estadoImovelAlugado = _estado;
       alugarImovel.urlImagensImovelAlugado = _url;
       alugarImovel.dataInicio = formatDate (_date, [dd, '/', mm, '/', yyyy]).toString();
+
+      // Para o dono do imovel
+      DonoDoImovel donoDoImovel = DonoDoImovel();
+      donoDoImovel.idLocatario = _idUsuarioLogado;
+      donoDoImovel.cpfUsuario = _cpfUsuario;
+      donoDoImovel.nomeDoLocatario = widget.user;
+      donoDoImovel.emailDoLocatario = widget.emai;
+      donoDoImovel.detalhesDonoDoImovel = _detalhes;
+      donoDoImovel.urlImagemDoLocatario = widget.photo;
+      donoDoImovel.idDono = _idDono;
+      donoDoImovel.logadouroDonoDoImovel = _log;
+      donoDoImovel.complementoDonoDoImovel = _comp;
+      donoDoImovel.tipoDonoDoImovel = _tipo;
+      donoDoImovel.estadoDoImovel = _estado;
+      donoDoImovel.valorDonoDoImovel = _valor;
+
+      donoDoImovel.urlImagensDonoDoImovel = _url;
+      donoDoImovel.dataInicio = formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
+      _cadastrarDono( donoDoImovel );
       _cadastrarAluguel( alugarImovel );
       _excluirImovel( imovel );
     }else {
-      _mensagemErro = "cpf não pode conter menos que 14 números ";
+      _mensagemErro = "cpf não pode conter menos que 11 números ";
     }
 
   }
@@ -96,6 +120,14 @@ class _AluguelImovelState extends State<AluguelImovel> {
         .setData(alugarImovel.toMap());
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => ImovelAlugado(widget.user, widget.photo, widget.emai, widget.uid)));
+  }
+
+  _cadastrarDono( DonoDoImovel donoDoImovel ) {
+    Firestore db = Firestore.instance;
+
+    db.collection("meuImovel")
+    .document()
+    .setData(donoDoImovel.toMap());
   }
 
   _excluirImovel(Imovel imovel) {
@@ -116,19 +148,21 @@ class _AluguelImovelState extends State<AluguelImovel> {
     _comp = widget.document['complemento'];
     _tipo = widget.document['tipoImovel'];
     _valor = widget.document['valor'];
+    _detalhes = widget.document['detalhes'];
+    _estado = widget.document['estado'];
     print("Id do dono: " + widget.document['idUsuario']);
     print(widget.uid);
 
-    DocumentSnapshot snapshot =
-    await db.collection("imoveis").document(_idUsuarioLogado).get();
-
-    Map<String, dynamic> dados = snapshot.data;
-    //_idImovel = dados['idUsuario'];
-    _url = dados['urlImagens'];
-    _log = dados['logadouro'];
-    _comp = dados['complemento'];
-    _tipo = dados['tipoImovel'];
-    _valor= dados['valor'];
+//    DocumentSnapshot snapshot =
+//    await db.collection("imoveis").document(_idUsuarioLogado).get();
+//
+//    Map<String, dynamic> dados = snapshot.data;
+//    //_idImovel = dados['idUsuario'];
+//    _url = dados['urlImagens'];
+//    _log = dados['logadouro'];
+//    _comp = dados['complemento'];
+//    _tipo = dados['tipoImovel'];
+//    _valor= dados['valor'];
   }
 
 

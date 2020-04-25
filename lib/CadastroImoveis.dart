@@ -135,6 +135,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
               imovel.idUsuario = widget.uid;
 
 
+
               _cadastrarImovel (imovel);
             } else {
               _mensagemErro = "Selecioce uma imagem";
@@ -250,11 +251,11 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   }
 
   _recuperarDadosUsuario() async {
-    DocumentSnapshot snapshot =
-    await db.collection("estados").document().get();
-
-    Map<String, dynamic> dados = snapshot.data;
-    print('Estados' + dados['id']);
+//    DocumentSnapshot snapshot =
+//    await db.collection("estados").document().get();
+//
+//    Map<String, dynamic> dados = snapshot.data;
+//    print('Estados' + dados['id']);
     _idUsuario = widget.uid;
 
   }

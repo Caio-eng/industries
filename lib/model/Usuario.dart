@@ -22,6 +22,7 @@ class Usuario {
       "nome" : this.nome,
       "email" : this.email,
       "photo" : this.photo,
+
     };
 
     return map;

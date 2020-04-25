@@ -1,17 +1,7 @@
 import 'dart:convert';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:industries/CadastroUsuario.dart';
 import 'package:http/http.dart' as http;
-import 'package:industries/pages/homepage.dart';
-import 'package:industries/sidebar/sidebar_layout.dart';
-
-import 'Home.dart';
-import 'model/Usuario.dart';
-import 'ResetPasswordPage.dart';
 
 /*
 class Login extends StatefulWidget {

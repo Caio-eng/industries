@@ -11,6 +11,7 @@ class AlugarImovel {
   String _detalhesImovelAlugado;
   String _dataInicio;
   String _dataFinal;
+  String _estadoImovelAlugado;
   AlugarImovel();
 
   Map<String, dynamic> toMap() {
@@ -21,8 +22,10 @@ class AlugarImovel {
       "logadouroImovelAlugado" : this.logadouroImovelAlugado,
       "complementoImovelAlugado" : this.complementoImovelAlugado,
       "tipoImovelImovelAlugado" : this.tipoImovelImovelAlugado,
+      "detalhesImovelAlugado" : this.detalhesImovelAlugado,
       "valorImovelAlugado" : this.valorImovelAlugado,
       "urlImagensImovelAlugado" : this.urlImagensImovelAlugado,
+      "estadoImovelAlugado": this.estadoImovelAlugado,
       "dataInicio" : this.dataInicio,
       "dataFinal" : this.dataFinal,
     };
@@ -31,6 +34,12 @@ class AlugarImovel {
 
   }
 
+
+  String get estadoImovelAlugado => _estadoImovelAlugado;
+
+  set estadoImovelAlugado(String value) {
+    _estadoImovelAlugado = value;
+  }
 
   String get dataInicio => _dataInicio;
 
@@ -64,7 +73,7 @@ class AlugarImovel {
 
   String get idLocatario => _idLocatario;
 
-  set ididLocatario(String value) {
+  set idLocatario(String value) {
     _idLocatario = value;
   }
 

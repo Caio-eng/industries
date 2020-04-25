@@ -67,29 +67,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
 
   }
 
-  _recuperarDados() async {
-/*
-    _idDono = widget.document['idLocatario'];
-    _idUsuarioLogado = widget.uid;
-    _url = widget.document['urlImagens'];
-    _log = widget.document['logadouroImovelAlugado'];
-    _comp = widget.document['complemento'];
-    _tipo = widget.document['tipoImovel'];
-    _valor = widget.document['valor'];
-    print("Id do dono: " + widget.document['idUsuario']);
-    print(widget.uid);
-*/
-    DocumentSnapshot snapshot =
-    await db.collection("imovelAlugado").document().get();
-
-    Map<String, dynamic> dados = snapshot.data;
-    //_idImovel = dados['idUsuario'];
-    _url = dados['urlImagens'];
-    _log = dados['logadouroImovelAlugado'];
-    _comp = dados['complemento'];
-    _tipo = dados['tipoImovel'];
-    _valor= dados['valor'];
-  }
 
   _escolhaMenuItem(String itemEscolhido) {
 
@@ -106,7 +83,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
 
   @override
   void initState() {
-    _recuperarDados();
     super.initState();
   }
 

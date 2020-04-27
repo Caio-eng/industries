@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:industries/model/AluguarImovel.dart';
 import 'package:industries/model/Imovel.dart';
 
 class MeuImovel extends StatefulWidget {
@@ -34,7 +35,7 @@ class _MeuImovelState extends State<MeuImovel> {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Deletar Imóvel', textAlign: TextAlign.center,),
+            title: Text('Cancelar Contrato', textAlign: TextAlign.center,),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
@@ -59,7 +60,7 @@ class _MeuImovelState extends State<MeuImovel> {
                       imovel.logadouro = document['logadouroDonoDoImovel'];
                       imovel.complemento = document['complementoDonoDoImovel'];
                       imovel.detalhes = document['detalhesDonoDoImovel'];
-                      imovel.idUsuario = widget.uid;
+                      imovel.idUsuario = document['idDono'];
                       imovel.tipoImovel = document['tipoDonoDoImovel'];
                       imovel.valor = document['valorDonoDoImovel'];
                       imovel.urlImagens = document['urlImagensDonoDoImovel'];
@@ -68,7 +69,7 @@ class _MeuImovelState extends State<MeuImovel> {
                           .document()
                           .setData(imovel.toMap());
                       db.collection("meuImovel").document(document.documentID).delete();
-                      db.collection("imovelAlugado").document(widget.uid).delete();
+
                       Navigator.pop(context);
                     },
                   ),
@@ -79,13 +80,20 @@ class _MeuImovelState extends State<MeuImovel> {
         },
       );
     }
+
+    _deletar(AlugarImovel alugarImovel) {
+      db.collection("imovelAlugado").document(document['idLocatario']).collection("Detalhes").document(document['idImovelAlugado']).delete();
+    }
     _escolhaMenuItem(String itemEscolhido) {
       switch (itemEscolhido) {
         case "Informações":
           print("Informações");
           break;
         case "Cancelar Contrato":
+          AlugarImovel alugarImovel = AlugarImovel();
+          _deletar(alugarImovel);
           _cancelarContrato();
+
           break;
       }
     }

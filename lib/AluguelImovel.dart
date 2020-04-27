@@ -96,6 +96,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
       donoDoImovel.tipoDonoDoImovel = _tipo;
       donoDoImovel.estadoDoImovel = _estado;
       donoDoImovel.valorDonoDoImovel = _valor;
+      donoDoImovel.idImovelAlugado = widget.document.documentID;
 
       donoDoImovel.urlImagensDonoDoImovel = _url;
       donoDoImovel.dataInicio = formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
@@ -116,7 +117,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
     db.collection("imovelAlugado")
         .document(widget.uid)
         .collection("Detalhes")
-        .document()
+        .document(widget.document.documentID)
         .setData(alugarImovel.toMap());
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => ImovelAlugado(widget.user, widget.photo, widget.emai, widget.uid)));
@@ -126,7 +127,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
     Firestore db = Firestore.instance;
 
     db.collection("meuImovel")
-    .document()
+    .document(widget.document.documentID)
     .setData(donoDoImovel.toMap());
   }
 

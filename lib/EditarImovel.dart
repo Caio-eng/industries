@@ -130,17 +130,30 @@ class _EditarImovelState extends State<EditarImovel> {
     String valor = _controller.text;
     String deta = _controllerDetalhes.text;
     String estado = _selectedEstado.nome;
-    String tipoImovel = choice;
+    int i = _selectedEstado.id;
+    String tipoImovel = _radioValue;
     Map<String, dynamic> dadosAtualizar = {
-      "urlImagem" : url,
+      "urlImagens" : url,
       "logadouro" : log,
       "estado" : estado,
       "complemento" : comp,
       "detalhes" : deta,
       "tipoImovel" : tipoImovel,
       "valor" : valor,
+      "idEstado" : i - 1,
     };
 
+    Imovel imovel = Imovel();
+    imovel.estado = estado;
+    imovel.logadouro = log;
+    imovel.complemento = comp;
+    imovel.tipoImovel = tipoImovel;
+    imovel.valor = valor;
+    imovel.idEstado = i - 1;
+    imovel.detalhes = deta;
+    imovel.urlImagens = url;
+    imovel.idUsuario = widget.document['idUsuario'];
+    imovel.nomeDaImagem = widget.document['nomeDaImagem'];
 
     Firestore db = Firestore.instance;
     db.collection("imoveis")
@@ -209,6 +222,48 @@ class _EditarImovelState extends State<EditarImovel> {
                   child: _subindoImagem
                       ? CircularProgressIndicator()
                       : Container(),
+                ),
+                CircleAvatar(
+                    radius: 80,
+                    backgroundColor: Colors.grey,
+                    /*child: Row(
+                      children: <Widget>[
+                        FlatButton(
+                          child: Icon(Icons.camera_alt),
+                          onPressed: () {
+                            _recuperarImagem("camera");
+                          },
+                        ),
+                        FlatButton(
+                          child: Icon(Icons.photo),
+                          onPressed: () {
+                            _recuperarImagem("galeria");
+                          },
+                        ),
+                      ],
+                    ),*/
+                    backgroundImage:
+                    _urlImagemRecuperada != null
+                        ? NetworkImage(_urlImagemRecuperada, )
+                        : null
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text("Câmera"),
+                      onPressed: (){
+                        _recuperarImagem("camera");
+                      },
+                    ),
+                    FlatButton(
+                      child: Text("Galeria"),
+                      onPressed: (){
+                        _recuperarImagem("galeria");
+                      },
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 8, left: 10),
@@ -361,32 +416,6 @@ class _EditarImovelState extends State<EditarImovel> {
                             borderRadius: BorderRadius.circular(32))),
                   ),
                 ),
-                CircleAvatar(
-                    radius: 80,
-                    backgroundColor: Colors.grey,
-                    backgroundImage:
-                    _urlImagemRecuperada != null
-                        ? NetworkImage(_urlImagemRecuperada)
-                        : null
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    FlatButton(
-                      child: Text("Câmera"),
-                      onPressed: (){
-                        _recuperarImagem("camera");
-                      },
-                    ),
-                    FlatButton(
-                      child: Text("Galeria"),
-                      onPressed: (){
-                        _recuperarImagem("galeria");
-                      },
-                    ),
-                  ],
-                ),
-
                 Padding(
                   padding: EdgeInsets.only(top: 16, bottom: 10),
                   child: RaisedButton(

@@ -36,7 +36,26 @@ class _EditarImovelState extends State<EditarImovel> {
   String _urlImagemRecuperada;
   String _idUsuarioLogado;
   bool _subindoImagem = false;
-  int _id;
+
+  String _radioValue;
+  String choice;
+
+  void radioButtonChanges(String value) {
+    setState(() {
+      _radioValue = value;
+      switch (value) {
+        case 'Apartamento':
+          choice = value;
+          break;
+        case 'Casa':
+          choice = value;
+          break;
+        case 'KitNet':
+          choice = value;
+          break;
+      }
+    });
+  }
 
 
   Future _recuperarImagem(String origemImagem) async {
@@ -111,12 +130,14 @@ class _EditarImovelState extends State<EditarImovel> {
     String valor = _controller.text;
     String deta = _controllerDetalhes.text;
     String estado = _selectedEstado.nome;
+    String tipoImovel = choice;
     Map<String, dynamic> dadosAtualizar = {
       "urlImagem" : url,
       "logadouro" : log,
       "estado" : estado,
       "complemento" : comp,
       "detalhes" : deta,
+      "tipoImovel" : tipoImovel,
       "valor" : valor,
     };
 
@@ -137,6 +158,7 @@ class _EditarImovelState extends State<EditarImovel> {
     _controllerComplemento.text = widget.document['complemento'];
     _controllerDetalhes.text = widget.document['detalhes'];
     _controller.text = widget.document['valor'];
+    _radioValue = widget.document['tipoImovel'];
     setState(() {
       _urlImagemRecuperada = widget.document["urlImagens"];
     });
@@ -249,6 +271,64 @@ class _EditarImovelState extends State<EditarImovel> {
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(32))),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8, top: 3),
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Selecione o Tipo do Imóvel:',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Radio(
+                              value: 'Apartamento',
+                              groupValue: _radioValue,
+                              onChanged: radioButtonChanges,
+                            ),
+                            Text(
+                              'Apartamento',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Radio(
+                              value: 'Casa',
+                              groupValue: _radioValue,
+                              onChanged: radioButtonChanges,
+                            ),
+                            Text(
+                              'Casa',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Radio(
+                              value: 'KitNet',
+                              groupValue: _radioValue,
+                              onChanged: radioButtonChanges,
+                            ),
+                            Text(
+                              'KitNet',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Padding(

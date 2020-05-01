@@ -10,6 +10,8 @@ class Imovel {
   String _idUsuario;
   String _urlImagens;
   String _valor;
+  String _nomeDaImagem;
+  int _idEstado;
 
   Imovel();
 
@@ -23,12 +25,26 @@ class Imovel {
       "idUsuario" : this._idUsuario,
       "urlImagens" : this.urlImagens,
       'detalhes' : this.detalhes,
+      "idEstado" : this.idEstado,
+      "nomeDaImagem" : this.nomeDaImagem,
     };
 
     return map;
 
   }
 
+
+  int get idEstado => _idEstado;
+
+  set idEstado(int value) {
+    _idEstado = value;
+  }
+
+  String get nomeDaImagem => _nomeDaImagem;
+
+  set nomeDaImagem(String value) {
+    _nomeDaImagem = value;
+  }
 
   String get detalhes => _detalhes;
 

@@ -8,7 +8,6 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:industries/CadastroImoveis.dart';
 import 'package:industries/model/Usuario.dart';
-import 'package:industries/sidebar/sidebar_layout.dart';
 import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/intl.dart';
 import 'Home.dart';

@@ -72,6 +72,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   var controller = new MoneyMaskedTextController(leftSymbol: 'R\$ ');
   String _idUsuario;
   String _urlImagemRecuperada;
+  String _nomeDaFoto;
   bool _subindoImagem = false;
   File _imagem;
   int _id;
@@ -130,10 +131,11 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
               imovel.complemento = complemento;
               imovel.tipoImovel = tipoImovel;
               imovel.valor = valor;
+              imovel.idEstado = i - 1;
               imovel.detalhes = detalhes;
               imovel.urlImagens = _urlImagemRecuperada;
               imovel.idUsuario = widget.uid;
-
+              imovel.nomeDaImagem = _nomeDaFoto;
 
 
               _cadastrarImovel (imovel);
@@ -190,12 +192,15 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
   Future _uploadImagem() async {
     String nomeImagem = DateTime.now().millisecondsSinceEpoch.toString();
+    setState(() {
+      _nomeDaFoto = nomeImagem;
+    });
     FirebaseStorage storage = FirebaseStorage.instance;
     StorageReference pastaRaiz = storage.ref();
     StorageReference arquivo = pastaRaiz
         .child("imoveis")
         .child(widget.uid)
-        .child(nomeImagem + ".jpg");
+        .child(_nomeDaFoto + ".jpg");
     //Upload da imagem
     StorageUploadTask task = arquivo.putFile(_imagem);
 

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/Detalhes.dart';
 import 'package:industries/Chat.dart';
+import 'package:industries/EditarImovel.dart';
 import 'package:industries/ImovelAlugado.dart';
 import 'package:industries/MeuImovel.dart';
 import 'package:industries/model/AluguarImovel.dart';
@@ -80,6 +81,10 @@ class _HomeState extends State<Home> {
       switch (itemEscolhido) {
         case "Editar":
           print("Editar");
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => EditarImovel(document, widget.user,
+                  widget.photo, widget.emai, widget.uid)));
           break;
         case "Deletar":
           print("Deletar");
@@ -558,6 +563,7 @@ class _HomeState extends State<Home> {
             if (!snapshot.hasData) {
               return Text("Loading..");
             }
+
             return ListView.builder(
               itemExtent: 80.0,
               itemCount: snapshot.data.documents.length,
@@ -565,6 +571,7 @@ class _HomeState extends State<Home> {
                 return _buildList(context, snapshot.data.documents[index]);
               },
             );
+
           },
         ),
       ),

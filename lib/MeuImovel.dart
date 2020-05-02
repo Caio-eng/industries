@@ -65,6 +65,8 @@ class _MeuImovelState extends State<MeuImovel> {
                       imovel.valor = document['valorDonoDoImovel'];
                       imovel.urlImagens = document['urlImagensDonoDoImovel'];
                       imovel.estado = document['estadoDoImovel'];
+                      imovel.idEstado = document['idEstadoImovel'];
+                      imovel.nomeDaImagem = document['nomeDaImagemImovel'];
                       db.collection("imoveis")
                           .document()
                           .setData(imovel.toMap());

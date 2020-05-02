@@ -7,7 +7,7 @@ import 'package:industries/model/AluguarImovel.dart';
 import 'package:industries/model/DonoDoImovel.dart';
 import 'package:industries/model/Imovel.dart';
 import 'package:intl/date_symbol_data_file.dart';
-
+import 'package:validadores/Validador.dart';
 
 class AluguelImovel extends StatefulWidget {
   final String user;
@@ -22,31 +22,26 @@ class AluguelImovel extends StatefulWidget {
   _AluguelImovelState createState() => _AluguelImovelState();
 }
 
-
-
 class _AluguelImovelState extends State<AluguelImovel> {
-
   DateTime _date = new DateTime.now();
 
   TimeOfDay _time = new TimeOfDay.now();
-  
-  Future<Null> _selectedDate(BuildContext context)async {
-    final DateTime picked = await showDatePicker(
-        context: context, 
-        initialDate: _date, 
-        firstDate: new DateTime(2020),
-        lastDate: new DateTime(2028)
-    );
 
-    if(picked != null && picked != _date) {
+  Future<Null> _selectedDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: _date,
+        firstDate: _date,
+        lastDate: new DateTime(2021));
+
+    if (picked != null && picked != _date) {
       print(formatDate(_date, [dd, '-', mm, '-', yyyy]));
       setState(() {
         _date = picked;
       });
     }
   }
-  
-  var controller = new MaskedTextController(mask: '000.000.000-00');
+
   String _idUsuarioLogado = "";
   String _idDono = "";
   String _mensagemErro = "";
@@ -57,35 +52,46 @@ class _AluguelImovelState extends State<AluguelImovel> {
   String _valor = "";
   String _detalhes = "";
   String _estado = "";
+  String _nomeDoDono = "";
+  String _emailDoDono = "";
+  String _photoDoDono = "";
+  String _nomeDaFoto = "";
+  int _idDoEstado;
+  String _cpfDono = "";
+  String _cpf = "";
+  String _teleneDono = '';
+  String _telefone = '';
 
   Firestore db = Firestore.instance;
 
-
-
   _validarCampos() {
-
-    String _cpfUsuario = controller.text;
-
-    if (_cpfUsuario.isNotEmpty && _cpfUsuario.length == 14) {
       // Para quem alugou
       AlugarImovel alugarImovel = AlugarImovel();
-      Imovel imovel= Imovel();
+      Imovel imovel = Imovel();
       alugarImovel.idLocatario = _idUsuarioLogado;
-      alugarImovel.cpfUsuario = _cpfUsuario;
+      alugarImovel.cpfUsuario = _cpfDono;
       alugarImovel.idDono = _idDono;
+      alugarImovel.nomeDoDono = _nomeDoDono;
+      alugarImovel.emailDoDono = _emailDoDono;
+      alugarImovel.urlImagemDoDono = _photoDoDono;
+      alugarImovel.idImovel = widget.document.documentID;
       alugarImovel.logadouroImovelAlugado = _log;
       alugarImovel.complementoImovelAlugado = _comp;
       alugarImovel.tipoImovelImovelAlugado = _tipo;
       alugarImovel.valorImovelAlugado = _valor;
       alugarImovel.detalhesImovelAlugado = _detalhes;
       alugarImovel.estadoImovelAlugado = _estado;
+      alugarImovel.nomeDaImagemImovelAlugado = _nomeDaFoto;
+      alugarImovel.idEstadoImovelAlugado = _idDoEstado;
       alugarImovel.urlImagensImovelAlugado = _url;
-      alugarImovel.dataInicio = formatDate (_date, [dd, '/', mm, '/', yyyy]).toString();
+
+      alugarImovel.dataInicio =
+          formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
 
       // Para o dono do imovel
       DonoDoImovel donoDoImovel = DonoDoImovel();
       donoDoImovel.idLocatario = _idUsuarioLogado;
-      donoDoImovel.cpfUsuario = _cpfUsuario;
+      donoDoImovel.cpfUsuario = _cpf;
       donoDoImovel.nomeDoLocatario = widget.user;
       donoDoImovel.emailDoLocatario = widget.emai;
       donoDoImovel.detalhesDonoDoImovel = _detalhes;
@@ -97,46 +103,48 @@ class _AluguelImovelState extends State<AluguelImovel> {
       donoDoImovel.estadoDoImovel = _estado;
       donoDoImovel.valorDonoDoImovel = _valor;
       donoDoImovel.idImovelAlugado = widget.document.documentID;
-
       donoDoImovel.urlImagensDonoDoImovel = _url;
-      donoDoImovel.dataInicio = formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
-      _cadastrarDono( donoDoImovel );
-      _cadastrarAluguel( alugarImovel );
-      _excluirImovel( imovel );
-    }else {
-      _mensagemErro = "cpf não pode conter menos que 11 números ";
-    }
+      donoDoImovel.nomeDaImagemImovel = _nomeDaFoto;
+      donoDoImovel.idEstadoImovel = _idDoEstado;
+      donoDoImovel.dataInicio =
+          formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
+      _cadastrarDono(donoDoImovel);
+      _cadastrarAluguel(alugarImovel);
+      _excluirImovel(imovel);
 
   }
 
-  _cadastrarAluguel( AlugarImovel alugarImovel ) {
-
+  _cadastrarAluguel(AlugarImovel alugarImovel) {
     //Salvar dados do Imovel
     Firestore db = Firestore.instance;
     //String nomeImovel = DateTime.now().millisecondsSinceEpoch.toString();
-    db.collection("imovelAlugado")
+    db
+        .collection("imovelAlugado")
         .document(widget.uid)
         .collection("Detalhes")
         .document(widget.document.documentID)
         .setData(alugarImovel.toMap());
 
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ImovelAlugado(widget.user, widget.photo, widget.emai, widget.uid)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ImovelAlugado(
+                widget.user, widget.photo, widget.emai, widget.uid)));
   }
 
-  _cadastrarDono( DonoDoImovel donoDoImovel ) {
+  _cadastrarDono(DonoDoImovel donoDoImovel) {
     Firestore db = Firestore.instance;
 
-    db.collection("meuImovel")
-    .document(widget.document.documentID)
-    .setData(donoDoImovel.toMap());
+    db
+        .collection("meuImovel")
+        .document(widget.document.documentID)
+        .setData(donoDoImovel.toMap());
   }
 
   _excluirImovel(Imovel imovel) {
     Firestore db = Firestore.instance;
 
-    db.collection("imoveis")
-        .document(widget.document.documentID)
-        .delete();
+    db.collection("imoveis").document(widget.document.documentID).delete();
 
     print('Imovel excluido');
   }
@@ -151,13 +159,27 @@ class _AluguelImovelState extends State<AluguelImovel> {
     _valor = widget.document['valor'];
     _detalhes = widget.document['detalhes'];
     _estado = widget.document['estado'];
+    _nomeDaFoto = widget.document['nomeDaImagem'];
+    _idDoEstado = widget.document['idEstado'];
+    _cpf = widget.document['cpfUsuario'];
+
+    print("CPF do Dono: " + _cpfDono);
+
     print("Id do dono: " + widget.document['idUsuario']);
     print(widget.uid);
 
-//    DocumentSnapshot snapshot =
-//    await db.collection("imoveis").document(_idUsuarioLogado).get();
-//
-//    Map<String, dynamic> dados = snapshot.data;
+    DocumentSnapshot snapshot =
+        await db.collection("usuarios").document(_idDono).get();
+    Map<String, dynamic> dados = snapshot.data;
+    _nomeDoDono = dados['nome'];
+    _emailDoDono = dados['email'];
+    _photoDoDono = dados['photo'];
+    _cpfDono = dados['cpf'];
+    print("Nome do Dono: " + _nomeDoDono);
+    print("Email do Dono: " + _emailDoDono);
+    print("Photo do Dono: " + _photoDoDono);
+
+
 //    //_idImovel = dados['idUsuario'];
 //    _url = dados['urlImagens'];
 //    _log = dados['logadouro'];
@@ -166,12 +188,8 @@ class _AluguelImovelState extends State<AluguelImovel> {
 //    _valor= dados['valor'];
   }
 
-
-
-
   @override
   void initState() {
-
     _recuperarDados();
     super.initState();
   }
@@ -183,31 +201,45 @@ class _AluguelImovelState extends State<AluguelImovel> {
         centerTitle: true,
         title: Text("Dados do Alugel"),
       ),
-      body: Container(
-        //decoration: BoxDecoration(color: Colors.white),
-        padding: EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(bottom: 8, left: 10),
-                child: Row(
-                  //crossAxisAlignment: CrossAxisAlignment.center,
-                  //mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text('Data Inicial: ', style: TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold), ),
-                    SizedBox(width: 0,),
-                    InkWell(
-                      onTap: () {
-                        _selectedDate(context); },
+      body: Form(
+        child: Container(
+          //decoration: BoxDecoration(color: Colors.white),
+          padding: EdgeInsets.all(16),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8, left: 10),
+                  child: Row(
+                    //crossAxisAlignment: CrossAxisAlignment.center,
+                    //mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'Data Inicial: ',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 0,
+                      ),
+                      InkWell(
+
+                        onTap: () {
+                          _selectedDate(context);
+                        },
                         child: Row(
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                '${formatDate(_date, [dd, '/', mm, '/', yyyy])}',
+                                '${formatDate(_date, [
+                                  dd,
+                                  '/',
+                                  mm,
+                                  '/',
+                                  yyyy
+                                ])}',
                                 style: TextStyle(
                                   fontSize: 16.0,
                                   fontWeight: FontWeight.bold,
@@ -219,59 +251,38 @@ class _AluguelImovelState extends State<AluguelImovel> {
                             ),
                           ],
                         ),
-                      splashColor: Colors.blue,
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(bottom: 8),
-                child: TextField(
-                  controller: controller,
-                  autofocus: true,
-                  keyboardType: TextInputType.text,
-                  style: TextStyle(fontSize: 20),
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                    hintText: "Digite o seu CPF",
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32)
-                    ),
+                        splashColor: Colors.blue,
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 10, bottom: 10),
-                child: RaisedButton(
+                Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                  child: RaisedButton(
+                    child: Text(
+                      "Alugar o Imóvel",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    color: Colors.blue,
+                    padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(32)),
+                    onPressed: () {
+                        _validarCampos();
+                    },
+                  ),
+                ),
+                Center(
                   child: Text(
-                    "Alugar o Imóvel",
-                    style: TextStyle(color: Colors.white, fontSize: 20),
+                    _mensagemErro,
+                    style: TextStyle(color: Colors.red, fontSize: 20),
                   ),
-                  color: Colors.blue,
-                  padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32)),
-                  onPressed: () {
-                    _validarCampos();
-                  },
-                ),
-              ),
-              Center(
-                child: Text(
-                  _mensagemErro,
-                  style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 20
-                  ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
-
   }
 }

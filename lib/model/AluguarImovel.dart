@@ -12,6 +12,12 @@ class AlugarImovel {
   String _dataInicio;
   String _dataFinal;
   String _estadoImovelAlugado;
+  int _idEstadoImovelAlugado;
+  String _nomeDaImagemImovelAlugado;
+  String _urlImagemDoDono;
+  String _idImovel;
+  String _nomeDoDono;
+  String _emailDoDono;
   AlugarImovel();
 
   Map<String, dynamic> toMap() {
@@ -28,12 +34,30 @@ class AlugarImovel {
       "estadoImovelAlugado": this.estadoImovelAlugado,
       "dataInicio" : this.dataInicio,
       "dataFinal" : this.dataFinal,
+      "idEstadoImovelAlugado" : this.idEstadoImovelAlugado,
+      "nomeDaImagemImovelAlugado" : this.nomeDaImagemImovelAlugado,
+      "urlImagemDoDono" : this.urlImagemDoDono,
+      "idImovel" : this.idImovel,
+      "nomeDoDono" : this.nomeDoDono,
+      "emailDoDono" :this.emailDoDono,
     };
 
     return map;
 
   }
 
+
+  String get urlImagemDoDono => _urlImagemDoDono;
+
+  set urlImagemDoDono(String value) {
+    _urlImagemDoDono = value;
+  }
+
+  int get idEstadoImovelAlugado => _idEstadoImovelAlugado;
+
+  set idEstadoImovelAlugado(int value) {
+    _idEstadoImovelAlugado = value;
+  }
 
   String get estadoImovelAlugado => _estadoImovelAlugado;
 
@@ -105,6 +129,30 @@ class AlugarImovel {
 
   set dataFinal(String value) {
     _dataFinal = value;
+  }
+
+  String get nomeDaImagemImovelAlugado => _nomeDaImagemImovelAlugado;
+
+  set nomeDaImagemImovelAlugado(String value) {
+    _nomeDaImagemImovelAlugado = value;
+  }
+
+  String get idImovel => _idImovel;
+
+  set idImovel(String value) {
+    _idImovel = value;
+  }
+
+  String get nomeDoDono => _nomeDoDono;
+
+  set nomeDoDono(String value) {
+    _nomeDoDono = value;
+  }
+
+  String get emailDoDono => _emailDoDono;
+
+  set emailDoDono(String value) {
+    _emailDoDono = value;
   }
 
 

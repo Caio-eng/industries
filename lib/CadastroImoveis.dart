@@ -10,13 +10,15 @@ import 'package:industries/model/Imovel.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:industries/model/Usuario.dart';
+import 'package:validadores/Validador.dart';
 
 class CadastroImoveis extends StatefulWidget {
   final String user;
   final String photo;
   final String emai;
   final String uid;
-  CadastroImoveis(this.user, this.photo, this.emai,  this.uid);
+  CadastroImoveis(this.user, this.photo, this.emai, this.uid);
 
   @override
   _CadastroImoveisState createState() => _CadastroImoveisState();
@@ -58,18 +60,20 @@ class Estado {
       Estado(25, 'São Paulo', 'SP'),
       Estado(26, 'Sergipe', 'SE'),
       Estado(27, 'Tocantins', 'TO'),
-
     ];
   }
 }
 
 class _CadastroImoveisState extends State<CadastroImoveis> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController _controllerLogadouro = TextEditingController();
 
   TextEditingController _controllerComplemento = TextEditingController();
 
   TextEditingController _controllerDetalhes = TextEditingController();
+  var controllerTelefone = new MaskedTextController(mask: '(00) 00000 - 0000');
   var controller = new MoneyMaskedTextController(leftSymbol: 'R\$ ');
+  var controllerCPF = new MaskedTextController(mask: '000.000.000-00');
   String _idUsuario;
   String _urlImagemRecuperada;
   String _nomeDaFoto;
@@ -108,7 +112,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     });
   }
 
-
   _validarCampos() {
     String logadouro = _controllerLogadouro.text;
     String complemento = _controllerComplemento.text;
@@ -118,68 +121,78 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     int i = _selectedEstado.id;
     String estad = _selectedEstado.nome;
     String sigl = _selectedEstado.sigla;
-
+    String _telefoneUsuario = controllerTelefone.text;
+    String _cpfUsuario = controllerCPF.text;
 
     if (logadouro.isNotEmpty && logadouro.length > 4) {
       if (complemento.isNotEmpty) {
         if (tipoImovel.isNotEmpty) {
-          if (valor.isNotEmpty ) {
+          if (valor.isNotEmpty) {
             if (_urlImagemRecuperada.isNotEmpty) {
-              Imovel imovel = Imovel();
-              imovel.estado = estad;
-              imovel.logadouro = logadouro;
-              imovel.complemento = complemento;
-              imovel.tipoImovel = tipoImovel;
-              imovel.valor = valor;
-              imovel.idEstado = i - 1;
-              imovel.detalhes = detalhes;
-              imovel.urlImagens = _urlImagemRecuperada;
-              imovel.idUsuario = widget.uid;
-              imovel.nomeDaImagem = _nomeDaFoto;
+              if (_telefoneUsuario.isNotEmpty &&
+                  _telefoneUsuario.length == 17) {
+                Imovel imovel = Imovel();
+                imovel.estado = estad;
+                imovel.logadouro = logadouro;
+                imovel.complemento = complemento;
+                imovel.tipoImovel = tipoImovel;
+                imovel.valor = valor;
+                imovel.idEstado = i - 1;
+                imovel.detalhes = detalhes;
+                imovel.urlImagens = _urlImagemRecuperada;
+                imovel.idUsuario = widget.uid;
+                imovel.nomeDaImagem = _nomeDaFoto;
+                imovel.telefoneUsuario = _telefoneUsuario;
+                imovel.cpfUsuario = _cpfUsuario;
 
+                Map<String, dynamic> dadosUsuario = {"cpf" : _cpfUsuario, "idUsuario" : widget.uid, "telefone": _telefoneUsuario};
+                Usuario usuario = Usuario();
+                usuario.idUsuario = widget.uid.toString();
+                usuario.cpf = _cpfUsuario;
+                usuario.telefone = _telefoneUsuario;
+                db.collection("usuarios").document(widget.uid).updateData(dadosUsuario);
 
-              _cadastrarImovel (imovel);
+                _cadastrarImovel(imovel);
+              } else {
+                _mensagemErro = "O número deve conter 10 digitos";
+              }
             } else {
               _mensagemErro = "Selecioce uma imagem";
             }
-          } else{
+          } else {
             _mensagemErro = "Digite um valor";
           }
-        }else {
+        } else {
           setState(() {
             _mensagemErro = "O Tipo do Imóvel é obrigatorio";
           });
         }
-      }else {
+      } else {
         _mensagemErro = "O complemento é obrigatorio";
       }
-    }else {
+    } else {
       _mensagemErro = "Logaroudo tem que ter mais de 6 letras";
     }
   }
 
-  _cadastrarImovel (Imovel imovel) {
-
+  _cadastrarImovel(Imovel imovel) {
     //Salvar dados do Imovel
     Firestore db = Firestore.instance;
 
-    db.collection("imoveis")
-        .document()
-        .setData(imovel.toMap());
+    db.collection("imoveis").document().setData(imovel.toMap());
     Navigator.pop(context);
-
-
   }
 
   Future _recuperarImagem(String origemImagem) async {
-
     File imagemSelecionada;
-    switch( origemImagem ) {
-      case "camera" :
-        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.camera);
+    switch (origemImagem) {
+      case "camera":
+        imagemSelecionada =
+            await ImagePicker.pickImage(source: ImageSource.camera);
         break;
-      case "galeria" :
-        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
+      case "galeria":
+        imagemSelecionada =
+            await ImagePicker.pickImage(source: ImageSource.gallery);
         break;
     }
 
@@ -187,7 +200,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
       _imagem = imagemSelecionada;
       _uploadImagem();
     });
-
   }
 
   Future _uploadImagem() async {
@@ -206,17 +218,15 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
     //Controlar progresso do upload
     task.events.listen((StorageTaskEvent storageEvent) {
-
-      if( storageEvent.type == StorageTaskEventType.progress ) {
+      if (storageEvent.type == StorageTaskEventType.progress) {
         setState(() {
           _subindoImagem = true;
         });
-      } else if( storageEvent.type == StorageTaskEventType.success ) {
+      } else if (storageEvent.type == StorageTaskEventType.success) {
         setState(() {
           _subindoImagem = false;
         });
       }
-
     });
 
     //Recuperar url da imagem
@@ -226,22 +236,17 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   }
 
   Future _recuperarUrlImagem(StorageTaskSnapshot snapshot) async {
-
     String url = await snapshot.ref.getDownloadURL();
-    _atualizarUrlImagemFirestore( url );
+    _atualizarUrlImagemFirestore(url);
 
     setState(() {
       _urlImagemRecuperada = url;
     });
-
   }
 
-  _atualizarUrlImagemFirestore(String url){
+  _atualizarUrlImagemFirestore(String url) {
+    Map<String, dynamic> dadosAtualizar = {"urlImagens": url};
 
-
-    Map<String, dynamic> dadosAtualizar = {
-      "urlImagens" : url
-    };
 
     //Usuario usuario = Usuario();
     //usuario.nome = widget.user;
@@ -249,22 +254,15 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     //usuario.photo = widget.photo;
     //this.account = profile;
     Firestore db = Firestore.instance;
-    db.collection("imoveis")
-        .document()
-        .updateData(dadosAtualizar);
-
+    db.collection("imoveis").document().updateData(dadosAtualizar);
   }
 
   _recuperarDadosUsuario() async {
-//    DocumentSnapshot snapshot =
-//    await db.collection("estados").document().get();
-//
-//    Map<String, dynamic> dados = snapshot.data;
-//    print('Estados' + dados['id']);
+
     _idUsuario = widget.uid;
 
-  }
 
+  }
 
   @override
   void initState() {
@@ -298,42 +296,39 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text (
-            "Cadastre seu Imóvel"
-        ),
+        title: Text("Cadastre seu Imóvel"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           color: Colors.white,
-
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Container(
-        decoration: BoxDecoration(color: Colors.white),
-        padding: EdgeInsets.all(16),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                _subindoImagem
-                    ? CircularProgressIndicator()
-                    : Container(),
-                Padding(
-                  padding: const EdgeInsets.only(right: 80, left: 80),
-                  child: CircleAvatar(
-                    radius: 80,
-                    backgroundColor: Colors.grey,
-                      backgroundImage:
-                      _urlImagemRecuperada != null
-                          ? NetworkImage(_urlImagemRecuperada, )
-                          : null
-                  ),
+      body: Form(
+        key: _formKey,
+        child: Container(
+          decoration: BoxDecoration(color: Colors.white),
+          padding: EdgeInsets.all(16),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  _subindoImagem ? CircularProgressIndicator() : Container(),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 80, left: 80),
+                    child: CircleAvatar(
+                        radius: 80,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: _urlImagemRecuperada != null
+                            ? NetworkImage(
+                                _urlImagemRecuperada,
+                              )
+                            : null),
 
-                  /*_imagem == null
+                    /*_imagem == null
                       ? Container()
                       :Image.file(_imagem),*/
-                  /*CarouselSlider(
+                    /*CarouselSlider(
                     height: 150.0,
                     items: listaTela.map((i) {
                       return Builder(
@@ -351,173 +346,224 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       );
                     }).toList(),
                   ),*/
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    FlatButton(
-                      child: Text("Câmera"),
-                      onPressed: (){
-                        _recuperarImagem("camera");
-                      },
-                    ),
-                    FlatButton(
-                      child: Text("Galeria"),
-                      onPressed: (){
-                        _recuperarImagem("galeria");
-                      },
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 8, left: 10),
-                  child: Row(
-                    //crossAxisAlignment: CrossAxisAlignment.center,
-                    //mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text('Estado de: ', style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold), ),
-                      SizedBox(width: 30,),
-                      DropdownButton(
-                        icon: Icon(Icons.arrow_downward, color: Colors.blue,),
-                        value: _selectedEstado,
-                        items: _dropdownMenuItens,
-                        onChanged: onCgangeDropdownItem,
-                        underline: Container(
-                          height: 2,
-                          color: Colors.blue,
-                        ),
+                      FlatButton(
+                        child: Text("Câmera"),
+                        onPressed: () {
+                          _recuperarImagem("camera");
+                        },
                       ),
-                      /*
+                      FlatButton(
+                        child: Text("Galeria"),
+                        onPressed: () {
+                          _recuperarImagem("galeria");
+                        },
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8, left: 10),
+                    child: Row(
+                      //crossAxisAlignment: CrossAxisAlignment.center,
+                      //mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Estado de: ',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        DropdownButton(
+                          icon: Icon(
+                            Icons.arrow_downward,
+                            color: Colors.blue,
+                          ),
+                          value: _selectedEstado,
+                          items: _dropdownMenuItens,
+                          onChanged: onCgangeDropdownItem,
+                          underline: Container(
+                            height: 2,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        /*
                       SizedBox(height: 20,),
                       Text('Selecione: ${_selectedEstado.nome}'),
                         */
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: TextField(
-                    controller: _controllerLogadouro,
-                    //autofocus: true,
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 20),
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                      hintText: "Logradouro",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(32)
-                      ),
+                      ],
                     ),
                   ),
-                ),
-
-                Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: TextField(
-                    controller: _controllerComplemento,
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 20),
-                    decoration: InputDecoration(
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: TextField(
+                      controller: _controllerLogadouro,
+                      //autofocus: true,
+                      keyboardType: TextInputType.text,
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: "Complemento",
+                        hintText: "Logradouro",
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(32))),
+                            borderRadius: BorderRadius.circular(32)),
+                      ),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 8, top: 3),
-                  child: Container(
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: TextField(
+                      controller: _controllerComplemento,
+                      keyboardType: TextInputType.text,
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                          hintText: "Complemento",
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32))),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8, top: 3),
+                    child: Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Selecione o Tipo do Imóvel:',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Radio(
+                                value: 'Apartamento',
+                                groupValue: _radioValue,
+                                onChanged: radioButtonChanges,
+                              ),
+                              Text(
+                                'Apartamento',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Radio(
+                                value: 'Casa',
+                                groupValue: _radioValue,
+                                onChanged: radioButtonChanges,
+                              ),
+                              Text(
+                                'Casa',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Radio(
+                                value: 'KitNet',
+                                groupValue: _radioValue,
+                                onChanged: radioButtonChanges,
+                              ),
+                              Text(
+                                'KitNet',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: TextField(
+                      controller: controller,
+                      keyboardType: TextInputType.text,
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                          hintText: "Valor",
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32))),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: TextField(
+                      controller: _controllerDetalhes,
+                      keyboardType: TextInputType.text,
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                          hintText: "Descrição",
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32))),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(
-                          'Selecione o Tipo do Imóvel:',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Radio(
-                              value: 'Apartamento',
-                              groupValue: _radioValue,
-                              onChanged: radioButtonChanges,
-                            ),
-                            Text(
-                              'Apartamento',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Radio(
-                              value: 'Casa',
-                              groupValue: _radioValue,
-                              onChanged: radioButtonChanges,
-                            ),
-                            Text(
-                              'Casa',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Radio(
-                              value: 'KitNet',
-                              groupValue: _radioValue,
-                              onChanged: radioButtonChanges,
-                            ),
-                            Text(
-                              'KitNet',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
+                        TextFormField(
+                          validator: (value) {
+                            return Validador()
+                                .add(Validar.CPF, msg: 'CPF Inválido')
+                                .add(Validar.OBRIGATORIO, msg: 'Campo obrigatório')
+                                .minLength(11)
+                                .maxLength(11)
+                                .valido(value, clearNoNumber: true);
+                          },
+                          controller: controllerCPF,
+                          keyboardType: TextInputType.text,
+                          style: TextStyle(fontSize: 20),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                            hintText: 'Digite o seu CPF',
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32)),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: TextField(
-                    controller: controller,
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 20),
-                    decoration: InputDecoration(
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: TextField(
+                      controller: controllerTelefone,
+                      keyboardType: TextInputType.phone,
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: "Valor",
+                        hintText: "Digite o seu Telefone",
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(32))),
+                            borderRadius: BorderRadius.circular(32)),
+                      ),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: TextField(
-                    controller: _controllerDetalhes,
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 20),
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: "Descrição",
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(32))),
-                  ),
-                ),
-                /*
+                  /*
                 Padding(
                   padding: EdgeInsets.all(8),
                   child: Row(
@@ -565,32 +611,32 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                   ),
                 ),*/
 
-                Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: 10),
-                  child: RaisedButton(
+                  Padding(
+                    padding: EdgeInsets.only(top: 10, bottom: 10),
+                    child: RaisedButton(
+                      child: Text(
+                        "Salvar",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      color: Colors.blue,
+                      padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32)),
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          _validarCampos();
+                        }
+                      },
+                    ),
+                  ),
+                  Center(
                     child: Text(
-                      "Salvar",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                      _mensagemErro,
+                      style: TextStyle(color: Colors.red, fontSize: 20),
                     ),
-                    color: Colors.blue,
-                    padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(32)),
-                    onPressed: () {
-                      _validarCampos();
-                    },
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    _mensagemErro,
-                    style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 20
-                    ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -598,4 +644,3 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     );
   }
 }
-

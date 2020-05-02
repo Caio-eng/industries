@@ -7,7 +7,7 @@ class Usuario {
   String _rg;
   DateTime _dataEmissao;
   DateTime _dataNasc;
-  int _telefone;
+  String _telefone;
   String _email;
   String _senha;
   bool _estadoCivil;
@@ -22,7 +22,9 @@ class Usuario {
       "nome" : this.nome,
       "email" : this.email,
       "photo" : this.photo,
-
+      "cpf" : this.cpf,
+      "idUsuario" : this.idUsuario,
+      "telefone" : this.telefone,
     };
 
     return map;
@@ -66,9 +68,9 @@ class Usuario {
     _email = value;
   }
 
-  int get telefone => _telefone;
+  String get telefone => _telefone;
 
-  set telefone(int value) {
+  set telefone(String value) {
     _telefone = value;
   }
 

@@ -40,6 +40,7 @@ dependencies:
   flutter_masked_text: ^0.8.0 #mascaras
   date_format: ^1.0.8 # formatar data
   intl: ^0.16.1
+  validadores: ^1.0.2 # validadores de CPF
 
 
 dev_dependencies:

@@ -16,6 +16,8 @@ class DonoDoImovel {
   String _estadoDoImovel;
   String _urlImagemDoLocatario;
   String _idImovelAlugado;
+  int _idEstadoImovel;
+  String _nomeDaImagemImovel;
   DonoDoImovel();
 
   Map<String, dynamic> toMap() {
@@ -36,12 +38,20 @@ class DonoDoImovel {
       "idImovelAlugado" : this.idImovelAlugado,
       "dataInicio" : this.dataInicio,
       "dataFinal" : this.dataFinal,
+      "idEstadoImovel" : this.idEstadoImovel,
+      "nomeDaImagemImovel" : this.nomeDaImagemImovel,
     };
 
     return map;
 
   }
 
+
+  int get idEstadoImovel => _idEstadoImovel;
+
+  set idEstadoImovel(int value) {
+    _idEstadoImovel = value;
+  }
 
   String get idImovelAlugado => _idImovelAlugado;
 
@@ -137,6 +147,12 @@ class DonoDoImovel {
 
   set urlImagemDoLocatario(String value) {
     _urlImagemDoLocatario = value;
+  }
+
+  String get nomeDaImagemImovel => _nomeDaImagemImovel;
+
+  set nomeDaImagemImovel(String value) {
+    _nomeDaImagemImovel = value;
   }
 
 

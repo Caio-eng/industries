@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:industries/model/Imovel.dart';
+import 'package:validadores/Validador.dart';
 
 import 'CadastroImoveis.dart';
 
@@ -22,11 +23,14 @@ class EditarImovel extends StatefulWidget {
 }
 
 class _EditarImovelState extends State<EditarImovel> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController _controllerLogadouro = TextEditingController();
   TextEditingController _controllerComplemento = TextEditingController();
 
   TextEditingController _controllerDetalhes = TextEditingController();
   var _controller = new MoneyMaskedTextController(leftSymbol: 'R\$ ');
+  var controllerTelefone = new MaskedTextController(mask: '(00) 00000 - 0000');
+  var controllerCPF = new MaskedTextController(mask: '000.000.000-00');
   String estad;
 
   List<Estado> _estados = Estado.getEstados();
@@ -132,6 +136,8 @@ class _EditarImovelState extends State<EditarImovel> {
     String estado = _selectedEstado.nome;
     int i = _selectedEstado.id;
     String tipoImovel = _radioValue;
+    String _telefoneUsuario = controllerTelefone.text;
+    String _cpfUsuario = controllerCPF.text;
     Map<String, dynamic> dadosAtualizar = {
       "urlImagens" : url,
       "logadouro" : log,
@@ -141,6 +147,8 @@ class _EditarImovelState extends State<EditarImovel> {
       "tipoImovel" : tipoImovel,
       "valor" : valor,
       "idEstado" : i - 1,
+      "telefoneUsuario" : _telefoneUsuario,
+      "cpfUsuario" : _cpfUsuario,
     };
 
     Imovel imovel = Imovel();
@@ -152,6 +160,8 @@ class _EditarImovelState extends State<EditarImovel> {
     imovel.idEstado = i - 1;
     imovel.detalhes = deta;
     imovel.urlImagens = url;
+    imovel.telefoneUsuario = _telefoneUsuario;
+    imovel.cpfUsuario = _cpfUsuario;
     imovel.idUsuario = widget.document['idUsuario'];
     imovel.nomeDaImagem = widget.document['nomeDaImagem'];
 
@@ -172,6 +182,8 @@ class _EditarImovelState extends State<EditarImovel> {
     _controllerDetalhes.text = widget.document['detalhes'];
     _controller.text = widget.document['valor'];
     _radioValue = widget.document['tipoImovel'];
+    controllerTelefone.text = widget.document['telefoneUsuario'];
+    controllerCPF.text = widget.document['cpfUsuario'];
     setState(() {
       _urlImagemRecuperada = widget.document["urlImagens"];
     });
@@ -211,7 +223,9 @@ class _EditarImovelState extends State<EditarImovel> {
         title: Text("Editar Imóvel"),
         centerTitle: true,
       ),
-      body: Container(
+      body: Form(
+        key: _formKey,
+      child: Container(
         padding: EdgeInsets.all(16),
         child: Center(
           child: SingleChildScrollView(
@@ -417,6 +431,50 @@ class _EditarImovelState extends State<EditarImovel> {
                   ),
                 ),
                 Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        validator: (value) {
+                          return Validador()
+                              .add(Validar.CPF, msg: 'CPF Inválido')
+                              .add(Validar.OBRIGATORIO, msg: 'Campo obrigatório')
+                              .minLength(11)
+                              .maxLength(11)
+                              .valido(value, clearNoNumber: true);
+                        },
+                        controller: controllerCPF,
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(fontSize: 20),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                          hintText: 'Digite o seu CPF',
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: TextField(
+                    controller: controllerTelefone,
+                    keyboardType: TextInputType.phone,
+                    style: TextStyle(fontSize: 20),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                      hintText: "Digite o seu Telefone",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32)),
+                    ),
+                  ),
+                ),
+                Padding(
                   padding: EdgeInsets.only(top: 16, bottom: 10),
                   child: RaisedButton(
                     child: Text(
@@ -429,9 +487,11 @@ class _EditarImovelState extends State<EditarImovel> {
                         borderRadius: BorderRadius.circular(32)
                     ),
                     onPressed: () {
-                      //_atualizarNomeFirestore();
-                      _atualizarUrlImagemFirestore(_urlImagemRecuperada);
-                      Navigator.pop(context);
+                       if (_formKey.currentState.validate()) {
+                         //_atualizarNomeFirestore();
+                         _atualizarUrlImagemFirestore(_urlImagemRecuperada);
+                         Navigator.pop(context);
+                       }
                     },
                   ),
                 ),
@@ -439,6 +499,7 @@ class _EditarImovelState extends State<EditarImovel> {
             ),
           ),
         ),
+      ),
       ),
     );
   }

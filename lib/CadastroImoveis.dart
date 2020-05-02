@@ -316,6 +316,59 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
+                _subindoImagem
+                    ? CircularProgressIndicator()
+                    : Container(),
+                Padding(
+                  padding: const EdgeInsets.only(right: 80, left: 80),
+                  child: CircleAvatar(
+                    radius: 80,
+                    backgroundColor: Colors.grey,
+                      backgroundImage:
+                      _urlImagemRecuperada != null
+                          ? NetworkImage(_urlImagemRecuperada, )
+                          : null
+                  ),
+
+                  /*_imagem == null
+                      ? Container()
+                      :Image.file(_imagem),*/
+                  /*CarouselSlider(
+                    height: 150.0,
+                    items: listaTela.map((i) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin: EdgeInsets.symmetric(horizontal: 5.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.blue
+                              ),
+                              child: Image.file(_imagem),
+                              //child: _imagem,
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),*/
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text("Câmera"),
+                      onPressed: (){
+                        _recuperarImagem("camera");
+                      },
+                    ),
+                    FlatButton(
+                      child: Text("Galeria"),
+                      onPressed: (){
+                        _recuperarImagem("galeria");
+                      },
+                    ),
+                  ],
+                ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 8, left: 10),
                   child: Row(
@@ -464,6 +517,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                             borderRadius: BorderRadius.circular(32))),
                   ),
                 ),
+                /*
                 Padding(
                   padding: EdgeInsets.all(8),
                   child: Row(
@@ -509,34 +563,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       ),
                     ],
                   ),
-                ),
-                _subindoImagem
-                    ? CircularProgressIndicator()
-                    : Container(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: _imagem == null
-                      ? Container()
-                      :Image.file(_imagem),
-                  /*CarouselSlider(
-                    height: 150.0,
-                    items: listaTela.map((i) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              decoration: BoxDecoration(
-                                  color: Colors.blue
-                              ),
-                              child: Image.file(_imagem),
-                              //child: _imagem,
-                          );
-                        },
-                      );
-                    }).toList(),
-                  ),*/
-                ),
+                ),*/
 
                 Padding(
                   padding: EdgeInsets.only(top: 10, bottom: 10),

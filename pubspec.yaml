@@ -1,6 +1,8 @@
 name: industries
 description: A new Flutter application.
 
+
+
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
 # followed by an optional build number separated by a +.
@@ -41,6 +43,8 @@ dependencies:
   date_format: ^1.0.8 # formatar data
   intl: ^0.16.1
   validadores: ^1.0.2 # validadores de CPF
+
+
 
 
 dev_dependencies:

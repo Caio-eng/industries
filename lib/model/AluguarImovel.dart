@@ -1,6 +1,7 @@
 class AlugarImovel {
 
-  String _cpfUsuario;
+  String _cpfDoDono;
+  String _telefoneDoDono;
   String _idLocatario;
   String _idDono;
   String _logadouroImovelAlugado;
@@ -22,7 +23,8 @@ class AlugarImovel {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-     "cpfUsuario" : this.cpfUsuario,
+     "cpfDoDono" : this.cpfDoDono,
+      "telefoneDoDono" : this.telefoneDoDono,
       "idLocatario" : this.idLocatario,
       "idDono" : this.idDono,
       "logadouroImovelAlugado" : this.logadouroImovelAlugado,
@@ -46,6 +48,12 @@ class AlugarImovel {
 
   }
 
+
+  String get telefoneDoDono => _telefoneDoDono;
+
+  set telefoneDoDono(String value) {
+    _telefoneDoDono = value;
+  }
 
   String get urlImagemDoDono => _urlImagemDoDono;
 
@@ -101,10 +109,10 @@ class AlugarImovel {
     _idLocatario = value;
   }
 
-  String get cpfUsuario => _cpfUsuario;
+  String get cpfDoDono => _cpfDoDono;
 
-  set cpfUsuario(String value) {
-    _cpfUsuario = value;
+  set cpfDoDono(String value) {
+    _cpfDoDono = value;
   }
 
   String get tipoImovelImovelAlugado => _tipoImovelImovelAlugado;

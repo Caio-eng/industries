@@ -23,6 +23,8 @@ class _MeuImovelState extends State<MeuImovel> {
   String _tipo = "";
   String _valor = "";
   String _locado = "";
+  String _cpf = "";
+  String _telefone = "";
   List<String> itensMenu = ["Informações", "Cancelar Contrato"];
 
   Firestore db = Firestore.instance;
@@ -67,11 +69,14 @@ class _MeuImovelState extends State<MeuImovel> {
                       imovel.estado = document['estadoDoImovel'];
                       imovel.idEstado = document['idEstadoImovel'];
                       imovel.nomeDaImagem = document['nomeDaImagemImovel'];
+                      imovel.cpfUsuario = _cpf;
+                      imovel.telefoneUsuario = _telefone;
                       db.collection("imoveis")
                           .document()
                           .setData(imovel.toMap());
                       db.collection("meuImovel").document(document.documentID).delete();
 
+                      db.collection("imovelAlugado").document(document['idLocatario']).collection("Detalhes").document(document['idImovelAlugado']).delete();
                       Navigator.pop(context);
                     },
                   ),
@@ -83,19 +88,16 @@ class _MeuImovelState extends State<MeuImovel> {
       );
     }
 
-    _deletar(AlugarImovel alugarImovel) {
-      db.collection("imovelAlugado").document(document['idLocatario']).collection("Detalhes").document(document['idImovelAlugado']).delete();
-    }
+
+
+
     _escolhaMenuItem(String itemEscolhido) {
       switch (itemEscolhido) {
         case "Informações":
           print("Informações");
           break;
         case "Cancelar Contrato":
-          AlugarImovel alugarImovel = AlugarImovel();
-          _deletar(alugarImovel);
           _cancelarContrato();
-
           break;
       }
     }
@@ -139,6 +141,11 @@ class _MeuImovelState extends State<MeuImovel> {
 
   _recuperarDados() async {
     _idUsuarioLogado = widget.uid;
+    Firestore db = Firestore.instance;
+    DocumentSnapshot snapshot =   await db.collection("usuarios").document(widget.uid).get();
+    Map<String, dynamic> dados = snapshot.data;
+    _cpf = dados['cpf'];
+    _telefone = dados['telefone'];
     //print(_idUsuarioLogado);
   }
 

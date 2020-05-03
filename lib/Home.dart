@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:industries/Configuracoes.dart';
 import 'package:industries/Detalhes.dart';
 import 'package:industries/Chat.dart';
 import 'package:industries/EditarImovel.dart';
@@ -29,7 +30,8 @@ class _HomeState extends State<Home> {
   bool isLoggedIn = false;
   String _idUsuarioLogado = "";
   String _id = "";
-  String _url;
+  String _nome;
+  String _photo;
   String filter;
   var profile;
 
@@ -157,16 +159,15 @@ class _HomeState extends State<Home> {
   _recuperarDados() async {
     _idUsuarioLogado = widget.uid;
 
-//    Firestore db = Firestore.instance;
-//    DocumentSnapshot snapshot =
-//        await db.collection("imoveis").document(_idUsuarioLogado).get();
-//
-//    Map<String, dynamic> dados = snapshot.data;
-//    setState(() {
-//      _id = dados['idUsuario'];
-//      print("_id: " + _id);
-//      _url = dados['urlImagens'];
-//    });
+    Firestore db = Firestore.instance;
+    DocumentSnapshot snapshot =    await db.collection("usuarios").document(_idUsuarioLogado).get();
+    Map<String, dynamic> dados = snapshot.data;
+    setState(() {
+      _id = dados['idUsuario'];
+      _nome = dados['nome'];
+      _photo = dados['urlImagem'];
+      print("_id: " + _id);
+    });
   }
 
   @override
@@ -227,14 +228,35 @@ class _HomeState extends State<Home> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            UserAccountsDrawerHeader(
+            _idUsuarioLogado == _id
+              ? UserAccountsDrawerHeader(
+                onDetailsPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Configuracoes(widget.user, widget.photo, widget.emai, widget.uid)));
+                },
+                accountName: Text('${_nome}'),
+                accountEmail: Text("${widget.emai}"),
+                currentAccountPicture: CircleAvatar(
+                  backgroundImage: _photo != null
+                    ? NetworkImage('${_photo}')
+                    : NetworkImage('${widget.photo}')
+                ),
+              )
+            : UserAccountsDrawerHeader(
+              onDetailsPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Configuracoes(widget.user, widget.photo, widget.emai, widget.uid)));
+              },
               accountName: Text('${widget.user}'),
               accountEmail: Text("${widget.emai}"),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: NetworkImage('${widget.photo}'),
+                backgroundImage: _photo != null
+                  ? NetworkImage('${_photo}')
+                  : NetworkImage('${widget.photo}'),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
               child: Container(
@@ -342,7 +364,7 @@ class _HomeState extends State<Home> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => MensagemUsuario(widget.user,
-                                widget.emai, widget.photo, widget.uid))),
+                                widget.photo, widget.emai,  widget.uid))),
                   },
                   child: Container(
                     height: 50,

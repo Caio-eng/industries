@@ -20,9 +20,7 @@ class MensagemUsuario extends StatefulWidget {
 class _MensagemUsuarioState extends State<MensagemUsuario> with SingleTickerProviderStateMixin {
 
   TabController _tabController;
-  List<String> itensMenu = [
-    "Configurações"
-  ];
+
 
   String _emailUsuario= "";
 
@@ -49,20 +47,6 @@ class _MensagemUsuarioState extends State<MensagemUsuario> with SingleTickerProv
     );
   }
 
-  _escolhaMenuItem(String itemEscolhido) {
-
-    switch ( itemEscolhido ){
-      case "Configurações":
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Configuracoes(widget.user, widget.photo, widget.emai, widget.uid)
-            )
-        );
-        break;
-    }
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,19 +67,6 @@ class _MensagemUsuarioState extends State<MensagemUsuario> with SingleTickerProv
             Tab(text: "Contatos",),
           ],
         ),
-        actions: <Widget>[
-          PopupMenuButton<String>(
-            onSelected: _escolhaMenuItem,
-            itemBuilder: (context){
-              return itensMenu.map((String item) {
-                return PopupMenuItem<String>(
-                  value: item,
-                  child: Text(item),
-                );
-              }).toList();
-            },
-          )
-        ],
       ),
       body: TabBarView(
         controller: _tabController,

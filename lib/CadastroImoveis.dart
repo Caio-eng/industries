@@ -82,6 +82,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   int _id;
   String _nome;
   String _sigla;
+  String _telefoneUsuario;
+  String _cpfUsuario;
 
   String _mensagemErro = "";
 
@@ -121,16 +123,13 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     int i = _selectedEstado.id;
     String estad = _selectedEstado.nome;
     String sigl = _selectedEstado.sigla;
-    String _telefoneUsuario = controllerTelefone.text;
-    String _cpfUsuario = controllerCPF.text;
 
     if (logadouro.isNotEmpty && logadouro.length > 4) {
       if (complemento.isNotEmpty) {
         if (tipoImovel.isNotEmpty) {
           if (valor.isNotEmpty) {
             if (_urlImagemRecuperada.isNotEmpty) {
-              if (_telefoneUsuario.isNotEmpty &&
-                  _telefoneUsuario.length == 17) {
+
                 Imovel imovel = Imovel();
                 imovel.estado = estad;
                 imovel.logadouro = logadouro;
@@ -145,17 +144,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                 imovel.telefoneUsuario = _telefoneUsuario;
                 imovel.cpfUsuario = _cpfUsuario;
 
-                Map<String, dynamic> dadosUsuario = {"cpf" : _cpfUsuario, "idUsuario" : widget.uid, "telefone": _telefoneUsuario};
-                Usuario usuario = Usuario();
-                usuario.idUsuario = widget.uid.toString();
-                usuario.cpf = _cpfUsuario;
-                usuario.telefone = _telefoneUsuario;
-                db.collection("usuarios").document(widget.uid).updateData(dadosUsuario);
 
                 _cadastrarImovel(imovel);
-              } else {
-                _mensagemErro = "O número deve conter 10 digitos";
-              }
             } else {
               _mensagemErro = "Selecioce uma imagem";
             }
@@ -260,6 +250,12 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   _recuperarDadosUsuario() async {
 
     _idUsuario = widget.uid;
+
+    DocumentSnapshot snapshot =
+    await db.collection("usuarios").document(widget.uid).get();
+    Map<String, dynamic> dados = snapshot.data;
+    _cpfUsuario = dados['cpf'];
+    _telefoneUsuario = dados['telefone'];
 
 
   }
@@ -519,50 +515,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                               borderRadius: BorderRadius.circular(32))),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          validator: (value) {
-                            return Validador()
-                                .add(Validar.CPF, msg: 'CPF Inválido')
-                                .add(Validar.OBRIGATORIO, msg: 'Campo obrigatório')
-                                .minLength(11)
-                                .maxLength(11)
-                                .valido(value, clearNoNumber: true);
-                          },
-                          controller: controllerCPF,
-                          keyboardType: TextInputType.text,
-                          style: TextStyle(fontSize: 20),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                            hintText: 'Digite o seu CPF',
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(32)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: TextField(
-                      controller: controllerTelefone,
-                      keyboardType: TextInputType.phone,
-                      style: TextStyle(fontSize: 20),
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: "Digite o seu Telefone",
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(32)),
-                      ),
-                    ),
-                  ),
                   /*
                 Padding(
                   padding: EdgeInsets.all(8),
@@ -623,9 +575,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(32)),
                       onPressed: () {
-                        if (_formKey.currentState.validate()) {
                           _validarCampos();
-                        }
                       },
                     ),
                   ),

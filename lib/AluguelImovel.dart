@@ -58,9 +58,12 @@ class _AluguelImovelState extends State<AluguelImovel> {
   String _nomeDaFoto = "";
   int _idDoEstado;
   String _cpfDono = "";
-  String _cpf = "";
+  String _cpfDoLocatario = "";
   String _teleneDono = '';
-  String _telefone = '';
+  String _telefoneDoLocatario = '';
+  String _nomeDoLocatario = "";
+  String _emailDoLocatario = "";
+  String _photoDoLocatario = "";
 
   Firestore db = Firestore.instance;
 
@@ -68,44 +71,47 @@ class _AluguelImovelState extends State<AluguelImovel> {
       // Para quem alugou
       AlugarImovel alugarImovel = AlugarImovel();
       Imovel imovel = Imovel();
-      alugarImovel.idLocatario = _idUsuarioLogado;
-      alugarImovel.cpfUsuario = _cpfDono;
-      alugarImovel.idDono = _idDono;
-      alugarImovel.nomeDoDono = _nomeDoDono;
-      alugarImovel.emailDoDono = _emailDoDono;
-      alugarImovel.urlImagemDoDono = _photoDoDono;
-      alugarImovel.idImovel = widget.document.documentID;
-      alugarImovel.logadouroImovelAlugado = _log;
-      alugarImovel.complementoImovelAlugado = _comp;
-      alugarImovel.tipoImovelImovelAlugado = _tipo;
-      alugarImovel.valorImovelAlugado = _valor;
-      alugarImovel.detalhesImovelAlugado = _detalhes;
-      alugarImovel.estadoImovelAlugado = _estado;
-      alugarImovel.nomeDaImagemImovelAlugado = _nomeDaFoto;
+      alugarImovel.telefoneDoDono = _teleneDono;
+      alugarImovel.cpfDoDono = _cpfDono;
       alugarImovel.idEstadoImovelAlugado = _idDoEstado;
+      alugarImovel.nomeDaImagemImovelAlugado = _nomeDaFoto;
+      alugarImovel.dataFinal = "";
+      alugarImovel.idImovel = widget.document.documentID;
+      alugarImovel.estadoImovelAlugado = _estado;
+      alugarImovel.detalhesImovelAlugado = _detalhes;
       alugarImovel.urlImagensImovelAlugado = _url;
-
+      alugarImovel.valorImovelAlugado = _valor;
+      alugarImovel.tipoImovelImovelAlugado = _tipo;
+      alugarImovel.complementoImovelAlugado = _comp;
+      alugarImovel.logadouroImovelAlugado = _log;
+      alugarImovel.nomeDoDono = _nomeDoDono;
+      alugarImovel.urlImagemDoDono = _photoDoDono;
+      alugarImovel.emailDoDono = _emailDoDono;
+      alugarImovel.idDono = _idDono;
+      alugarImovel.idLocatario = _idUsuarioLogado;
       alugarImovel.dataInicio =
           formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
 
       // Para o dono do imovel
       DonoDoImovel donoDoImovel = DonoDoImovel();
-      donoDoImovel.idLocatario = _idUsuarioLogado;
-      donoDoImovel.cpfUsuario = _cpf;
-      donoDoImovel.nomeDoLocatario = widget.user;
-      donoDoImovel.emailDoLocatario = widget.emai;
-      donoDoImovel.detalhesDonoDoImovel = _detalhes;
-      donoDoImovel.urlImagemDoLocatario = widget.photo;
-      donoDoImovel.idDono = _idDono;
-      donoDoImovel.logadouroDonoDoImovel = _log;
-      donoDoImovel.complementoDonoDoImovel = _comp;
-      donoDoImovel.tipoDonoDoImovel = _tipo;
-      donoDoImovel.estadoDoImovel = _estado;
-      donoDoImovel.valorDonoDoImovel = _valor;
-      donoDoImovel.idImovelAlugado = widget.document.documentID;
-      donoDoImovel.urlImagensDonoDoImovel = _url;
-      donoDoImovel.nomeDaImagemImovel = _nomeDaFoto;
+      donoDoImovel.telefoneUsuario = _telefoneDoLocatario;
+      donoDoImovel.cpfUsuario = _cpfDoLocatario;
       donoDoImovel.idEstadoImovel = _idDoEstado;
+      donoDoImovel.nomeDaImagemImovel = _nomeDaFoto;
+      donoDoImovel.dataFinal = "";
+      donoDoImovel.idImovelAlugado = widget.document.documentID;
+      donoDoImovel.estadoDoImovel = _estado;
+      donoDoImovel.detalhesDonoDoImovel = _detalhes;
+      donoDoImovel.urlImagensDonoDoImovel = _url;
+      donoDoImovel.valorDonoDoImovel = _valor;
+      donoDoImovel.tipoDonoDoImovel = _tipo;
+      donoDoImovel.complementoDonoDoImovel = _comp;
+      donoDoImovel.logadouroDonoDoImovel = _log;
+      donoDoImovel.nomeDoLocatario = _nomeDoLocatario;
+      donoDoImovel.urlImagemDoLocatario = _photoDoLocatario;
+      donoDoImovel.emailDoLocatario = _emailDoLocatario;
+      donoDoImovel.idDono = _idDono;
+      donoDoImovel.idLocatario = _idUsuarioLogado;
       donoDoImovel.dataInicio =
           formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
       _cadastrarDono(donoDoImovel);
@@ -125,11 +131,6 @@ class _AluguelImovelState extends State<AluguelImovel> {
         .document(widget.document.documentID)
         .setData(alugarImovel.toMap());
 
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ImovelAlugado(
-                widget.user, widget.photo, widget.emai, widget.uid)));
   }
 
   _cadastrarDono(DonoDoImovel donoDoImovel) {
@@ -150,6 +151,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
   }
 
   _recuperarDados() async {
+    // Informação do Dono do imovel
     _idDono = widget.document['idUsuario'];
     _idUsuarioLogado = widget.uid;
     _url = widget.document['urlImagens'];
@@ -161,23 +163,41 @@ class _AluguelImovelState extends State<AluguelImovel> {
     _estado = widget.document['estado'];
     _nomeDaFoto = widget.document['nomeDaImagem'];
     _idDoEstado = widget.document['idEstado'];
-    _cpf = widget.document['cpfUsuario'];
 
     print("CPF do Dono: " + _cpfDono);
 
     print("Id do dono: " + widget.document['idUsuario']);
     print(widget.uid);
-
+    // Dono do imóvel
     DocumentSnapshot snapshot =
         await db.collection("usuarios").document(_idDono).get();
     Map<String, dynamic> dados = snapshot.data;
     _nomeDoDono = dados['nome'];
-    _emailDoDono = dados['email'];
     _photoDoDono = dados['photo'];
+    _emailDoDono = dados['email'];
     _cpfDono = dados['cpf'];
+    _teleneDono = dados['telefone'];
     print("Nome do Dono: " + _nomeDoDono);
     print("Email do Dono: " + _emailDoDono);
     print("Photo do Dono: " + _photoDoDono);
+    print("CPF do Dono: " + _cpfDono);
+    print("Telefone do Dono: " + _teleneDono);
+    print("\n");
+
+    // Informação do usuario Logado
+    DocumentSnapshot snapshot2 =
+    await db.collection("usuarios").document(widget.uid).get();
+    Map<String, dynamic> dados2 = snapshot2.data;
+    _nomeDoLocatario = dados2['nome'];
+    _photoDoLocatario = dados2['photo'];
+    _emailDoLocatario = dados2['email'];
+    _cpfDoLocatario = dados2['cpf'];
+    _telefoneDoLocatario = dados2['telefone'];
+    print("Nome do Locatario: " + _nomeDoLocatario);
+    print("Email do Locatario: " + _emailDoLocatario);
+    print("Photo do Locatario: " + _photoDoLocatario);
+    print("CPF do Locatario: " + _cpfDoLocatario);
+    print("Telefone do Locatario: " + _telefoneDoLocatario);
 
 
 //    //_idImovel = dados['idUsuario'];
@@ -269,6 +289,11 @@ class _AluguelImovelState extends State<AluguelImovel> {
                         borderRadius: BorderRadius.circular(32)),
                     onPressed: () {
                         _validarCampos();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ImovelAlugado(
+                                    widget.user, widget.photo, widget.emai, widget.uid)));
                     },
                   ),
                 ),

@@ -22,9 +22,6 @@ class Usuario {
       "nome" : this.nome,
       "email" : this.email,
       "photo" : this.photo,
-      "cpf" : this.cpf,
-      "idUsuario" : this.idUsuario,
-      "telefone" : this.telefone,
     };
 
     return map;

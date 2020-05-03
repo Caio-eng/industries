@@ -18,11 +18,14 @@ class DonoDoImovel {
   String _idImovelAlugado;
   int _idEstadoImovel;
   String _nomeDaImagemImovel;
+  String _telefoneUsuario;
+
   DonoDoImovel();
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
       "cpfUsuario" : this.cpfUsuario,
+      "telefoneUsuario" : this.telefoneUsuario,
       "nomeDoLocatario" : this.nomeDoLocatario,
       "emailDoLocatario": this.emailDoLocatario,
       "urlImagemDoLocatario": this.urlImagemDoLocatario,
@@ -46,6 +49,12 @@ class DonoDoImovel {
 
   }
 
+
+  String get telefoneUsuario => _telefoneUsuario;
+
+  set telefoneUsuario(String value) {
+    _telefoneUsuario = value;
+  }
 
   int get idEstadoImovel => _idEstadoImovel;
 

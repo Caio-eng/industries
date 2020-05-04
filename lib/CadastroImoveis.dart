@@ -263,7 +263,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   @override
   void initState() {
     _dropdownMenuItens = buildDropdownMenuItens(_estados);
-    _selectedEstado = _dropdownMenuItens[0].value;
+    _selectedEstado = _dropdownMenuItens[8].value;
     super.initState();
     _recuperarDadosUsuario();
     //listaTela.add(_imagem);

@@ -20,21 +20,154 @@ class ImovelAlugado extends StatefulWidget {
 class _ImovelAlugadoState extends State<ImovelAlugado> {
   String _idUsuarioLogado = "";
   String _idDono = "";
+  String _nomeDoDono, _emailDoDono, _cpfDoDono, _telefoneDoDono, _photoDoDono;
   String _mensagemErro = "";
   String _url = "";
   String _log = "";
   String _comp = "";
   String _tipo = "";
   String _valor = "";
-
+  String _telefone = '';
+  String _cpf, _nome, _email, _photo;
+  String _deta = "";
+  String _estado = "";
+  String _dataInicio = "";
   List<String> itensMenu = [
-    "Informações", "Cancelar Contrato"
+    "Informações", "Pagar Aluguel", "Cancelar Contrato com Dono",
   ];
 
   Firestore db = Firestore.instance;
 
 
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
+    _pagarAluguel() async {
+      _idDono = document['idDono'];
+      _nomeDoDono = document['nomeDoDono'];
+      _emailDoDono = document['emailDoDono'];
+      _cpfDoDono = document['cpfDoDono'];
+      _telefoneDoDono = document['telefoneDoDono'];
+      _photoDoDono = document['urlImagemDoDono'];
+      _dataInicio = document['dataInicio'];
+      print("O Dono de id: ${_idDono}, tem o nome: ${_nomeDoDono}, seu email é: ${_emailDoDono}, portador do CPF: ${_cpfDoDono} e seu número é: ${_telefoneDoDono}.");
+      _valor = document['valorImovelAlugado'];
+      _log = document['logadouroImovelAlugado'];
+
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Parcelas do Aluguel', textAlign: TextAlign.center, style: TextStyle(fontSize: 25),),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  InkWell(
+                    splashColor: Colors.blue,
+                    onTap: () {},
+                    child: Text("Parcela 1 " + " - Valor: " + _valor, style: TextStyle(color: Colors.blue, fontSize: 18),),
+                  ),
+                  Text('Parcela 2'+ " - Valor: " + _valor, style: TextStyle(color: Colors.orange)),
+                  Text('Parcela 3'+ " - Valor: " + _valor, style: TextStyle(color: Colors.orange)),
+                  Text('Parcela 4'+ " - Valor: " + _valor, style: TextStyle(color: Colors.orange)),
+                  Text('Parcela 5'+ " - Valor: " + _valor, style: TextStyle(color: Colors.orange)),
+                  Text('Parcela 6'+ " - Valor: " + _valor, style: TextStyle(color: Colors.orange)),
+                  Text('Parcela 7'+ " - Valor: " + _valor, style: TextStyle(color: Colors.orange)),
+                  Text('Parcela 8'+ " - Valor: " + _valor, style: TextStyle(color: Colors.orange)),
+                  Text('Parcela 9'+ " - Valor: " + _valor, style: TextStyle(color: Colors.orange)),
+                  Text('Parcela 10'+ " - Valor: " + _valor, style: TextStyle(color: Colors.orange)),
+                  Text('Parcela 11'+ " - Valor: " + _valor, style: TextStyle(color: Colors.orange)),
+                  Text('Parcela 12'+ " - Valor: " + _valor, style: TextStyle(color: Colors.orange)),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              Row(
+                children: <Widget>[
+                  FlatButton(
+                    child: Text('Voltar'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+
+    }
+
+    _informacaoImovel() {
+      _idDono = document['idDono'];
+      _nomeDoDono = document['nomeDoDono'];
+      _emailDoDono = document['emailDoDono'];
+      _cpfDoDono = document['cpfDoDono'];
+      _telefoneDoDono = document['telefoneDoDono'];
+      _photoDoDono = document['urlImagemDoDono'];
+      _valor = document['valorImovelAlugado'];
+      _log = document['logadouroImovelAlugado'];
+      _comp = document['complementoImovelAlugado'];
+      _url = document['urlImagensImovelAlugado'];
+      _deta = document['detalhesImovelAlugado'];
+      _tipo = document['tipoImovelImovelAlugado'];
+      _estado = document['estadoImovelAlugado'];
+      _dataInicio = document['dataInicio'];
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.all(10),
+            title: Text('Informação ', textAlign: TextAlign.center,),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Tipo do Imóvel: ' + _tipo + '\nEstado de: ' + _estado + "\nValor Mensal: " + _valor, textAlign: TextAlign.center,),
+                  CircleAvatar(backgroundImage: NetworkImage(_url), radius: 30,),
+                  Text("Logadouro: " + _log  + "\nComplemento: ${_comp}"  +  '\nDetalhes: ' + _deta + '\nData Inicial: ' + _dataInicio, textAlign: TextAlign.center,),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text("Informação sobre o Dono", style: TextStyle(fontSize: 18), textAlign: TextAlign.center,),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text('Nome: ' + _nomeDoDono + " Email: " +_emailDoDono + "\nCPF: " + _cpfDoDono + "\nTelefone: " + _telefoneDoDono, textAlign: TextAlign.center,),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              Row(
+                children: <Widget>[
+                  FlatButton(
+                    child: Text('Voltar'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    }
+    _escolhaMenuItem(String itemEscolhido) {
+
+      switch ( itemEscolhido ){
+        case "Informações":
+          _informacaoImovel();
+          break;
+        case "Pagar Aluguel":
+          _pagarAluguel();
+          break;
+        case "Cancelar Contrato com Dono":
+          print("Cancelar Contrato com Dono");
+          break;
+      }
+
+    }
       return Padding(
           padding: const EdgeInsets.all(16),
           child: ListTile(
@@ -68,23 +201,29 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
   }
 
 
-  _escolhaMenuItem(String itemEscolhido) {
-
-    switch ( itemEscolhido ){
-      case "Informações":
-        print("Informações");
-        break;
-      case "Cancelar Contrato":
-        print("Cancelar Contrato");
-        break;
-    }
-
+  _recuperarDados() async {
+    _idUsuarioLogado = widget.uid;
+    Firestore db = Firestore.instance;
+    DocumentSnapshot snapshot =   await db.collection("usuarios").document(widget.uid).get();
+    Map<String, dynamic> dados = snapshot.data;
+    _cpf = dados['cpf'];
+    _telefone = dados['telefone'];
+    _nome = dados['nome'];
+    _email = dados['email'];
+    _photo = dados['photo'];
+    print("Locatário de id: ${widget.uid}, tem o nome de ${_nome}, seu email é ${_email}, portador do CPF: ${_cpf} e tem o telefone: ${_telefone}");
+    print(_photo);
+    //print(_idUsuarioLogado);
   }
+
+
 
   @override
   void initState() {
+    _recuperarDados();
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {

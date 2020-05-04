@@ -19,6 +19,7 @@ class AlugarImovel {
   String _idImovel;
   String _nomeDoDono;
   String _emailDoDono;
+  String _tipoDePagamento;
   AlugarImovel();
 
   Map<String, dynamic> toMap() {
@@ -42,12 +43,20 @@ class AlugarImovel {
       "idImovel" : this.idImovel,
       "nomeDoDono" : this.nomeDoDono,
       "emailDoDono" :this.emailDoDono,
+      "tipoDePagamento" : this.tipoDePagamento,
+
     };
 
     return map;
 
   }
 
+
+  String get tipoDePagamento => _tipoDePagamento;
+
+  set tipoDePagamento(String value) {
+    _tipoDePagamento = value;
+  }
 
   String get telefoneDoDono => _telefoneDoDono;
 

@@ -19,6 +19,7 @@ class DonoDoImovel {
   int _idEstadoImovel;
   String _nomeDaImagemImovel;
   String _telefoneUsuario;
+  String _tipoDeRecibo;
 
   DonoDoImovel();
 
@@ -43,12 +44,19 @@ class DonoDoImovel {
       "dataFinal" : this.dataFinal,
       "idEstadoImovel" : this.idEstadoImovel,
       "nomeDaImagemImovel" : this.nomeDaImagemImovel,
+      "tipoDeRecibo" : this.tipoDeRecibo,
     };
 
     return map;
 
   }
 
+
+  String get tipoDeRecibo => _tipoDeRecibo;
+
+  set tipoDeRecibo(String value) {
+    _tipoDeRecibo = value;
+  }
 
   String get telefoneUsuario => _telefoneUsuario;
 

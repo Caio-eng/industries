@@ -22,10 +22,30 @@ class AluguelImovel extends StatefulWidget {
   _AluguelImovelState createState() => _AluguelImovelState();
 }
 
+class tipoDePagamento {
+  int id;
+  String tipoDoPagamento;
+
+  tipoDePagamento(this.id, this.tipoDoPagamento);
+
+  static List<tipoDePagamento> getTipoDePagamentos() {
+    return <tipoDePagamento>[
+      tipoDePagamento(1, 'Dinheiro'),
+      tipoDePagamento(2, 'Cartão de Crédito'),
+      tipoDePagamento(3, 'Cartão de Débito'),
+      tipoDePagamento(4, 'As três opções acima'),
+    ];
+  }
+}
+
 class _AluguelImovelState extends State<AluguelImovel> {
   DateTime _date = new DateTime.now();
 
   TimeOfDay _time = new TimeOfDay.now();
+
+  List<tipoDePagamento> _tipoDePagamentos = tipoDePagamento.getTipoDePagamentos();
+  List<DropdownMenuItem<tipoDePagamento>> _dropdownMenuItens;
+  tipoDePagamento _selectedTipo;
 
   Future<Null> _selectedDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -89,6 +109,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
       alugarImovel.emailDoDono = _emailDoDono;
       alugarImovel.idDono = _idDono;
       alugarImovel.idLocatario = _idUsuarioLogado;
+      alugarImovel.tipoDePagamento = _selectedTipo.tipoDoPagamento;
       alugarImovel.dataInicio =
           formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
 
@@ -112,6 +133,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
       donoDoImovel.emailDoLocatario = _emailDoLocatario;
       donoDoImovel.idDono = _idDono;
       donoDoImovel.idLocatario = _idUsuarioLogado;
+      donoDoImovel.tipoDeRecibo = _selectedTipo.tipoDoPagamento;
       donoDoImovel.dataInicio =
           formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
       _cadastrarDono(donoDoImovel);
@@ -210,8 +232,29 @@ class _AluguelImovelState extends State<AluguelImovel> {
 
   @override
   void initState() {
+    _dropdownMenuItens = buildDropdownMenuItens(_tipoDePagamentos);
+    _selectedTipo = _dropdownMenuItens[0].value;
     _recuperarDados();
     super.initState();
+  }
+
+  List<DropdownMenuItem<tipoDePagamento>> buildDropdownMenuItens(List tipoDePagamentos) {
+    List<DropdownMenuItem<tipoDePagamento>> items = List();
+    for (tipoDePagamento tipos in tipoDePagamentos) {
+      items.add(
+        DropdownMenuItem(
+          value: tipos,
+          child: Text(tipos.tipoDoPagamento),
+        ),
+      );
+    }
+    return items;
+  }
+
+  onCgangeDropdownItem(tipoDePagamento selectedTipos) {
+    setState(() {
+      _selectedTipo = selectedTipos;
+    });
   }
 
   @override
@@ -273,6 +316,40 @@ class _AluguelImovelState extends State<AluguelImovel> {
                         ),
                         splashColor: Colors.blue,
                       ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8, left: 10),
+                  child: Row(
+                    //crossAxisAlignment: CrossAxisAlignment.center,
+                    //mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'Pagamento:',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      DropdownButton(
+                        icon: Icon(
+                          Icons.arrow_downward,
+                          color: Colors.blue,
+                        ),
+                        value: _selectedTipo,
+                        items: _dropdownMenuItens,
+                        onChanged: onCgangeDropdownItem,
+                        underline: Container(
+                          height: 2,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      /*
+                      SizedBox(height: 20,),
+                      Text('Selecione: ${_selectedEstado.nome}'),
+                        */
                     ],
                   ),
                 ),

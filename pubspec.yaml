@@ -43,6 +43,7 @@ dependencies:
   date_format: ^1.0.8 # formatar data
   intl: ^0.16.1
   validadores: ^1.0.2 # validadores de CPF
+  bloc_pattern: ^2.5.1
 
 
 

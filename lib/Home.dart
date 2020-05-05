@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:industries/Configuracoes.dart';
 import 'package:industries/Detalhes.dart';
 import 'package:industries/Chat.dart';
 import 'package:industries/EditarImovel.dart';
 import 'package:industries/ImovelAlugado.dart';
 import 'package:industries/MeuImovel.dart';
-import 'package:industries/model/AluguarImovel.dart';
 import 'CadastroImoveis.dart';
 
 class Home extends StatefulWidget {
@@ -23,10 +23,14 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
+
 class _HomeState extends State<Home> {
   Firestore db = Firestore.instance;
-
+  
   TextEditingController controller = TextEditingController();
+
+
+  TextEditingController editingController = TextEditingController();
   bool isLoggedIn = false;
   String _idUsuarioLogado = "";
   String _id = "";
@@ -35,8 +39,6 @@ class _HomeState extends State<Home> {
   String filter;
   var profile;
 
-
-
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
     _deletarImovel() async {
       return showDialog<void>(
@@ -44,12 +46,15 @@ class _HomeState extends State<Home> {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Deletar Imóvel', textAlign: TextAlign.center,),
+            title: Text(
+              'Deletar Imóvel',
+              textAlign: TextAlign.center,
+            ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text('Você deseja deletar este imóvel se sim, você clicara em Excluir se não clicara em cancelar!'),
-
+                  Text(
+                      'Você deseja deletar este imóvel se sim, você clicara em Excluir se não clicara em cancelar!'),
                 ],
               ),
             ),
@@ -65,7 +70,10 @@ class _HomeState extends State<Home> {
                   FlatButton(
                     child: Text('Excluir'),
                     onPressed: () {
-                      db.collection("imoveis").document(document.documentID).delete();
+                      db
+                          .collection("imoveis")
+                          .document(document.documentID)
+                          .delete();
                       Navigator.pop(context);
                     },
                   ),
@@ -75,7 +83,6 @@ class _HomeState extends State<Home> {
           );
         },
       );
-
     }
 
     List<String> itensMenu = ["Editar", "Deletar"];
@@ -85,8 +92,9 @@ class _HomeState extends State<Home> {
           print("Editar");
           Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => EditarImovel(document, widget.user,
-                  widget.photo, widget.emai, widget.uid)));
+              MaterialPageRoute(
+                  builder: (context) => EditarImovel(document, widget.user,
+                      widget.photo, widget.emai, widget.uid)));
           break;
         case "Deletar":
           print("Deletar");
@@ -94,6 +102,52 @@ class _HomeState extends State<Home> {
           break;
       }
     }
+
+    return Card(
+      child: document['idUsuario'] != _idUsuarioLogado
+          ? ListTile(
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Detalhes(document, widget.user,
+                          widget.photo, widget.emai, widget.uid))),
+              title: Text(
+                document['logadouro'],
+                textAlign: TextAlign.center,
+              ),
+              subtitle: Text(
+                document['complemento'],
+                textAlign: TextAlign.center,
+              ),
+              leading: CircleAvatar(
+                radius: 25,
+                backgroundImage: NetworkImage(document['urlImagens']),
+              ),
+            )
+          : ListTile(
+              title: Text(
+                document['logadouro'],
+                textAlign: TextAlign.center,
+              ),
+              subtitle: Text(
+                document['complemento'],
+                textAlign: TextAlign.center,
+              ),
+              leading: Icon(Icons.home),
+              trailing: PopupMenuButton<String>(
+                onSelected: _escolhaMenuItem,
+                itemBuilder: (context) {
+                  return itensMenu.map((String item) {
+                    return PopupMenuItem<String>(
+                      value: item,
+                      child: Text(item),
+                    );
+                  }).toList();
+                },
+              ),
+            ),
+    );
+    /*
     return Column(
       children: <Widget>[
         SizedBox(
@@ -147,20 +201,15 @@ class _HomeState extends State<Home> {
                 ),*/
               ),
       ],
-    );
-
-
+    );*/
   }
-
-
-
-
 
   _recuperarDados() async {
     _idUsuarioLogado = widget.uid;
 
     Firestore db = Firestore.instance;
-    DocumentSnapshot snapshot =    await db.collection("usuarios").document(_idUsuarioLogado).get();
+    DocumentSnapshot snapshot =
+        await db.collection("usuarios").document(_idUsuarioLogado).get();
     Map<String, dynamic> dados = snapshot.data;
     setState(() {
       _id = dados['idUsuario'];
@@ -168,6 +217,24 @@ class _HomeState extends State<Home> {
       _photo = dados['urlImagem'];
       print("_id: " + _id);
     });
+  }
+
+
+
+  _pesquisar() async {
+    String pesquisa = editingController.text;
+    QuerySnapshot querySnapshot = await db.collection("imoveis")
+        .where("logadouro" , isGreaterThanOrEqualTo: pesquisa)
+        .where("logadouro" , isLessThanOrEqualTo: pesquisa + "\uf8ff"  )
+        .getDocuments();
+
+    for( DocumentSnapshot item in querySnapshot.documents ) {
+      var dados = item.data;
+      setState(() {
+        pesquisa = dados['logadouro'];
+      });
+      print(pesquisa);
+    }
   }
 
   @override
@@ -229,34 +296,37 @@ class _HomeState extends State<Home> {
         child: ListView(
           children: <Widget>[
             _idUsuarioLogado == _id
-              ? UserAccountsDrawerHeader(
-                onDetailsPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Configuracoes(widget.user, widget.photo, widget.emai, widget.uid)));
-                },
-                accountName: Text('${_nome}'),
-                accountEmail: Text("${widget.emai}"),
-                currentAccountPicture: CircleAvatar(
-                  backgroundImage: _photo != null
-                    ? NetworkImage('${_photo}')
-                    : NetworkImage('${widget.photo}')
-                ),
-              )
-            : UserAccountsDrawerHeader(
-              onDetailsPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Configuracoes(widget.user, widget.photo, widget.emai, widget.uid)));
-              },
-              accountName: Text('${widget.user}'),
-              accountEmail: Text("${widget.emai}"),
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: _photo != null
-                  ? NetworkImage('${_photo}')
-                  : NetworkImage('${widget.photo}'),
-              ),
-            ),
+                ? UserAccountsDrawerHeader(
+                    onDetailsPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Configuracoes(widget.user,
+                                  widget.photo, widget.emai, widget.uid)));
+                    },
+                    accountName: Text('${_nome}'),
+                    accountEmail: Text("${widget.emai}"),
+                    currentAccountPicture: CircleAvatar(
+                        backgroundImage: _photo != null
+                            ? NetworkImage('${_photo}')
+                            : NetworkImage('${widget.photo}')),
+                  )
+                : UserAccountsDrawerHeader(
+                    onDetailsPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Configuracoes(widget.user,
+                                  widget.photo, widget.emai, widget.uid)));
+                    },
+                    accountName: Text('${widget.user}'),
+                    accountEmail: Text("${widget.emai}"),
+                    currentAccountPicture: CircleAvatar(
+                      backgroundImage: _photo != null
+                          ? NetworkImage('${_photo}')
+                          : NetworkImage('${widget.photo}'),
+                    ),
+                  ),
             Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
               child: Container(
@@ -364,7 +434,7 @@ class _HomeState extends State<Home> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => MensagemUsuario(widget.user,
-                                widget.photo, widget.emai,  widget.uid))),
+                                widget.photo, widget.emai, widget.uid))),
                   },
                   child: Container(
                     height: 50,
@@ -530,10 +600,7 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.red,
-                  onTap: () => {
-                    widget.signOut(),
-                    Navigator.pop(context)
-                  },
+                  onTap: () => {widget.signOut(), Navigator.pop(context)},
                   child: Container(
                     height: 50,
                     child: Row(
@@ -576,25 +643,50 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-      body: Material(
-        shadowColor: Colors.black,
-        child: StreamBuilder(
-          stream: Firestore.instance.collection('imoveis').snapshots(),
-          //print an integer every 2secs, 10 times
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Text("Loading..");
-            }
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(7),
+              child: TextField(
+                controller: editingController,
+                onChanged: (texto) {
+                  texto = _pesquisar();
+                },
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  labelText: "Pesquisar Imóveis",
+                  hintText: "Informe o endereço",
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32))
+                  ),
+                ),
 
-            return ListView.builder(
-              itemExtent: 80.0,
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) {
-                return _buildList(context, snapshot.data.documents[index]);
-              },
-            );
+              ),
+            ),
+            Divider(),
+            Expanded(
+              child: StreamBuilder(
+                stream: Firestore.instance.collection('imoveis').snapshots(),
+                //print an integer every 2secs, 10 times
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text("Loading..");
+                  }
 
-          },
+                  return ListView.builder(
+                    itemExtent: 80.0,
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (context, index) {
+                      return _buildList(
+                          context, snapshot.data.documents[index]);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

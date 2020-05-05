@@ -5,6 +5,8 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/Home.dart';
 
+import 'model/Imovel.dart';
+
 class ImovelAlugado extends StatefulWidget {
   final String user;
   final String photo;
@@ -40,6 +42,62 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
 
 
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
+    _cancelarContratoComDono() {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Cancelar Contrato', textAlign: TextAlign.center,),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Você deseja cancelar o contrato se sim, você clicara em Cancelar se não clicara em Voltar!'),
+
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              Row(
+                children: <Widget>[
+                  FlatButton(
+                    child: Text('Voltar'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('Cancelar'),
+                    onPressed: () {
+
+                      Imovel imovel = Imovel();
+                      imovel.logadouro = document['logadouroImovelAlugado'];
+                      imovel.complemento = document['complementoImovelAlugado'];
+                      imovel.detalhes = document['detalhesImovelAlugado'];
+                      imovel.idUsuario = document['idDono'];
+                      imovel.tipoImovel = document['tipoImovelImovelAlugado'];
+                      imovel.valor = document['valorImovelAlugado'];
+                      imovel.urlImagens = document['urlImagensImovelAlugado'];
+                      imovel.estado = document['estadoImovelAlugado'];
+                      imovel.idEstado = document['idEstadoImovelAlugado'];
+                      imovel.nomeDaImagem = document['nomeDaImagemImovelAlugado'];
+                      imovel.cpfUsuario = document['cpfDoDono'];
+                      imovel.telefoneUsuario = document['telefoneDoDono'];
+                      db.collection("imoveis")
+                          .document()
+                          .setData(imovel.toMap());
+                      db.collection("imovelAlugado").document(document['idLocatario']).collection("Detalhes").document(document.documentID).delete();
+                      db.collection("meuImovel").document(document['idImovel']).delete();
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    }
     _pagarAluguel() async {
       _idDono = document['idDono'];
       _nomeDoDono = document['nomeDoDono'];
@@ -63,7 +121,9 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                 children: <Widget>[
                   InkWell(
                     splashColor: Colors.blue,
-                    onTap: () {},
+                    onTap: () {
+                      print("Pago");
+                    },
                     child: Text("Parcela 1 " + " - Valor: " + _valor, style: TextStyle(color: Colors.blue, fontSize: 18),),
                   ),
                   Text('Parcela 2'+ " - Valor: " + _valor, style: TextStyle(color: Colors.orange)),
@@ -163,7 +223,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
           _pagarAluguel();
           break;
         case "Cancelar Contrato com Dono":
-          print("Cancelar Contrato com Dono");
+          _cancelarContratoComDono();
           break;
       }
 

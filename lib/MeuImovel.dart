@@ -23,13 +23,120 @@ class _MeuImovelState extends State<MeuImovel> {
   String _tipo = "";
   String _valor = "";
   String _locado = "";
-  String _cpf = "";
+  String _cpf, _deta, _estado, _dataInicio;
   String _telefone = "";
-  List<String> itensMenu = ["Informações", "Cancelar Contrato"];
+  String _idDoLocatario, _nomeDoLocatario, _emailDoLocatario, _cpfDoLocatario, _telefoneDoLocatario, _photoDoLocatario;
+  List<String> itensMenu = ["Informações", "Recibo do Aluguel", "Cancelar Contrato"];
 
   Firestore db = Firestore.instance;
 
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
+
+    _informacaoImovel() {
+      _idDoLocatario = document['idLocatario'];
+      _nomeDoLocatario = document['nomeDoLocatario'];
+      _emailDoLocatario = document['emailDoLocatario'];
+      _cpfDoLocatario = document['cpfUsuario'];
+      _telefoneDoLocatario = document['telefoneUsuario'];
+      _photoDoLocatario = document['urlImagemDoLocatario'];
+      _valor = document['valorDonoDoImovel'];
+      _log = document['logadouroDonoDoImovel'];
+      _comp = document['complementoDonoDoImovel'];
+      _url = document['urlImagensDonoDoImovel'];
+      _deta = document['detalhesDonoDoImovel'];
+      _tipo = document['tipoDonoDoImovel'];
+      _estado = document['estadoDoImovel'];
+      _dataInicio = document['dataInicio'];
+
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.all(10),
+            title: Text('Informação ', textAlign: TextAlign.center,),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Tipo do Imóvel: ' + _tipo + '\nEstado de: ' + _estado + "\nValor Alugado: " + _valor, textAlign: TextAlign.center,),
+                  CircleAvatar(backgroundImage: NetworkImage(_url), radius: 30,),
+                  Text("Logadouro: " + _log  + "\nComplemento: ${_comp}"  +  '\nDetalhes: ' + _deta + '\nData Inicial: ' + _dataInicio, textAlign: TextAlign.center,),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text("Informação sobre o Locatário", style: TextStyle(fontSize: 18), textAlign: TextAlign.center,),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text('Nome: ' + _nomeDoLocatario + " Email: " +_emailDoLocatario + "\nCPF: " + _cpfDoLocatario + "\nTelefone: " + _telefoneDoLocatario, textAlign: TextAlign.center,),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              Row(
+                children: <Widget>[
+                  FlatButton(
+                    child: Text('Voltar'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    _reciboDoAluguel() {
+      _idDoLocatario = document['idLocatario'];
+      _nomeDoLocatario = document['nomeDoLocatario'];
+      _emailDoLocatario = document['emailDoLocatario'];
+      _cpfDoLocatario = document['cpfUsuario'];
+      _telefoneDoLocatario = document['telefoneUsuario'];
+      _photoDoLocatario = document['urlImagemDoLocatario'];
+      _valor = document['valorDonoDoImovel'];
+      _log = document['logadouroDonoDoImovel'];
+      _comp = document['complementoDonoDoImovel'];
+      _url = document['urlImagensDonoDoImovel'];
+      _deta = document['detalhesDonoDoImovel'];
+      _tipo = document['tipoDonoDoImovel'];
+      _estado = document['estadoDoImovel'];
+      _dataInicio = document['dataInicio'];
+
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.all(10),
+            title: Text('Informação ', textAlign: TextAlign.center,),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Recibo 1: ' + "Data: " + _dataInicio, textAlign: TextAlign.center, style: TextStyle(color: Colors.green),),
+
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              Row(
+                children: <Widget>[
+                  FlatButton(
+
+                    child: Text('Voltar'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    }
 
     _cancelarContrato() async {
       return showDialog<void>(
@@ -58,6 +165,7 @@ class _MeuImovelState extends State<MeuImovel> {
                   FlatButton(
                     child: Text('Cancelar'),
                     onPressed: () {
+
                       Imovel imovel = Imovel();
                       imovel.logadouro = document['logadouroDonoDoImovel'];
                       imovel.complemento = document['complementoDonoDoImovel'];
@@ -94,7 +202,10 @@ class _MeuImovelState extends State<MeuImovel> {
     _escolhaMenuItem(String itemEscolhido) {
       switch (itemEscolhido) {
         case "Informações":
-          print("Informações");
+          _informacaoImovel();
+          break;
+        case "Recibo do Aluguel":
+          _reciboDoAluguel();
           break;
         case "Cancelar Contrato":
           _cancelarContrato();

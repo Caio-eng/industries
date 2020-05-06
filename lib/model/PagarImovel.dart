@@ -9,6 +9,16 @@ class PagarImovel {
   String _dataDoVencimento;
   String _idDoPagador;
   String _idDoRecebedor;
+  String _idDoImovel;
+  String _logadouro;
+  String _comp;
+  String _cpfDoDono;
+  String _nomeDoDono;
+  String _nome;
+  String _cpf;
+  String _tipo;
+  String _estado;
+  String _detalhes;
 
   PagarImovel();
 
@@ -23,12 +33,34 @@ class PagarImovel {
       "dataDoVencimento" : this.dataDoVencimento,
       "idDoPagador" : this.idDoPagador,
       "idDoRecebedor" : this.idDoRecebedor,
+      "idDoImovel" : this.idDoImovel,
+      "logadouro" : this.logadouro,
+      "comp" : this.comp,
+      "cpfDoDono" : this.cpfDoDono,
+      "nomeDoDono" : this.nomeDoDono,
+      "nome" : this.nome,
+      "cpf" : this.cpf,
+      "tipo" : this.tipo,
+      "estado" : this.estado,
+      "detalhes" : this.detalhes,
     };
 
     return map;
 
   }
 
+
+  String get logadouro => _logadouro;
+
+  set logadouro(String value) {
+    _logadouro = value;
+  }
+
+  String get idDoImovel => _idDoImovel;
+
+  set idDoImovel(String value) {
+    _idDoImovel = value;
+  }
 
   String get valorTotal => _valorTotal;
 
@@ -82,6 +114,54 @@ class PagarImovel {
 
   set valorDoPagamento(String value) {
     _valorDoPagamento = value;
+  }
+
+  String get comp => _comp;
+
+  set comp(String value) {
+    _comp = value;
+  }
+
+  String get cpfDoDono => _cpfDoDono;
+
+  set cpfDoDono(String value) {
+    _cpfDoDono = value;
+  }
+
+  String get nomeDoDono => _nomeDoDono;
+
+  set nomeDoDono(String value) {
+    _nomeDoDono = value;
+  }
+
+  String get nome => _nome;
+
+  set nome(String value) {
+    _nome = value;
+  }
+
+  String get cpf => _cpf;
+
+  set cpf(String value) {
+    _cpf = value;
+  }
+
+  String get tipo => _tipo;
+
+  set tipo(String value) {
+    _tipo = value;
+  }
+
+  String get estado => _estado;
+
+  set estado(String value) {
+    _estado = value;
+  }
+
+  String get detalhes => _detalhes;
+
+  set detalhes(String value) {
+    _detalhes = value;
   }
 
 

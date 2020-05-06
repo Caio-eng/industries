@@ -8,6 +8,7 @@ import 'package:industries/Chat.dart';
 import 'package:industries/EditarImovel.dart';
 import 'package:industries/ImovelAlugado.dart';
 import 'package:industries/MeuImovel.dart';
+import 'package:industries/ReciboImovel.dart';
 import 'CadastroImoveis.dart';
 
 class Home extends StatefulWidget {
@@ -476,7 +477,12 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {},
+                  onTap: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ReciboImovel(widget.uid))
+                    )
+                  },
                   child: Container(
                     height: 50,
                     child: Row(
@@ -485,13 +491,13 @@ class _HomeState extends State<Home> {
                         Row(
                           children: <Widget>[
                             Icon(
-                              Icons.settings,
+                              Icons.receipt,
                               color: Colors.blue,
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Configurações',
+                                'Recibos',
                                 style: TextStyle(
                                   fontSize: 16.0,
                                 ),

@@ -25,13 +25,22 @@ class _MeuImovelState extends State<MeuImovel> {
   String _locado = "";
   String _cpf, _deta, _estado, _dataInicio;
   String _telefone = "";
-  String _idDoLocatario, _nomeDoLocatario, _emailDoLocatario, _cpfDoLocatario, _telefoneDoLocatario, _photoDoLocatario;
-  List<String> itensMenu = ["Informações", "Recibo do Aluguel", "Cancelar Contrato"];
+  String _idDoLocatario,
+      _nomeDoLocatario,
+      _emailDoLocatario,
+      _cpfDoLocatario,
+      _telefoneDoLocatario,
+      _photoDoLocatario;
+  String _idEnvioLogado, _idEnvioDeslo, _idEnvioImovel, _idPagador;
+  List<String> itensMenu = [
+    "Informações",
+    "Recibo do Aluguel",
+    "Cancelar Contrato"
+  ];
 
   Firestore db = Firestore.instance;
 
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
-
     _informacaoImovel() {
       _idDoLocatario = document['idLocatario'];
       _nomeDoLocatario = document['nomeDoLocatario'];
@@ -54,21 +63,58 @@ class _MeuImovelState extends State<MeuImovel> {
         builder: (BuildContext context) {
           return AlertDialog(
             contentPadding: EdgeInsets.all(10),
-            title: Text('Informação ', textAlign: TextAlign.center,),
+            title: Text(
+              'Informação ',
+              textAlign: TextAlign.center,
+            ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text('Tipo do Imóvel: ' + _tipo + '\nEstado de: ' + _estado + "\nValor Alugado: " + _valor, textAlign: TextAlign.center,),
-                  CircleAvatar(backgroundImage: NetworkImage(_url), radius: 30,),
-                  Text("Logadouro: " + _log  + "\nComplemento: ${_comp}"  +  '\nDetalhes: ' + _deta + '\nData Inicial: ' + _dataInicio, textAlign: TextAlign.center,),
+                  Text(
+                    'Tipo do Imóvel: ' +
+                        _tipo +
+                        '\nEstado de: ' +
+                        _estado +
+                        "\nValor Alugado: " +
+                        _valor,
+                    textAlign: TextAlign.center,
+                  ),
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(_url),
+                    radius: 30,
+                  ),
+                  Text(
+                    "Logadouro: " +
+                        _log +
+                        "\nComplemento: ${_comp}" +
+                        '\nDetalhes: ' +
+                        _deta +
+                        '\nData Inicial: ' +
+                        _dataInicio,
+                    textAlign: TextAlign.center,
+                  ),
                   SizedBox(
                     height: 5,
                   ),
-                  Text("Informação sobre o Locatário", style: TextStyle(fontSize: 18), textAlign: TextAlign.center,),
+                  Text(
+                    "Informação sobre o Locatário",
+                    style: TextStyle(fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
                   SizedBox(
                     height: 5,
                   ),
-                  Text('Nome: ' + _nomeDoLocatario + " Email: " +_emailDoLocatario + "\nCPF: " + _cpfDoLocatario + "\nTelefone: " + _telefoneDoLocatario, textAlign: TextAlign.center,),
+                  Text(
+                    'Nome: ' +
+                        _nomeDoLocatario +
+                        " Email: " +
+                        _emailDoLocatario +
+                        "\nCPF: " +
+                        _cpfDoLocatario +
+                        "\nTelefone: " +
+                        _telefoneDoLocatario,
+                    textAlign: TextAlign.center,
+                  ),
                 ],
               ),
             ),
@@ -89,7 +135,7 @@ class _MeuImovelState extends State<MeuImovel> {
       );
     }
 
-    _reciboDoAluguel() {
+    _reciboDoAluguel() async {
       _idDoLocatario = document['idLocatario'];
       _nomeDoLocatario = document['nomeDoLocatario'];
       _emailDoLocatario = document['emailDoLocatario'];
@@ -105,18 +151,45 @@ class _MeuImovelState extends State<MeuImovel> {
       _estado = document['estadoDoImovel'];
       _dataInicio = document['dataInicio'];
 
+      String _tipoDoPagamento = document['tipoDePagamento'];
+      DocumentSnapshot snapshot3 = await db.collection("pagarImoveis").document(_idDoLocatario).collection(document['idImovelAlugado']).document('parcela1').get();
+      Map<String, dynamic> dados3 = snapshot3.data;
+
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
             contentPadding: EdgeInsets.all(10),
-            title: Text('Informação ', textAlign: TextAlign.center,),
+            title: Text(
+              'Informação ',
+              textAlign: TextAlign.center,
+            ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text('Recibo 1: ' + "Data: " + _dataInicio, textAlign: TextAlign.center, style: TextStyle(color: Colors.green),),
-
+                  dados3 == null || dados3['idDoPagador'] == null
+                  ? Text(
+                    ' Pagamento em Falta ',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.red),
+                  )
+                  :   Text(
+                    'Recibo 1: OK ',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.green),
+                  ),
+                  Text('Recibo 2', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
+                  Text('Recibo 3', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
+                  Text('Recibo 4', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
+                  Text('Recibo 5', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
+                  Text('Recibo 6', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
+                  Text('Recibo 7', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
+                  Text('Recibo 8', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
+                  Text('Recibo 9', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
+                  Text('Recibo 10', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
+                  Text('Recibo 11', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
+                  Text('Recibo 12', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
                 ],
               ),
             ),
@@ -124,7 +197,6 @@ class _MeuImovelState extends State<MeuImovel> {
               Row(
                 children: <Widget>[
                   FlatButton(
-
                     child: Text('Voltar'),
                     onPressed: () {
                       Navigator.pop(context);
@@ -144,12 +216,15 @@ class _MeuImovelState extends State<MeuImovel> {
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Cancelar Contrato', textAlign: TextAlign.center,),
+            title: Text(
+              'Cancelar Contrato',
+              textAlign: TextAlign.center,
+            ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text('Você deseja cancelar o contrato se sim, você clicara em Cancelar se não clicara em Voltar!'),
-
+                  Text(
+                      'Você deseja cancelar o contrato se sim, você clicara em Cancelar se não clicara em Voltar!'),
                 ],
               ),
             ),
@@ -162,10 +237,10 @@ class _MeuImovelState extends State<MeuImovel> {
                       Navigator.pop(context);
                     },
                   ),
-                  FlatButton(
+                  _idPagador == null
+                  ? FlatButton(
                     child: Text('Cancelar'),
                     onPressed: () {
-
                       Imovel imovel = Imovel();
                       imovel.logadouro = document['logadouroDonoDoImovel'];
                       imovel.complemento = document['complementoDonoDoImovel'];
@@ -179,15 +254,25 @@ class _MeuImovelState extends State<MeuImovel> {
                       imovel.nomeDaImagem = document['nomeDaImagemImovel'];
                       imovel.cpfUsuario = _cpf;
                       imovel.telefoneUsuario = _telefone;
-                      db.collection("imoveis")
+                      db
+                          .collection("imoveis")
                           .document()
                           .setData(imovel.toMap());
-                      db.collection("meuImovel").document(document.documentID).delete();
+                      db
+                          .collection("meuImovel")
+                          .document(document.documentID)
+                          .delete();
 
-                      db.collection("imovelAlugado").document(document['idLocatario']).collection("Detalhes").document(document['idImovelAlugado']).delete();
+                      db
+                          .collection("imovelAlugado")
+                          .document(document['idLocatario'])
+                          .collection("Detalhes")
+                          .document(document['idImovelAlugado'])
+                          .delete();
                       Navigator.pop(context);
                     },
-                  ),
+                  )
+                  : Text('Fatura Paga este mês'),
                 ],
               ),
             ],
@@ -195,9 +280,6 @@ class _MeuImovelState extends State<MeuImovel> {
         },
       );
     }
-
-
-
 
     _escolhaMenuItem(String itemEscolhido) {
       switch (itemEscolhido) {
@@ -212,9 +294,8 @@ class _MeuImovelState extends State<MeuImovel> {
           break;
       }
     }
-    if (document['idDono'] == _idUsuarioLogado) {
-      return Padding(
-          padding: const EdgeInsets.all(0),
+    if (_idPagador != null ){
+      return Card(
           child: ListTile(
             title: Text(
               document['logadouroDonoDoImovel'],
@@ -230,7 +311,7 @@ class _MeuImovelState extends State<MeuImovel> {
             ),
             trailing: PopupMenuButton<String>(
               onSelected: _escolhaMenuItem,
-              itemBuilder: (context){
+              itemBuilder: (context) {
                 return itensMenu.map((String item) {
                   return PopupMenuItem<String>(
                     value: item,
@@ -239,28 +320,70 @@ class _MeuImovelState extends State<MeuImovel> {
                 }).toList();
               },
             ),
-          )
-      );
+          ));
     } else {
-      return Text('________________________________________________________', style: TextStyle(color: Colors.grey),);
+      return Card(
+        color: Colors.red,
+          child: ListTile(
+            title: Text(
+              document['logadouroDonoDoImovel'],
+              textAlign: TextAlign.center,
+            ),
+            subtitle: Text(
+              document['complementoDonoDoImovel'],
+              textAlign: TextAlign.center,
+            ),
+            leading: CircleAvatar(
+              radius: 25,
+              backgroundImage: NetworkImage(document['urlImagensDonoDoImovel']),
+            ),
+            trailing: PopupMenuButton<String>(
+              onSelected: _escolhaMenuItem,
+              itemBuilder: (context) {
+                return itensMenu.map((String item) {
+                  return PopupMenuItem<String>(
+                    value: item,
+                    child: Text(item),
+                  );
+                }).toList();
+              },
+            ),
+          ));
     }
-
-
-
   }
-
 
   _recuperarDados() async {
     _idUsuarioLogado = widget.uid;
     Firestore db = Firestore.instance;
-    DocumentSnapshot snapshot =   await db.collection("usuarios").document(widget.uid).get();
+    DocumentSnapshot snapshot =
+        await db.collection("usuarios").document(widget.uid).get();
     Map<String, dynamic> dados = snapshot.data;
+
     _cpf = dados['cpf'];
     _telefone = dados['telefone'];
+
+    DocumentSnapshot snapshot2 = await db.collection("idEnvios").document(widget.uid).get();
+    Map<String, dynamic> dados2 = snapshot2.data;
+
+
+
+
+    setState(() {
+      _idEnvioLogado = dados2['idUsuarioLogado'];
+      _idEnvioDeslo = dados2['idUsuarioDeslogado'];
+      _idEnvioImovel = dados2['idDoImovel'];
+
+
+    });
+    DocumentSnapshot snapshot3 = await db.collection("pagarImoveis").document(_idEnvioLogado).collection(_idEnvioImovel).document('parcela1').get();
+    Map<String, dynamic> dados3 = snapshot3.data;
+    setState(() {
+      _idPagador = dados3['idDoPagador'];
+    });
+
+    print('Ola: ' + dados3['idDoPagador']);
     //print(_idUsuarioLogado);
   }
-
-
 
   @override
   void initState() {
@@ -275,21 +398,35 @@ class _MeuImovelState extends State<MeuImovel> {
         centerTitle: true,
         title: Text('Meu Imóveis'),
       ),
-      body: StreamBuilder(
-        stream: Firestore.instance.collection('meuImovel').snapshots(),
-        //print an integer every 2secs, 10 times
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Text("Loading..");
-          }
-          return ListView.builder(
-            itemExtent: 80.0,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-              return _buildList(context, snapshot.data.documents[index]);
-            },
-          );
-        },
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Divider(),
+            Expanded(
+              child: StreamBuilder(
+                stream: Firestore.instance
+                    .collection('meuImovel')
+                    .where("idDono", isEqualTo: widget.uid)
+                    .snapshots(),
+                //print an integer every 2secs, 10 times
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text("Loading..");
+                  }
+                  return ListView.builder(
+                    itemExtent: 80.0,
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (context, index) {
+                      return _buildList(
+                          context, snapshot.data.documents[index]);
+                    },
+                  );
+                },
+              ),
+            ),
+
+          ],
+        ),
       ),
     );
   }

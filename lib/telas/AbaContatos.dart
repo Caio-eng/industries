@@ -42,7 +42,6 @@ class _AbaContatosState extends State<AbaContatos> {
   }
 
   _recuperarDadosUsuario() async {
-
     _idUsuarioLogado = widget.uid;
     _emailUsuarioLogado = widget.emai;
     _nomeUsuarioLogado = widget.user;
@@ -78,6 +77,7 @@ class _AbaContatosState extends State<AbaContatos> {
                 itemBuilder: (_, indice) {
                   List<Usuario> listaItens = snapshot.data;
                   Usuario usuario = listaItens[indice];
+
 
                   return ListTile(
                     onTap: () {

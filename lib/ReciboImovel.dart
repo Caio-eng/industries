@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:industries/model/IdEnviar.dart';
 
 class ReciboImovel extends StatefulWidget {
   final String uid;
@@ -13,7 +14,7 @@ class _ReciboImovelState extends State<ReciboImovel> {
   String _logadouro, _cpfDono, _nomeDono, _nome, _cpf, _comp, _estado, _tipoDoImo, _tipoDoPg;
 
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
-    if (document['idDoPagador'] == widget.uid || document['idDoRecebedor'] == _idEnvioDeslo) {
+    if (document['idDoPagador'] == _logado || document['idDoRecebedor'] == _idEnvioDeslo) {
       return Card(
           child: ListTile(
             title: Text(
@@ -39,21 +40,21 @@ class _ReciboImovelState extends State<ReciboImovel> {
     _logado = widget.uid;
     print(_logado);
     Firestore db = Firestore.instance;
-    DocumentSnapshot snapshot = await db.collection("idEnvios").document(widget.uid).get();
-    Map<String, dynamic> dados = snapshot.data;
+    QuerySnapshot querySnapshot = await db.collection("idEnvios").where('idUsuarioLogado', isEqualTo: _logado).getDocuments();
 
+    for (DocumentSnapshot item in querySnapshot.documents) {
+      var dados = item.data;
 
-    setState(() {
-      _idEnvioLogado = dados['idUsuarioLogado'];
-      _idEnvioDeslo = dados['idUsuarioDeslogado'];
-      _idEnvioImovel = dados['idDoImovel'];
+      setState(() {
+        _idEnvioLogado = dados['idUsuarioLogado'];
+        _idEnvioDeslo = dados['idUsuarioDeslogado'];
+        _idEnvioImovel = dados['idDoImovel'];
 
-
-    });
-
-    print("Id Logado: " + _idEnvioLogado);
-    print("Id Deslogado: " + _idEnvioDeslo);
-    print("Id Imovel Referente: " + _idEnvioImovel);
+        print("1: " + _idEnvioLogado);
+        print("2: " + _idEnvioDeslo);
+      });
+     
+    }
 
 
   }

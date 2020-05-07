@@ -9,6 +9,7 @@ import 'package:industries/EditarImovel.dart';
 import 'package:industries/ImovelAlugado.dart';
 import 'package:industries/MeuImovel.dart';
 import 'package:industries/ReciboImovel.dart';
+import 'package:industries/model/Imovel.dart';
 import 'CadastroImoveis.dart';
 
 class Home extends StatefulWidget {
@@ -204,6 +205,51 @@ class _HomeState extends State<Home> {
       ],
     );*/
   }
+/*
+  Future<List<Imovel>> _recuperarImoveis() async {
+    QuerySnapshot querySnapshot = await db.collection("imoveis").getDocuments();
+    List<Imovel> listaImoveis = List();
+    for (DocumentSnapshot item in querySnapshot.documents) {
+      var dados = item.data;
+
+      Imovel imovel = Imovel();
+      imovel.estado = dados['estado'];
+      imovel.logadouro = dados['logadouro'];
+      imovel.complemento = dados['complemento'];
+      imovel.tipoImovel = dados['tipoImovel'];
+      imovel.valor = dados['valor'];
+      imovel.idUsuario = dados['idUsuario'];
+      imovel.urlImagens = dados['urlImagens'];
+      imovel.detalhes = dados['detalhes'];
+      imovel.idEstado = dados['idEstado'];
+      imovel.nomeDaImagem = dados['nomeDaImagem'];
+      imovel.telefoneUsuario = dados['telefoneUsuario'];
+      imovel.cpfUsuario = dados['cpfUsuario'];
+      print(dados['estado']);
+
+      listaImoveis.add(imovel);
+    }
+    return listaImoveis;
+  }
+
+ */
+  _pesquisar() async {
+    String pesquisa = editingController.text;
+    QuerySnapshot querySnapshot = await db.collection("imoveis")
+        .where("logadouro" , isGreaterThanOrEqualTo: pesquisa)
+        .where("logadouro" , isLessThanOrEqualTo: pesquisa + "\uf8ff"  )
+        .getDocuments();
+
+    for( DocumentSnapshot item in querySnapshot.documents ) {
+      var dados = item.data;
+      setState(() {
+        pesquisa = dados['logadouro'];
+      });
+
+      print(pesquisa);
+    }
+    return pesquisa;
+  }
 
   _recuperarDados() async {
     _idUsuarioLogado = widget.uid;
@@ -220,26 +266,9 @@ class _HomeState extends State<Home> {
     });
   }
 
-
-
-  _pesquisar() async {
-    String pesquisa = editingController.text;
-    QuerySnapshot querySnapshot = await db.collection("imoveis")
-        .where("logadouro" , isGreaterThanOrEqualTo: pesquisa)
-        .where("logadouro" , isLessThanOrEqualTo: pesquisa + "\uf8ff"  )
-        .getDocuments();
-
-    for( DocumentSnapshot item in querySnapshot.documents ) {
-      var dados = item.data;
-      setState(() {
-        pesquisa = dados['logadouro'];
-      });
-      print(pesquisa);
-    }
-  }
-
   @override
   void initState() {
+    _pesquisar();
     _recuperarDados();
     controller.addListener(() {
       setState(() {
@@ -652,12 +681,14 @@ class _HomeState extends State<Home> {
       body: Container(
         child: Column(
           children: <Widget>[
+            Divider(),
             Padding(
               padding: EdgeInsets.all(7),
               child: TextField(
                 controller: editingController,
                 onChanged: (texto) {
                   texto = _pesquisar();
+
                 },
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
@@ -672,6 +703,7 @@ class _HomeState extends State<Home> {
               ),
             ),
             Divider(),
+
             Expanded(
               child: StreamBuilder(
                 stream: Firestore.instance.collection('imoveis').snapshots(),
@@ -684,7 +716,7 @@ class _HomeState extends State<Home> {
                   return ListView.builder(
                     itemExtent: 80.0,
                     itemCount: snapshot.data.documents.length,
-                    itemBuilder: (context, index) {
+                    itemBuilder: (_, index) {
                       return _buildList(
                           context, snapshot.data.documents[index]);
                     },

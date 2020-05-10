@@ -153,15 +153,27 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
       _numero = document['numeroImovelAlugado'];
       DocumentSnapshot snapshot3 = await db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela1').get();
       Map<String, dynamic> dados3 = snapshot3.data;
+
+      DocumentSnapshot snapshot4 = await db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela2').get();
+      Map<String, dynamic> dados4 = snapshot4.data;
+
+      final todayDate = DateTime.now();
+      print(todayDate.month + 1);
+      String dia;
+      String mes1;
+      String ano;
+      dia = todayDate.day.toString();
+      mes1 = (todayDate.month + 1).toString();
+      ano = todayDate.year.toString();
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Parcelas do Aluguel',
+              'Parcelas do Aluguel\nATENÇÃO: AO CLICAR SERA EFETUADO O PAGAMENTO AUTOMATICAMENTE',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 25),
+              style: TextStyle(fontSize: 18),
             ),
             content: SingleChildScrollView(
               child: ListBody(
@@ -204,7 +216,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                       print("Pago");
                     },
                     child: Text(
-                      "Parcela 1 " + " - Valor: " + _valor,
+                      "Parcela 1 " + " - Valor: " + _valor + "\nData de Venc: ${formatDate(_date, [dd, '/', mm, '/', yyyy]).toString()}",
                       style: TextStyle(color: Colors.blue, fontSize: 18),
                     ),
                   )
@@ -212,8 +224,52 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                     "Parcela 1 " + " - Paga",
                     style: TextStyle(color: Colors.green, fontSize: 18),
                   ),
-                  Text('Parcela 2' + " - Valor: " + _valor,
-                      style: TextStyle(color: Colors.orange)),
+                  dados4 == null || dados4['idDoPagador'] == null
+                      ? InkWell(
+                    splashColor: Colors.blue,
+                    onTap: () {
+                      PagarImovel pagarImovel = PagarImovel();
+                      pagarImovel.idDoPagador = widget.uid;
+                      pagarImovel.idDoRecebedor = _idDono;
+                      pagarImovel.tipoDoPagamento = _tipoDoPagamento;
+                      pagarImovel.dataDoPagamento = formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
+                      pagarImovel.valorDoPagamento = _valor;
+                      pagarImovel.juroDeAtraso = "0";
+                      pagarImovel.valorTotal = _valor;
+                      pagarImovel.idDoImovel = document['idImovel'];
+                      pagarImovel.logadouro = _log;
+                      pagarImovel.comp = _comp;
+                      pagarImovel.cidade = _cidade;
+                      pagarImovel.cep = _cep;
+                      pagarImovel.bairro = _bairro;
+                      pagarImovel.numero = _numero;
+                      pagarImovel.cpfDoDono = _cpfDoDono;
+                      pagarImovel.nomeDoDono = _nomeDoDono;
+                      pagarImovel.nome = nome;
+                      pagarImovel.cpf = cpf;
+                      pagarImovel.tipo = _tipo;
+                      pagarImovel.estado = _estado;
+                      pagarImovel.detalhes = _detalhes;
+                      IdEnviar idEnviar = IdEnviar();
+                      idEnviar.idUsuarioLogado = widget.uid;
+                      idEnviar.idUsuarioDeslogado = _idDono;
+                      idEnviar.idDoImovel = document['idImovel'];
+                      db.collection("idEnvios").document(widget.uid).setData(idEnviar.toMap());
+                      db.collection('idEnvios').document(_idDono).setData(idEnviar.toMap());
+                      //db.collection("idEnvios").document(_log).setData(idEnviar.toMap());
+                      db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela2').setData(pagarImovel.toMap());
+                      Navigator.pop(context);
+                      print("Pago");
+                    },
+                    child: Text(
+                      "Parcela 2 " + " - Valor: " + _valor + "\nData de Venc: " + dia + '/' + mes1 + '/' + ano,
+                      style: TextStyle(color: Colors.orange, fontSize: 18),
+                    ),
+                  )
+                      : Text(
+                    "Parcela 2 " + " - Paga",
+                    style: TextStyle(color: Colors.green, fontSize: 18),
+                  ),
                   Text('Parcela 3' + " - Valor: " + _valor,
                       style: TextStyle(color: Colors.orange)),
                   Text('Parcela 4' + " - Valor: " + _valor,

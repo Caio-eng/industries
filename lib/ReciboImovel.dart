@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/model/IdEnviar.dart';
 
@@ -13,19 +14,25 @@ class _ReciboImovelState extends State<ReciboImovel> {
   String _logado, _idEnvioLogado, _idEnvioDeslo, _idEnvioImovel, _dataIni;
   String _logadouro, _cpfDono, _nomeDono, _nome, _cpf, _comp, _estado, _tipoDoImo, _tipoDoPg;
 
+
+
+
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
+    final todayDate = DateTime.now();
+    print(todayDate.month + 1);
+
     if (document['idDoPagador'] == _logado || document['idDoRecebedor'] == _idEnvioDeslo) {
       return Card(
           child: ListTile(
             title: Text(
               document['logadouro'] + ' - ' + document['bairro'] + ' CEP: ${document['cep']}' + '\n' + document['comp'] + ' N°: ${document['numero']}' +
-                  '\n' + 'Nome do Pagador: ${document['nome'] +  '\nCPF do Pagador: ${document['cpf']}'}',
+                  '\n' + 'Nome do Pagador: ${document['nome'] +  '\nCPF do Pagador: ${document['cpf']}'}' + '\nData de pagamento: ${document['dataDoPagamento']}',
               textAlign: TextAlign.center,
             ),
             subtitle: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Text(
-                'Nome do Dono: ${document['nomeDoDono'] + '\nCPF do Dono: ${document['cpfDoDono']}'  + '\nParcela 1' + ' - Valor Pago: ' + document['valorTotal']}',
+                'Nome do Dono: ${document['nomeDoDono'] + '\nCPF do Dono: ${document['cpfDoDono']}'  + '\n ${document.documentID}' + ' - Valor Pago: ' + document['valorTotal']}',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               ),
@@ -41,7 +48,7 @@ class _ReciboImovelState extends State<ReciboImovel> {
     _logado = widget.uid;
     print(_logado);
     Firestore db = Firestore.instance;
-    QuerySnapshot querySnapshot = await db.collection("idEnvios").where('idUsuarioLogado', isEqualTo: _idEnvioImovel).getDocuments();
+    QuerySnapshot querySnapshot = await db.collection("idEnvios").where('idUsuarioLogado', isEqualTo: widget.uid).getDocuments();
 
     for (DocumentSnapshot item in querySnapshot.documents) {
       var dados = item.data;
@@ -97,7 +104,7 @@ class _ReciboImovelState extends State<ReciboImovel> {
                     return Text("Loading..");
                   }
                   return ListView.builder(
-                    itemExtent: 160,
+                    itemExtent: 185,
                     itemCount: snapshot.data.documents.length,
                     itemBuilder: (context, index) {
                       return _buildList(

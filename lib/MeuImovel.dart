@@ -31,7 +31,7 @@ class _MeuImovelState extends State<MeuImovel> {
       _cpfDoLocatario,
       _telefoneDoLocatario,
       _photoDoLocatario;
-  String _idEnvioLogado, _idEnvioDeslo, _idEnvioImovel, _idPagador, _idReceptor;
+  String _idEnvioLogado, _idEnvioDeslo, _idEnvioImovel, _idPagador, _idReceptor, _idPagador1, _idReceptor1;
   List<String> itensMenu = [
     "Informações",
     "Recibo do Aluguel",
@@ -165,6 +165,16 @@ class _MeuImovelState extends State<MeuImovel> {
           .get();
       Map<String, dynamic> dados3 = snapshot3.data;
 
+      DocumentSnapshot snapshot4 = await db
+          .collection("pagarImoveis")
+          .document(_idDoLocatario)
+          .collection(document['idImovelAlugado'])
+          .document('parcela2')
+          .get();
+      Map<String, dynamic> dados4 = snapshot4.data;
+
+      dados3['dataDoPagamento']
+
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -185,14 +195,20 @@ class _MeuImovelState extends State<MeuImovel> {
                           style: TextStyle(color: Colors.red),
                         )
                       : Text(
-                          'Recibo 1: OK ',
+                          'Recibo 1: OK\nData do Rec: ${dados3['dataDoPagamento']}',
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.green),
                         ),
-                  Text(
-                    'Recibo 2',
+                  dados4 == null || dados4['idDoPagador'] == null
+                      ? Text(
+                    ' Recibo 2',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.orange),
+                  )
+                      : Text(
+                    'Recibo 2: OK ',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.green),
                   ),
                   Text(
                     'Recibo 3',

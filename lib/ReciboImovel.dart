@@ -40,7 +40,7 @@ class _ReciboImovelState extends State<ReciboImovel> {
     _logado = widget.uid;
     print(_logado);
     Firestore db = Firestore.instance;
-    QuerySnapshot querySnapshot = await db.collection("idEnvios").where('idUsuarioLogado', isEqualTo: _logado).getDocuments();
+    QuerySnapshot querySnapshot = await db.collection("idEnvios").where('idUsuarioLogado', isEqualTo: _idEnvioImovel).getDocuments();
 
     for (DocumentSnapshot item in querySnapshot.documents) {
       var dados = item.data;
@@ -53,7 +53,14 @@ class _ReciboImovelState extends State<ReciboImovel> {
         print("1: " + _idEnvioLogado);
         print("2: " + _idEnvioDeslo);
       });
-     
+
+      DocumentSnapshot snapshot =
+      await db.collection("meuImovel").document(_idEnvioImovel).get();
+      Map<String, dynamic> dados2 = snapshot.data;
+      print('Logadouro: ' + dados2['logadouroDonoDoImovel']);
+
+
+
     }
 
 

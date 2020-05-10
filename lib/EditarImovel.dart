@@ -25,9 +25,10 @@ class EditarImovel extends StatefulWidget {
 class _EditarImovelState extends State<EditarImovel> {
   TextEditingController _controllerLogadouro = TextEditingController();
   TextEditingController _controllerComplemento = TextEditingController();
-
+  TextEditingController _controllerBairro = TextEditingController();
   TextEditingController _controllerDetalhes = TextEditingController();
   var _controller = new MoneyMaskedTextController(leftSymbol: 'R\$ ');
+  var controllerNumero = new MaskedTextController(mask: '000');
   String estad;
 
   List<Estado> _estados = Estado.getEstados();
@@ -39,7 +40,7 @@ class _EditarImovelState extends State<EditarImovel> {
   bool _subindoImagem = false;
   String _cpfUsuario = "";
   String _telefoneUsuario = "";
-
+  String _mensagemErro = "";
   String _radioValue;
   String choice;
 
@@ -129,28 +130,36 @@ class _EditarImovelState extends State<EditarImovel> {
   _atualizarUrlImagemFirestore(String url){
 
     String log = _controllerLogadouro.text;
+    String bairro = _controllerBairro.text;
     String comp = _controllerComplemento.text;
     String valor = _controller.text;
     String deta = _controllerDetalhes.text;
     String estado = _selectedEstado.nome;
     int i = _selectedEstado.id;
+    String sgl = _selectedEstado.sigla;
     String tipoImovel = _radioValue;
+    String numero = controllerNumero.text;
+
     Map<String, dynamic> dadosAtualizar = {
       "urlImagens" : url,
       "logadouro" : log,
       "estado" : estado,
       "complemento" : comp,
+      "bairro" : bairro,
       "detalhes" : deta,
       "tipoImovel" : tipoImovel,
       "valor" : valor,
       "idEstado" : i - 1,
       "telefoneUsuario" : _telefoneUsuario,
       "cpfUsuario" : _cpfUsuario,
+      "siglaEstado" : sgl,
+      "numero" : numero,
     };
 
     Imovel imovel = Imovel();
     imovel.estado = estado;
     imovel.logadouro = log;
+    imovel.bairro = bairro;
     imovel.complemento = comp;
     imovel.tipoImovel = tipoImovel;
     imovel.valor = valor;
@@ -159,6 +168,8 @@ class _EditarImovelState extends State<EditarImovel> {
     imovel.urlImagens = url;
     imovel.telefoneUsuario = _telefoneUsuario;
     imovel.cpfUsuario = _cpfUsuario;
+    imovel.siglaEstado = sgl;
+    imovel.numero = numero;
     imovel.idUsuario = widget.document['idUsuario'];
     imovel.nomeDaImagem = widget.document['nomeDaImagem'];
 
@@ -181,7 +192,9 @@ class _EditarImovelState extends State<EditarImovel> {
 
     _controllerLogadouro.text = widget.document['logadouro'];
     _controllerComplemento.text = widget.document['complemento'];
+    _controllerBairro.text = widget.document['bairro'];
     _controllerDetalhes.text = widget.document['detalhes'];
+    controllerNumero.text = widget.document['numero'];
     _controller.text = widget.document['valor'];
     _radioValue = widget.document['tipoImovel'];
 
@@ -331,12 +344,48 @@ class _EditarImovelState extends State<EditarImovel> {
                 Padding(
                   padding: EdgeInsets.only(bottom: 8),
                   child: TextField(
+                    controller: _controllerBairro,
+                    //autofocus: true,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(fontSize: 20),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                      hintText: "Digite o setor",
+                      labelText: 'Bairro',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32)),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: TextField(
+                    controller: controllerNumero,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(fontSize: 20),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                      labelText: 'Número',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32)
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: TextField(
                     controller: _controllerComplemento,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: "Complemento",
+                        hintText: "Digite um poto de Referencia",
+                        labelText: "Complemento (Opcional)",
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
@@ -409,7 +458,7 @@ class _EditarImovelState extends State<EditarImovel> {
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: "Valor",
+                        labelText: "Valor do aluguel",
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
@@ -424,7 +473,8 @@ class _EditarImovelState extends State<EditarImovel> {
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: "Descrição",
+                        labelText: "Descrição",
+                        hintText: 'Digite a descrição do imóvel',
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(

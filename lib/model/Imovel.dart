@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 class Imovel {
 
   String _logadouro;
+  String _numero;
   String _complemento;
   String _tipoImovel;
   String _cidade;
   String _estado;
+  String _cep;
   String _bairro;
   String _detalhes;
   String _idUsuario;
@@ -12,6 +16,9 @@ class Imovel {
   String _valor;
   String _nomeDaImagem;
   int _idEstado;
+  String _ibge;
+  String _gia;
+  String _siglaEstado;
   String _telefoneUsuario;
   String _cpfUsuario;
 
@@ -20,7 +27,11 @@ class Imovel {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
       "estado" : this.estado,
+      "cep" : this.cep,
+      "siglaEstado" : this.siglaEstado,
       "logadouro" : this.logadouro,
+      "bairro" : this.bairro,
+      "numero" : this.numero,
       "complemento" : this.complemento,
       "tipoImovel" : this.tipoImovel,
       "valor" : this.valor,
@@ -37,6 +48,30 @@ class Imovel {
 
   }
 
+
+  String get ibge => _ibge;
+
+  set ibge(String value) {
+    _ibge = value;
+  }
+
+  String get cep => _cep;
+
+  set cep(String value) {
+    _cep = value;
+  }
+
+  String get siglaEstado => _siglaEstado;
+
+  set siglaEstado(String value) {
+    _siglaEstado = value;
+  }
+
+  String get numero => _numero;
+
+  set numero(String value) {
+    _numero = value;
+  }
 
   String get telefoneUsuario => _telefoneUsuario;
 
@@ -120,6 +155,12 @@ class Imovel {
 
   set cpfUsuario(String value) {
     _cpfUsuario = value;
+  }
+
+  String get gia => _gia;
+
+  set gia(String value) {
+    _gia = value;
   }
 
 

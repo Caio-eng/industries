@@ -10,8 +10,8 @@ import 'package:industries/model/Imovel.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
-import 'package:industries/model/Usuario.dart';
-import 'package:validadores/Validador.dart';
+
+
 
 class CadastroImoveis extends StatefulWidget {
   final String user;
@@ -67,13 +67,15 @@ class Estado {
 class _CadastroImoveisState extends State<CadastroImoveis> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _controllerLogadouro = TextEditingController();
-
+  TextEditingController _controllerBairro = TextEditingController();
   TextEditingController _controllerComplemento = TextEditingController();
 
   TextEditingController _controllerDetalhes = TextEditingController();
   var controllerTelefone = new MaskedTextController(mask: '(00) 00000 - 0000');
+  var controllerNumero = new MaskedTextController(mask: '000');
   var controller = new MoneyMaskedTextController(leftSymbol: 'R\$ ');
   var controllerCPF = new MaskedTextController(mask: '000.000.000-00');
+  var controllerCep = new MaskedTextController(mask: '00.000-000');
   String _idUsuario;
   String _urlImagemRecuperada;
   String _nomeDaFoto;
@@ -86,6 +88,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   String _cpfUsuario;
 
   String _mensagemErro = "";
+
 
   Firestore db = Firestore.instance;
 
@@ -123,45 +126,51 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     int i = _selectedEstado.id;
     String estad = _selectedEstado.nome;
     String sigl = _selectedEstado.sigla;
-
-    if (logadouro.isNotEmpty && logadouro.length > 4) {
-      if (complemento.isNotEmpty) {
+    String bairro = _controllerBairro.text;
+    String numero = controllerNumero.text;
+    String cep = controllerCPF.text;
+    if (logadouro.isNotEmpty && logadouro.length >= 4) {
         if (tipoImovel.isNotEmpty) {
           if (valor.isNotEmpty) {
             if (_urlImagemRecuperada.isNotEmpty) {
-
-                Imovel imovel = Imovel();
-                imovel.estado = estad;
-                imovel.logadouro = logadouro;
-                imovel.complemento = complemento;
-                imovel.tipoImovel = tipoImovel;
-                imovel.valor = valor;
-                imovel.idEstado = i - 1;
-                imovel.detalhes = detalhes;
-                imovel.urlImagens = _urlImagemRecuperada;
-                imovel.idUsuario = widget.uid;
-                imovel.nomeDaImagem = _nomeDaFoto;
-                imovel.telefoneUsuario = _telefoneUsuario;
-                imovel.cpfUsuario = _cpfUsuario;
-
-
-                _cadastrarImovel(imovel);
+              Imovel imovel = Imovel();
+              imovel.estado = estad;
+              imovel.logadouro = logadouro;
+              imovel.complemento = complemento;
+              imovel.tipoImovel = tipoImovel;
+              imovel.valor = valor;
+              imovel.idEstado = i - 1;
+              imovel.detalhes = detalhes;
+              imovel.urlImagens = _urlImagemRecuperada;
+              imovel.idUsuario = widget.uid;
+              imovel.nomeDaImagem = _nomeDaFoto;
+              imovel.telefoneUsuario = _telefoneUsuario;
+              imovel.cpfUsuario = _cpfUsuario;
+              imovel.bairro = bairro;
+              imovel.siglaEstado = sigl;
+              imovel.numero = numero;
+              imovel.cep = cep;
+              _cadastrarImovel(imovel);
             } else {
-              _mensagemErro = "Selecioce uma imagem";
+              setState(() {
+                _mensagemErro = "Selecioce uma imagem";
+              });
             }
           } else {
-            _mensagemErro = "Digite um valor";
+            setState(() {
+              _mensagemErro = "Digite um valor";
+            });
           }
         } else {
           setState(() {
             _mensagemErro = "O Tipo do Imóvel é obrigatorio";
           });
         }
-      } else {
-        _mensagemErro = "O complemento é obrigatorio";
-      }
     } else {
-      _mensagemErro = "Logaroudo tem que ter mais de 6 letras";
+      setState(() {
+        _mensagemErro = "Logaroudo tem que ter mais de 4 letras";
+      });
+
     }
   }
 
@@ -256,6 +265,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     Map<String, dynamic> dados = snapshot.data;
     _cpfUsuario = dados['cpf'];
     _telefoneUsuario = dados['telefone'];
+
 
 
   }
@@ -397,17 +407,71 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
+                      controller: controllerCPF,
+                      //autofocus: true,
+                      keyboardType: TextInputType.text,
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                        hintText: 'Digite o seu CEP',
+                        labelText: 'CEP',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(32)),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: TextField(
                       controller: _controllerLogadouro,
                       //autofocus: true,
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: "Logradouro",
+                        hintText: "Digite seu endereço",
+                        labelText: 'Logadouro',
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(32)),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: TextField(
+                      controller: _controllerBairro,
+                      //autofocus: true,
+                      keyboardType: TextInputType.text,
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                        hintText: "Digite o setor",
+                        labelText: 'Bairro',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(32)),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: TextField(
+                      controller: controllerNumero,
+                      keyboardType: TextInputType.text,
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                        labelText: 'Número',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32)
+                        ),
                       ),
                     ),
                   ),
@@ -419,7 +483,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                          hintText: "Complemento",
+                          hintText: "Digite um ponto de Referencia",
+                          labelText: "Complemento (opcional)",
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -493,7 +558,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                          hintText: "Valor",
+                          labelText: "Valor do aluguel",
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -508,7 +573,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                          hintText: "Descrição",
+                          labelText: "Descrição",
+                          hintText: 'Digite a descrição do imóvel',
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(

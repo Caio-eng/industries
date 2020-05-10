@@ -31,7 +31,7 @@ class _MeuImovelState extends State<MeuImovel> {
       _cpfDoLocatario,
       _telefoneDoLocatario,
       _photoDoLocatario;
-  String _idEnvioLogado, _idEnvioDeslo, _idEnvioImovel, _idPagador;
+  String _idEnvioLogado, _idEnvioDeslo, _idEnvioImovel, _idPagador, _idReceptor;
   List<String> itensMenu = [
     "Informações",
     "Recibo do Aluguel",
@@ -152,7 +152,12 @@ class _MeuImovelState extends State<MeuImovel> {
       _dataInicio = document['dataInicio'];
 
       String _tipoDoPagamento = document['tipoDePagamento'];
-      DocumentSnapshot snapshot3 = await db.collection("pagarImoveis").document(_idDoLocatario).collection(document['idImovelAlugado']).document('parcela1').get();
+      DocumentSnapshot snapshot3 = await db
+          .collection("pagarImoveis")
+          .document(_idDoLocatario)
+          .collection(document['idImovelAlugado'])
+          .document('parcela1')
+          .get();
       Map<String, dynamic> dados3 = snapshot3.data;
 
       return showDialog<void>(
@@ -169,27 +174,71 @@ class _MeuImovelState extends State<MeuImovel> {
               child: ListBody(
                 children: <Widget>[
                   dados3 == null || dados3['idDoPagador'] == null
-                  ? Text(
-                    ' Pagamento em Falta ',
+                      ? Text(
+                          ' Pagamento em Falta ',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.red),
+                        )
+                      : Text(
+                          'Recibo 1: OK ',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.green),
+                        ),
+                  Text(
+                    'Recibo 2',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.red),
-                  )
-                  :   Text(
-                    'Recibo 1: OK ',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.green),
+                    style: TextStyle(color: Colors.orange),
                   ),
-                  Text('Recibo 2', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
-                  Text('Recibo 3', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
-                  Text('Recibo 4', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
-                  Text('Recibo 5', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
-                  Text('Recibo 6', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
-                  Text('Recibo 7', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
-                  Text('Recibo 8', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
-                  Text('Recibo 9', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
-                  Text('Recibo 10', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
-                  Text('Recibo 11', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
-                  Text('Recibo 12', textAlign: TextAlign.center, style: TextStyle(color: Colors.orange),),
+                  Text(
+                    'Recibo 3',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                  Text(
+                    'Recibo 4',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                  Text(
+                    'Recibo 5',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                  Text(
+                    'Recibo 6',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                  Text(
+                    'Recibo 7',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                  Text(
+                    'Recibo 8',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                  Text(
+                    'Recibo 9',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                  Text(
+                    'Recibo 10',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                  Text(
+                    'Recibo 11',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                  Text(
+                    'Recibo 12',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.orange),
+                  ),
                 ],
               ),
             ),
@@ -237,42 +286,46 @@ class _MeuImovelState extends State<MeuImovel> {
                       Navigator.pop(context);
                     },
                   ),
-                  _idPagador == null
-                  ? FlatButton(
-                    child: Text('Cancelar'),
-                    onPressed: () {
-                      Imovel imovel = Imovel();
-                      imovel.logadouro = document['logadouroDonoDoImovel'];
-                      imovel.complemento = document['complementoDonoDoImovel'];
-                      imovel.detalhes = document['detalhesDonoDoImovel'];
-                      imovel.idUsuario = document['idDono'];
-                      imovel.tipoImovel = document['tipoDonoDoImovel'];
-                      imovel.valor = document['valorDonoDoImovel'];
-                      imovel.urlImagens = document['urlImagensDonoDoImovel'];
-                      imovel.estado = document['estadoDoImovel'];
-                      imovel.idEstado = document['idEstadoImovel'];
-                      imovel.nomeDaImagem = document['nomeDaImagemImovel'];
-                      imovel.cpfUsuario = _cpf;
-                      imovel.telefoneUsuario = _telefone;
-                      db
-                          .collection("imoveis")
-                          .document()
-                          .setData(imovel.toMap());
-                      db
-                          .collection("meuImovel")
-                          .document(document.documentID)
-                          .delete();
+                  _idReceptor == widget.uid
+                      ? Text('Fatura Paga este mês')
+                      : FlatButton(
+                          child: Text('Cancelar'),
+                          onPressed: () {
+                            Imovel imovel = Imovel();
+                            imovel.logadouro =
+                                document['logadouroDonoDoImovel'];
+                            imovel.complemento =
+                                document['complementoDonoDoImovel'];
+                            imovel.detalhes = document['detalhesDonoDoImovel'];
+                            imovel.idUsuario = document['idDono'];
+                            imovel.tipoImovel = document['tipoDonoDoImovel'];
+                            imovel.valor = document['valorDonoDoImovel'];
+                            imovel.urlImagens =
+                                document['urlImagensDonoDoImovel'];
+                            imovel.estado = document['estadoDoImovel'];
+                            imovel.idEstado = document['idEstadoImovel'];
+                            imovel.nomeDaImagem =
+                                document['nomeDaImagemImovel'];
+                            imovel.cpfUsuario = _cpf;
+                            imovel.telefoneUsuario = _telefone;
+                            db
+                                .collection("imoveis")
+                                .document()
+                                .setData(imovel.toMap());
+                            db
+                                .collection("meuImovel")
+                                .document(document.documentID)
+                                .delete();
 
-                      db
-                          .collection("imovelAlugado")
-                          .document(document['idLocatario'])
-                          .collection("Detalhes")
-                          .document(document['idImovelAlugado'])
-                          .delete();
-                      Navigator.pop(context);
-                    },
-                  )
-                  : Text('Fatura Paga este mês'),
+                            db
+                                .collection("imovelAlugado")
+                                .document(document['idLocatario'])
+                                .collection("Detalhes")
+                                .document(document['idImovelAlugado'])
+                                .delete();
+                            Navigator.pop(context);
+                          },
+                        ),
                 ],
               ),
             ],
@@ -294,36 +347,37 @@ class _MeuImovelState extends State<MeuImovel> {
           break;
       }
     }
-    if (_idPagador != null ){
+
+    if (_idReceptor == widget.uid) {
       return Card(
           child: ListTile(
-            title: Text(
-              document['logadouroDonoDoImovel'],
-              textAlign: TextAlign.center,
-            ),
-            subtitle: Text(
-              document['complementoDonoDoImovel'],
-              textAlign: TextAlign.center,
-            ),
-            leading: CircleAvatar(
-              radius: 25,
-              backgroundImage: NetworkImage(document['urlImagensDonoDoImovel']),
-            ),
-            trailing: PopupMenuButton<String>(
-              onSelected: _escolhaMenuItem,
-              itemBuilder: (context) {
-                return itensMenu.map((String item) {
-                  return PopupMenuItem<String>(
-                    value: item,
-                    child: Text(item),
-                  );
-                }).toList();
-              },
-            ),
-          ));
+        title: Text(
+          document['logadouroDonoDoImovel'],
+          textAlign: TextAlign.center,
+        ),
+        subtitle: Text(
+          document['complementoDonoDoImovel'],
+          textAlign: TextAlign.center,
+        ),
+        leading: CircleAvatar(
+          radius: 25,
+          backgroundImage: NetworkImage(document['urlImagensDonoDoImovel']),
+        ),
+        trailing: PopupMenuButton<String>(
+          onSelected: _escolhaMenuItem,
+          itemBuilder: (context) {
+            return itensMenu.map((String item) {
+              return PopupMenuItem<String>(
+                value: item,
+                child: Text(item),
+              );
+            }).toList();
+          },
+        ),
+      ));
     } else {
       return Card(
-        color: Colors.red,
+          color: Colors.red,
           child: ListTile(
             title: Text(
               document['logadouroDonoDoImovel'],
@@ -362,23 +416,25 @@ class _MeuImovelState extends State<MeuImovel> {
     _cpf = dados['cpf'];
     _telefone = dados['telefone'];
 
-    DocumentSnapshot snapshot2 = await db.collection("idEnvios").document(widget.uid).get();
+    DocumentSnapshot snapshot2 =
+        await db.collection("idEnvios").document(widget.uid).get();
     Map<String, dynamic> dados2 = snapshot2.data;
-
-
-
 
     setState(() {
       _idEnvioLogado = dados2['idUsuarioLogado'];
       _idEnvioDeslo = dados2['idUsuarioDeslogado'];
       _idEnvioImovel = dados2['idDoImovel'];
-
-
     });
-    DocumentSnapshot snapshot3 = await db.collection("pagarImoveis").document(_idEnvioLogado).collection(_idEnvioImovel).document('parcela1').get();
+    DocumentSnapshot snapshot3 = await db
+        .collection("pagarImoveis")
+        .document(_idEnvioLogado)
+        .collection(_idEnvioImovel)
+        .document('parcela1')
+        .get();
     Map<String, dynamic> dados3 = snapshot3.data;
     setState(() {
       _idPagador = dados3['idDoPagador'];
+      _idReceptor = dados3['idDoRecebedor'];
     });
 
     print('Ola: ' + dados3['idDoPagador']);
@@ -424,7 +480,6 @@ class _MeuImovelState extends State<MeuImovel> {
                 },
               ),
             ),
-
           ],
         ),
       ),

@@ -186,6 +186,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                       idEnviar.idDoImovel = document['idImovel'];
                       db.collection("idEnvios").document(widget.uid).setData(idEnviar.toMap());
                       db.collection('idEnvios').document(_idDono).setData(idEnviar.toMap());
+                      //db.collection("idEnvios").document(_log).setData(idEnviar.toMap());
                       db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela1').setData(pagarImovel.toMap());
                       Navigator.pop(context);
                       print("Pago");

@@ -29,6 +29,7 @@ class _EditarImovelState extends State<EditarImovel> {
   TextEditingController _controllerDetalhes = TextEditingController();
   var _controller = new MoneyMaskedTextController(leftSymbol: 'R\$ ');
   var controllerNumero = new MaskedTextController(mask: '000');
+  var controllerCep = new MaskedTextController(mask: '00000-000');
   String estad;
 
   List<Estado> _estados = Estado.getEstados();
@@ -139,6 +140,7 @@ class _EditarImovelState extends State<EditarImovel> {
     String sgl = _selectedEstado.sigla;
     String tipoImovel = _radioValue;
     String numero = controllerNumero.text;
+    String cep = controllerCep.text;
 
     Map<String, dynamic> dadosAtualizar = {
       "urlImagens" : url,
@@ -154,6 +156,7 @@ class _EditarImovelState extends State<EditarImovel> {
       "cpfUsuario" : _cpfUsuario,
       "siglaEstado" : sgl,
       "numero" : numero,
+      "cep" : cep,
     };
 
     Imovel imovel = Imovel();
@@ -170,6 +173,7 @@ class _EditarImovelState extends State<EditarImovel> {
     imovel.cpfUsuario = _cpfUsuario;
     imovel.siglaEstado = sgl;
     imovel.numero = numero;
+    imovel.cep = cep;
     imovel.idUsuario = widget.document['idUsuario'];
     imovel.nomeDaImagem = widget.document['nomeDaImagem'];
 
@@ -197,6 +201,7 @@ class _EditarImovelState extends State<EditarImovel> {
     controllerNumero.text = widget.document['numero'];
     _controller.text = widget.document['valor'];
     _radioValue = widget.document['tipoImovel'];
+    controllerCep.text = widget.document['cep'];
 
 
     setState(() {
@@ -317,6 +322,24 @@ class _EditarImovelState extends State<EditarImovel> {
                       Text('Selecione: ${_selectedEstado.nome}'),
                         */
                     ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: TextField(
+                    controller: controllerCep,
+                    //autofocus: true,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(fontSize: 20),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                      hintText: 'Digite o seu CEP',
+                      labelText: 'CEP',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32)),
+                    ),
                   ),
                 ),
                 Padding(

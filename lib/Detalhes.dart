@@ -28,7 +28,13 @@ class _DetalhesState extends State<Detalhes>  {
   String _valor = "";
   String _deta = "";
   String _estado = "";
+  String _nume = "";
+  String _cep = "";
+  String _bairro = "";
+  String _sig;
   Firestore db = Firestore.instance;
+
+  String _mensagem = '';
 
 
   @override
@@ -46,7 +52,10 @@ class _DetalhesState extends State<Detalhes>  {
     _valor = widget.document['valor'];
     _deta = widget.document['detalhes'];
     _estado = widget.document['estado'];
-
+    _nume = widget.document['numero'];
+    _cep = widget.document['cep'];
+    _bairro = widget.document['bairro'];
+    _sig = widget.document['siglaEstado'];
     DocumentSnapshot snapshot =
         await db.collection("usuarios").document(_idImovel).get();
 
@@ -70,7 +79,7 @@ class _DetalhesState extends State<Detalhes>  {
               child: Column(
                 children: <Widget>[
                   Text(
-                      "Localização: " + _estado,
+                      "Localização: " + _sig,
                       style: TextStyle(fontSize: 16),
                     ),
                   SizedBox(
@@ -81,15 +90,12 @@ class _DetalhesState extends State<Detalhes>  {
                     backgroundImage: NetworkImage(_url),
                   ),
                   SizedBox(
-                    height: 8,
+                    height: 4,
                   ),
                   Text(
-                    _log + " - " + _comp,
+                    _log + " - " + _bairro + " " +  _comp + " Nº ${_nume}" + "\nCEP: ${_cep}",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 17),
-                  ),
-                  SizedBox(
-                    height: 8,
                   ),
                   Text(
                     "Valor do Imóvel: " + _valor,

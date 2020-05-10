@@ -75,7 +75,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   var controllerNumero = new MaskedTextController(mask: '000');
   var controller = new MoneyMaskedTextController(leftSymbol: 'R\$ ');
   var controllerCPF = new MaskedTextController(mask: '000.000.000-00');
-  var controllerCep = new MaskedTextController(mask: '00.000-000');
+  var controllerCep = new MaskedTextController(mask: '00000-000');
   String _idUsuario;
   String _urlImagemRecuperada;
   String _nomeDaFoto;
@@ -407,7 +407,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
-                      controller: controllerCPF,
+                      controller: controllerCep,
                       //autofocus: true,
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20),

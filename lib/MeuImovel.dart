@@ -23,7 +23,7 @@ class _MeuImovelState extends State<MeuImovel> {
   String _tipo = "";
   String _valor = "";
   String _locado = "";
-  String _cpf, _deta, _estado, _dataInicio;
+  String _cpf, _deta, _estado, _dataInicio, _cidade, _bairro, _cep, _numero;
   String _telefone = "";
   String _idDoLocatario,
       _nomeDoLocatario,
@@ -73,7 +73,7 @@ class _MeuImovelState extends State<MeuImovel> {
                   Text(
                     'Tipo do Imóvel: ' +
                         _tipo +
-                        '\nEstado de: ' +
+                        '\nLocalização: ${_cidade} - ' +
                         _estado +
                         "\nValor Alugado: " +
                         _valor,
@@ -85,9 +85,10 @@ class _MeuImovelState extends State<MeuImovel> {
                   ),
                   Text(
                     "Logadouro: " +
-                        _log +
+                        _log + " - " + _bairro +
                         "\nComplemento: ${_comp}" +
                         '\nDetalhes: ' +
+                        "\nCEP: ${_cep}" + " N°: ${_numero}" +
                         _deta +
                         '\nData Inicial: ' +
                         _dataInicio,
@@ -150,6 +151,10 @@ class _MeuImovelState extends State<MeuImovel> {
       _tipo = document['tipoDonoDoImovel'];
       _estado = document['estadoDoImovel'];
       _dataInicio = document['dataInicio'];
+      _cidade = document['cidadeDonoDoImovel'];
+      _cep = document['cepDonoDoImovel'];
+      _bairro = document['bairroDonoDoImovel'];
+      _numero = document['numeroDono'];
 
       String _tipoDoPagamento = document['tipoDePagamento'];
       DocumentSnapshot snapshot3 = await db
@@ -300,10 +305,12 @@ class _MeuImovelState extends State<MeuImovel> {
                             imovel.idUsuario = document['idDono'];
                             imovel.tipoImovel = document['tipoDonoDoImovel'];
                             imovel.valor = document['valorDonoDoImovel'];
-                            imovel.urlImagens =
-                                document['urlImagensDonoDoImovel'];
-                            imovel.estado = document['estadoDoImovel'];
-                            imovel.idEstado = document['idEstadoImovel'];
+                            imovel.urlImagens = document['urlImagensDonoDoImovel'];
+                            imovel.siglaEstado = document['estadoDoImovel'];
+                            imovel.cidade = document['cidadeDonoDoImovel'];
+                            imovel.cep = document['cepDonoDoImovel'];
+                            imovel.bairro = document['bairroDonoDoImovel'];
+                            imovel.numero = document['numeroDono'];
                             imovel.nomeDaImagem =
                                 document['nomeDaImagemImovel'];
                             imovel.cpfUsuario = _cpf;
@@ -352,7 +359,7 @@ class _MeuImovelState extends State<MeuImovel> {
       return Card(
           child: ListTile(
         title: Text(
-          document['logadouroDonoDoImovel'],
+          document['logadouroDonoDoImovel'] + ' - ' + document['bairroDonoDoImovel'],
           textAlign: TextAlign.center,
         ),
         subtitle: Text(

@@ -26,8 +26,8 @@ class Imovel {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-      "estado" : this.estado,
       "cep" : this.cep,
+      "cidade" : this.cidade,
       "siglaEstado" : this.siglaEstado,
       "logadouro" : this.logadouro,
       "bairro" : this.bairro,
@@ -38,7 +38,6 @@ class Imovel {
       "idUsuario" : this._idUsuario,
       "urlImagens" : this.urlImagens,
       'detalhes' : this.detalhes,
-      "idEstado" : this.idEstado,
       "nomeDaImagem" : this.nomeDaImagem,
       "telefoneUsuario" : this.telefoneUsuario,
       "cpfUsuario" : this.cpfUsuario,

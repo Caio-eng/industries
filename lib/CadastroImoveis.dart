@@ -10,6 +10,8 @@ import 'package:industries/model/Imovel.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:industries/service/via_cep_service.dart';
+
 
 
 
@@ -23,7 +25,7 @@ class CadastroImoveis extends StatefulWidget {
   @override
   _CadastroImoveisState createState() => _CadastroImoveisState();
 }
-
+/*
 class Estado {
   int id;
   String nome;
@@ -63,12 +65,15 @@ class Estado {
     ];
   }
 }
-
+*/
 class _CadastroImoveisState extends State<CadastroImoveis> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _controllerLogadouro = TextEditingController();
   TextEditingController _controllerBairro = TextEditingController();
   TextEditingController _controllerComplemento = TextEditingController();
+  var _localidadeController = TextEditingController();
+  var _controllerSigla = TextEditingController();
+
 
   TextEditingController _controllerDetalhes = TextEditingController();
   var controllerTelefone = new MaskedTextController(mask: '(00) 00000 - 0000');
@@ -87,15 +92,17 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   String _telefoneUsuario;
   String _cpfUsuario;
 
+  String _cep;
+
   String _mensagemErro = "";
 
 
   Firestore db = Firestore.instance;
 
   CarouselSlider instance;
-  List<Estado> _estados = Estado.getEstados();
-  List<DropdownMenuItem<Estado>> _dropdownMenuItens;
-  Estado _selectedEstado;
+  //List<Estado> _estados = Estado.getEstados();
+  //List<DropdownMenuItem<Estado>> _dropdownMenuItens;
+  //Estado _selectedEstado;
 
   String _radioValue;
   String choice;
@@ -123,63 +130,74 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     String tipoImovel = choice;
     String valor = controller.text;
     String detalhes = _controllerDetalhes.text;
-    int i = _selectedEstado.id;
-    String estad = _selectedEstado.nome;
-    String sigl = _selectedEstado.sigla;
+    String sigl = _controllerSigla.text;
     String bairro = _controllerBairro.text;
     String numero = controllerNumero.text;
-    String cep = controllerCPF.text;
+    String cidade = _localidadeController.text;
     if (logadouro.isNotEmpty && logadouro.length >= 4) {
-        if (tipoImovel.isNotEmpty) {
-          if (valor.isNotEmpty) {
-            if (_urlImagemRecuperada.isNotEmpty) {
-              Imovel imovel = Imovel();
-              imovel.estado = estad;
-              imovel.logadouro = logadouro;
-              imovel.complemento = complemento;
-              imovel.tipoImovel = tipoImovel;
-              imovel.valor = valor;
-              imovel.idEstado = i - 1;
-              imovel.detalhes = detalhes;
-              imovel.urlImagens = _urlImagemRecuperada;
-              imovel.idUsuario = widget.uid;
-              imovel.nomeDaImagem = _nomeDaFoto;
-              imovel.telefoneUsuario = _telefoneUsuario;
-              imovel.cpfUsuario = _cpfUsuario;
-              imovel.bairro = bairro;
-              imovel.siglaEstado = sigl;
-              imovel.numero = numero;
-              imovel.cep = cep;
-              _cadastrarImovel(imovel);
+      if (bairro.isNotEmpty && bairro.length >= 4) {
+        if (valor.isNotEmpty) {
+          if (sigl.isNotEmpty && sigl.length == 2) {
+            if (tipoImovel.isNotEmpty) {
+              if (numero.isNotEmpty) {
+                  if (cidade.isNotEmpty ) {
+                    Imovel imovel = Imovel();
+                    imovel.logadouro = logadouro;
+                    imovel.bairro = bairro;
+                    imovel.cidade = cidade;
+                    imovel.complemento = complemento;
+                    imovel.tipoImovel = tipoImovel;
+                    imovel.valor = valor;
+                    imovel.detalhes = detalhes;
+                    imovel.urlImagens = _urlImagemRecuperada;
+                    imovel.telefoneUsuario = _telefoneUsuario;
+                    imovel.cpfUsuario = _cpfUsuario;
+                    imovel.siglaEstado = sigl;
+                    imovel.numero = numero;
+                    imovel.cep = _cep;
+                    imovel.idUsuario = widget.uid;
+                    imovel.nomeDaImagem = _nomeDaFoto;
+
+                    Firestore db = Firestore.instance;
+                    db.collection("imoveis")
+                        .document()
+                        .setData(imovel.toMap());
+                      Navigator.pop(context);
+                  } else {
+                    setState(() {
+                      _mensagemErro = "O Campo Cidade é obrigátorio!";
+                    });
+                  }
+              } else {
+                setState(() {
+                  _mensagemErro = "Digite um número";
+                });
+              }
             } else {
               setState(() {
-                _mensagemErro = "Selecioce uma imagem";
+                _mensagemErro = 'Selecione uma opção';
               });
             }
           } else {
             setState(() {
-              _mensagemErro = "Digite um valor";
+              _mensagemErro = "UF só possui 2 letras";
             });
           }
         } else {
           setState(() {
-            _mensagemErro = "O Tipo do Imóvel é obrigatorio";
+            _mensagemErro = "Digite um valor";
           });
         }
-    } else {
+      } else {
+        setState(() {
+          _mensagemErro = 'Bairro tem que ser maior que 4 letras';
+        });
+      }
+    } else{
       setState(() {
-        _mensagemErro = "Logaroudo tem que ter mais de 4 letras";
+        _mensagemErro = "Logradouro tem que ser maior que 4  letras";
       });
-
     }
-  }
-
-  _cadastrarImovel(Imovel imovel) {
-    //Salvar dados do Imovel
-    Firestore db = Firestore.instance;
-
-    db.collection("imoveis").document().setData(imovel.toMap());
-    Navigator.pop(context);
   }
 
   Future _recuperarImagem(String origemImagem) async {
@@ -272,13 +290,21 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
   @override
   void initState() {
-    _dropdownMenuItens = buildDropdownMenuItens(_estados);
-    _selectedEstado = _dropdownMenuItens[8].value;
+    //_dropdownMenuItens = buildDropdownMenuItens(_estados);
+    //_selectedEstado = _dropdownMenuItens[8].value;
     super.initState();
     _recuperarDadosUsuario();
     //listaTela.add(_imagem);
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    controllerCep.clear();
+    _localidadeController.clear();
+    _controllerSigla.clear();
+  }
+/*
   List<DropdownMenuItem<Estado>> buildDropdownMenuItens(List estados) {
     List<DropdownMenuItem<Estado>> items = List();
     for (Estado estado in estados) {
@@ -297,7 +323,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
       _selectedEstado = selectedEstado;
     });
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -370,6 +396,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       ),
                     ],
                   ),
+                  /*
                   Padding(
                     padding: EdgeInsets.only(bottom: 8, left: 10),
                     child: Row(
@@ -403,18 +430,60 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                         */
                       ],
                     ),
-                  ),
+                  ),*/
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
                       controller: controllerCep,
+                      autofocus: true,
+                      onEditingComplete: () {
+                        _searchCep();
+                      },
+                      //autofocus: true,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                        hintText: 'Digite seu CEP',
+                        labelText: 'CEP',
+                        filled: true,
+                        enabled: _enableField,
+                        suffixIcon: Icon(Icons.search),
+
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(32)),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: TextField(
+                      controller: _controllerSigla,
                       //autofocus: true,
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: 'Digite o seu CEP',
-                        labelText: 'CEP',
+                        labelText: 'Estado',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(32)),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: TextField(
+                      controller: _localidadeController,
+                      //autofocus: true,
+                      keyboardType: TextInputType.text,
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                        labelText: 'Cidade',
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
@@ -432,7 +501,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
                         hintText: "Digite seu endereço",
-                        labelText: 'Logadouro',
+                        labelText: 'Logradouro',
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
@@ -658,5 +727,41 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
         ),
       ),
     );
+  }
+
+  bool _loading = false;
+  bool _enableField = true;
+  String _result;
+
+  void _searching(bool enable) {
+    setState(() {
+      _result = enable ? '' : _result;
+      _loading = enable;
+      _enableField = !enable;
+    });
+  }
+
+  Future _searchCep() async {
+    _searching(true);
+
+    final cep = controllerCep.text;
+
+
+    final resultCep = await ViaCepService.fetchCep(cep: cep);
+    controllerCep.text = resultCep.cep;
+    _localidadeController.text = resultCep.localidade;
+    _controllerSigla.text = resultCep.uf;
+    _controllerLogadouro.text = resultCep.logradouro;
+    _controllerBairro.text = resultCep.bairro;
+    print(resultCep.localidade);
+    print(resultCep.uf);// Exibindo somente a localidade no terminal
+
+    setState(() {
+      _result = resultCep.toJson();
+      _cep = resultCep.cep;
+      print(_result);
+    });
+
+    _searching(false);
   }
 }

@@ -18,7 +18,8 @@ class _ReciboImovelState extends State<ReciboImovel> {
       return Card(
           child: ListTile(
             title: Text(
-              document['logadouro'] + ' - ' + document['comp'] + '\n' + 'Nome do Pagador: ${document['nome'] +  '\nCPF do Pagador: ${document['cpf']}'}',
+              document['logadouro'] + ' - ' + document['bairro'] + ' CEP: ${document['cep']}' + '\n' + document['comp'] + ' N°: ${document['numero']}' +
+                  '\n' + 'Nome do Pagador: ${document['nome'] +  '\nCPF do Pagador: ${document['cpf']}'}',
               textAlign: TextAlign.center,
             ),
             subtitle: Padding(
@@ -96,7 +97,7 @@ class _ReciboImovelState extends State<ReciboImovel> {
                     return Text("Loading..");
                   }
                   return ListView.builder(
-                    itemExtent: 125,
+                    itemExtent: 160,
                     itemCount: snapshot.data.documents.length,
                     itemBuilder: (context, index) {
                       return _buildList(

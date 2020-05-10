@@ -84,6 +84,10 @@ class _AluguelImovelState extends State<AluguelImovel> {
   String _nomeDoLocatario = "";
   String _emailDoLocatario = "";
   String _photoDoLocatario = "";
+  String _cidade = "";
+  String _bairro = "";
+  String _cep = "";
+  String _numero = "";
 
   Firestore db = Firestore.instance;
 
@@ -93,7 +97,10 @@ class _AluguelImovelState extends State<AluguelImovel> {
       Imovel imovel = Imovel();
       alugarImovel.telefoneDoDono = _teleneDono;
       alugarImovel.cpfDoDono = _cpfDono;
-      alugarImovel.idEstadoImovelAlugado = _idDoEstado;
+      alugarImovel.cepImovelAlugado = _cep;
+      alugarImovel.cidadeImovelAlugado = _cidade;
+      alugarImovel.bairroImovelAlugado = _bairro;
+      alugarImovel.numeroImovelAlugado = _numero;
       alugarImovel.nomeDaImagemImovelAlugado = _nomeDaFoto;
       alugarImovel.dataFinal = "";
       alugarImovel.idImovel = widget.document.documentID;
@@ -117,7 +124,10 @@ class _AluguelImovelState extends State<AluguelImovel> {
       DonoDoImovel donoDoImovel = DonoDoImovel();
       donoDoImovel.telefoneUsuario = _telefoneDoLocatario;
       donoDoImovel.cpfUsuario = _cpfDoLocatario;
-      donoDoImovel.idEstadoImovel = _idDoEstado;
+      donoDoImovel.cepDonoDoImovel = _cep;
+      donoDoImovel.cidadeDonoDoImovel = _cidade;
+      donoDoImovel.bairroDonoDoImovel = _bairro;
+      donoDoImovel.numeroDonoDoImovel = _numero;
       donoDoImovel.nomeDaImagemImovel = _nomeDaFoto;
       donoDoImovel.dataFinal = "";
       donoDoImovel.idImovelAlugado = widget.document.documentID;
@@ -182,9 +192,12 @@ class _AluguelImovelState extends State<AluguelImovel> {
     _tipo = widget.document['tipoImovel'];
     _valor = widget.document['valor'];
     _detalhes = widget.document['detalhes'];
-    _estado = widget.document['estado'];
+    _estado = widget.document['siglaEstado'];
     _nomeDaFoto = widget.document['nomeDaImagem'];
-    _idDoEstado = widget.document['idEstado'];
+    _cep = widget.document['cep'];
+    _cidade = widget.document['cidade'];
+    _bairro = widget.document['bairro'];
+    _numero = widget.document['numero'];
 
     print("CPF do Dono: " + _cpfDono);
 

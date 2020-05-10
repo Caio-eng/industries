@@ -34,7 +34,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
   String _telefone = '';
   String _cpf, _nome, _email, _photo;
   String _deta = "";
-  String _estado = "";
+  String _estado, _cep, _numero, _bairro, _cidade;
   String _dataInicio = "";
   String _idImovel, _idUsuario, _idReceber, _idPagar, _dados;
   List<String> itensMenu = [
@@ -89,8 +89,11 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                       imovel.tipoImovel = document['tipoImovelImovelAlugado'];
                       imovel.valor = document['valorImovelAlugado'];
                       imovel.urlImagens = document['urlImagensImovelAlugado'];
-                      imovel.estado = document['estadoImovelAlugado'];
-                      imovel.idEstado = document['idEstadoImovelAlugado'];
+                      imovel.siglaEstado = document['estadoImovelAlugado'];
+                      imovel.cep = document['cepImovelAlugado'];
+                      imovel.cidade = document['cidadeImovelAlugado'];
+                      imovel.bairro = document['bairroImovelAlugado'];
+                      imovel.numero = document['numeroImovelAlugado'];
                       imovel.nomeDaImagem =
                           document['nomeDaImagemImovelAlugado'];
                       imovel.cpfUsuario = document['cpfDoDono'];
@@ -143,6 +146,11 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
       String _estado = document['estadoImovelAlugado'];
       String _detalhes = document['detalhesImovelAlugado'];
       String _tipoDoPagamento = document['tipoDePagamento'];
+      _log = document['logadouroImovelAlugado'];
+      _cidade = document['cidadeImovelAlugado'];
+      _cep = document['cepImovelAlugado'];
+      _bairro = document['bairroImovelAlugado'];
+      _numero = document['numeroImovelAlugado'];
       DocumentSnapshot snapshot3 = await db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela1').get();
       Map<String, dynamic> dados3 = snapshot3.data;
       return showDialog<void>(
@@ -173,6 +181,10 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                       pagarImovel.idDoImovel = document['idImovel'];
                       pagarImovel.logadouro = _log;
                       pagarImovel.comp = _comp;
+                      pagarImovel.cidade = _cidade;
+                      pagarImovel.cep = _cep;
+                      pagarImovel.bairro = _bairro;
+                      pagarImovel.numero = _numero;
                       pagarImovel.cpfDoDono = _cpfDoDono;
                       pagarImovel.nomeDoDono = _nomeDoDono;
                       pagarImovel.nome = nome;
@@ -251,6 +263,10 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
       _photoDoDono = document['urlImagemDoDono'];
       _valor = document['valorImovelAlugado'];
       _log = document['logadouroImovelAlugado'];
+      _cidade = document['cidadeImovelAlugado'];
+      _cep = document['cepImovelAlugado'];
+      _bairro = document['bairroImovelAlugado'];
+      _numero = document['numeroImovelAlugado'];
       _comp = document['complementoImovelAlugado'];
       _url = document['urlImagensImovelAlugado'];
       _deta = document['detalhesImovelAlugado'];
@@ -273,7 +289,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                   Text(
                     'Tipo do Imóvel: ' +
                         _tipo +
-                        '\nEstado de: ' +
+                        '\nLocalização: ' + _cidade + ' - ' +
                         _estado +
                         "\nValor Mensal: " +
                         _valor,
@@ -285,10 +301,10 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                   ),
                   Text(
                     "Logadouro: " +
-                        _log +
+                        _log + ' - ' + _bairro +
                         "\nComplemento: ${_comp}" +
                         '\nDetalhes: ' +
-                        _deta +
+                        _deta + '\nCEP: ${_cep}' + ' N°: ${_numero}'
                         '\nData Inicial: ' +
                         _dataInicio,
                     textAlign: TextAlign.center,
@@ -352,7 +368,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
     return Card(
         child: ListTile(
           title: Text(
-            document['logadouroImovelAlugado'],
+            document['logadouroImovelAlugado'] + ' - ' + document['bairroImovelAlugado'],
             textAlign: TextAlign.center,
           ),
           subtitle: Text(

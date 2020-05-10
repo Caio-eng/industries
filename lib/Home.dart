@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:industries/Configuracoes.dart';
+import 'package:industries/ConsultarCep.dart';
 import 'package:industries/Detalhes.dart';
 import 'package:industries/Chat.dart';
 import 'package:industries/EditarImovel.dart';
@@ -552,7 +553,9 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {},
+                  onTap: () => {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ConsultarCep()))
+                  },
                   child: Container(
                     height: 50,
                     child: Row(

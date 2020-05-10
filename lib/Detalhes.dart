@@ -32,6 +32,7 @@ class _DetalhesState extends State<Detalhes>  {
   String _cep = "";
   String _bairro = "";
   String _sig;
+  String _locali;
   Firestore db = Firestore.instance;
 
   String _mensagem = '';
@@ -56,6 +57,7 @@ class _DetalhesState extends State<Detalhes>  {
     _cep = widget.document['cep'];
     _bairro = widget.document['bairro'];
     _sig = widget.document['siglaEstado'];
+    _locali = widget.document['cidade'];
     DocumentSnapshot snapshot =
         await db.collection("usuarios").document(_idImovel).get();
 
@@ -79,7 +81,7 @@ class _DetalhesState extends State<Detalhes>  {
               child: Column(
                 children: <Widget>[
                   Text(
-                      "Localização: " + _sig,
+                      "Localização: ${_locali} - " + _sig,
                       style: TextStyle(fontSize: 16),
                     ),
                   SizedBox(

@@ -20,11 +20,19 @@ class DonoDoImovel {
   String _nomeDaImagemImovel;
   String _telefoneUsuario;
   String _tipoDeRecibo;
+  String _cidadeDonoDoImovel;
+  String _cepDonoDoImovel;
+  String _bairroDonoDoImovel;
+  String _numeroDonoDoImovel;
 
   DonoDoImovel();
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
+      "cidadeDonoDoImovel" : this.cidadeDonoDoImovel,
+      "cepDonoDoImovel" : this.cepDonoDoImovel,
+      "bairroDonoDoImovel" : this.bairroDonoDoImovel,
+      "numeroDono" : this.numeroDonoDoImovel,
       "cpfUsuario" : this.cpfUsuario,
       "telefoneUsuario" : this.telefoneUsuario,
       "nomeDoLocatario" : this.nomeDoLocatario,
@@ -42,7 +50,6 @@ class DonoDoImovel {
       "idImovelAlugado" : this.idImovelAlugado,
       "dataInicio" : this.dataInicio,
       "dataFinal" : this.dataFinal,
-      "idEstadoImovel" : this.idEstadoImovel,
       "nomeDaImagemImovel" : this.nomeDaImagemImovel,
       "tipoDeRecibo" : this.tipoDeRecibo,
     };
@@ -51,6 +58,12 @@ class DonoDoImovel {
 
   }
 
+
+  String get cidadeDonoDoImovel => _cidadeDonoDoImovel;
+
+  set cidadeDonoDoImovel(String value) {
+    _cidadeDonoDoImovel = value;
+  }
 
   String get tipoDeRecibo => _tipoDeRecibo;
 
@@ -170,6 +183,24 @@ class DonoDoImovel {
 
   set nomeDaImagemImovel(String value) {
     _nomeDaImagemImovel = value;
+  }
+
+  String get cepDonoDoImovel => _cepDonoDoImovel;
+
+  set cepDonoDoImovel(String value) {
+    _cepDonoDoImovel = value;
+  }
+
+  String get bairroDonoDoImovel => _bairroDonoDoImovel;
+
+  set bairroDonoDoImovel(String value) {
+    _bairroDonoDoImovel = value;
+  }
+
+  String get numeroDonoDoImovel => _numeroDonoDoImovel;
+
+  set numeroDonoDoImovel(String value) {
+    _numeroDonoDoImovel = value;
   }
 
 

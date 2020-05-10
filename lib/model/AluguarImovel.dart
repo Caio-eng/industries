@@ -20,6 +20,10 @@ class AlugarImovel {
   String _nomeDoDono;
   String _emailDoDono;
   String _tipoDePagamento;
+  String _cidadeImovelAlugado;
+  String _cepImovelAlugado;
+  String _bairroImovelAlugado;
+  String _numeroImovelAlugado;
   AlugarImovel();
 
   Map<String, dynamic> toMap() {
@@ -28,6 +32,10 @@ class AlugarImovel {
       "telefoneDoDono" : this.telefoneDoDono,
       "idLocatario" : this.idLocatario,
       "idDono" : this.idDono,
+      "cidadeImovelAlugado" : this.cidadeImovelAlugado,
+      "cepImovelAlugado" : this.cepImovelAlugado,
+      "bairroImovelAlugado" : this.bairroImovelAlugado,
+      "numeroImovelAlugado" : this.numeroImovelAlugado,
       "logadouroImovelAlugado" : this.logadouroImovelAlugado,
       "complementoImovelAlugado" : this.complementoImovelAlugado,
       "tipoImovelImovelAlugado" : this.tipoImovelImovelAlugado,
@@ -37,7 +45,6 @@ class AlugarImovel {
       "estadoImovelAlugado": this.estadoImovelAlugado,
       "dataInicio" : this.dataInicio,
       "dataFinal" : this.dataFinal,
-      "idEstadoImovelAlugado" : this.idEstadoImovelAlugado,
       "nomeDaImagemImovelAlugado" : this.nomeDaImagemImovelAlugado,
       "urlImagemDoDono" : this.urlImagemDoDono,
       "idImovel" : this.idImovel,
@@ -51,6 +58,30 @@ class AlugarImovel {
 
   }
 
+
+  String get numeroImovelAlugado => _numeroImovelAlugado;
+
+  set numeroImovelAlugado(String value) {
+    _numeroImovelAlugado = value;
+  }
+
+  String get bairroImovelAlugado => _bairroImovelAlugado;
+
+  set bairroImovelAlugado(String value) {
+    _bairroImovelAlugado = value;
+  }
+
+  String get cepImovelAlugado => _cepImovelAlugado;
+
+  set cepImovelAlugado(String value) {
+    _cepImovelAlugado = value;
+  }
+
+  String get cidadeImovelAlugado => _cidadeImovelAlugado;
+
+  set cidadeImovelAlugado(String value) {
+    _cidadeImovelAlugado = value;
+  }
 
   String get tipoDePagamento => _tipoDePagamento;
 

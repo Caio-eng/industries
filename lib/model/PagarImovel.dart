@@ -19,6 +19,10 @@ class PagarImovel {
   String _tipo;
   String _estado;
   String _detalhes;
+  String _cidade;
+  String _cep;
+  String _bairro;
+  String _numero;
 
   PagarImovel();
 
@@ -42,6 +46,10 @@ class PagarImovel {
       "cpf" : this.cpf,
       "tipo" : this.tipo,
       "estado" : this.estado,
+      "cidade" : this.cidade,
+      "cep" : this.cep,
+      "bairro" : this.bairro,
+      "numero" : this.numero,
       "detalhes" : this.detalhes,
     };
 
@@ -49,6 +57,12 @@ class PagarImovel {
 
   }
 
+
+  String get cidade => _cidade;
+
+  set cidade(String value) {
+    _cidade = value;
+  }
 
   String get logadouro => _logadouro;
 
@@ -162,6 +176,24 @@ class PagarImovel {
 
   set detalhes(String value) {
     _detalhes = value;
+  }
+
+  String get cep => _cep;
+
+  set cep(String value) {
+    _cep = value;
+  }
+
+  String get bairro => _bairro;
+
+  set bairro(String value) {
+    _bairro = value;
+  }
+
+  String get numero => _numero;
+
+  set numero(String value) {
+    _numero = value;
   }
 
 

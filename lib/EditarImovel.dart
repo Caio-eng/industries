@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:industries/model/Imovel.dart';
+import 'package:industries/service/via_cep_service.dart';
 import 'package:validadores/Validador.dart';
 
 import 'CadastroImoveis.dart';
@@ -27,14 +28,16 @@ class _EditarImovelState extends State<EditarImovel> {
   TextEditingController _controllerComplemento = TextEditingController();
   TextEditingController _controllerBairro = TextEditingController();
   TextEditingController _controllerDetalhes = TextEditingController();
+  var _localidadeController = TextEditingController();
+  var _controllerSigla = TextEditingController();
   var _controller = new MoneyMaskedTextController(leftSymbol: 'R\$ ');
   var controllerNumero = new MaskedTextController(mask: '000');
   var controllerCep = new MaskedTextController(mask: '00000-000');
   String estad;
 
-  List<Estado> _estados = Estado.getEstados();
-  List<DropdownMenuItem<Estado>> _dropdownMenuItens;
-  Estado _selectedEstado;
+  //List<Estado> _estados = Estado.getEstados();
+  //List<DropdownMenuItem<Estado>> _dropdownMenuItens;
+  //Estado _selectedEstado;
   File _imagem;
   String _urlImagemRecuperada;
   String _idUsuarioLogado;
@@ -135,52 +138,92 @@ class _EditarImovelState extends State<EditarImovel> {
     String comp = _controllerComplemento.text;
     String valor = _controller.text;
     String deta = _controllerDetalhes.text;
-    String estado = _selectedEstado.nome;
-    int i = _selectedEstado.id;
-    String sgl = _selectedEstado.sigla;
+    String sgl = _controllerSigla.text;
     String tipoImovel = _radioValue;
     String numero = controllerNumero.text;
     String cep = controllerCep.text;
+    String cidade = _localidadeController.text;
 
-    Map<String, dynamic> dadosAtualizar = {
-      "urlImagens" : url,
-      "logadouro" : log,
-      "estado" : estado,
-      "complemento" : comp,
-      "bairro" : bairro,
-      "detalhes" : deta,
-      "tipoImovel" : tipoImovel,
-      "valor" : valor,
-      "idEstado" : i - 1,
-      "telefoneUsuario" : _telefoneUsuario,
-      "cpfUsuario" : _cpfUsuario,
-      "siglaEstado" : sgl,
-      "numero" : numero,
-      "cep" : cep,
-    };
+    if (log.isNotEmpty && log.length >= 4) {
+      if (bairro.isNotEmpty && bairro.length >= 4) {
+        if (valor.isNotEmpty) {
+          if (sgl.isNotEmpty && sgl.length == 2) {
+            if (tipoImovel.isNotEmpty) {
+              if (numero.isNotEmpty) {
+                  if (cidade.isNotEmpty ) {
+                      Map<String, dynamic> dadosAtualizar = {
+                        "urlImagens" : url,
+                        "cidade" : cidade,
+                        "logadouro" : log,
+                        "complemento" : comp,
+                        "bairro" : bairro,
+                        "detalhes" : deta,
+                        "tipoImovel" : tipoImovel,
+                        "valor" : valor,
+                        "telefoneUsuario" : _telefoneUsuario,
+                        "cpfUsuario" : _cpfUsuario,
+                        "siglaEstado" : sgl,
+                        "numero" : numero,
+                        "cep" : cep,
+                      };
 
-    Imovel imovel = Imovel();
-    imovel.estado = estado;
-    imovel.logadouro = log;
-    imovel.bairro = bairro;
-    imovel.complemento = comp;
-    imovel.tipoImovel = tipoImovel;
-    imovel.valor = valor;
-    imovel.idEstado = i - 1;
-    imovel.detalhes = deta;
-    imovel.urlImagens = url;
-    imovel.telefoneUsuario = _telefoneUsuario;
-    imovel.cpfUsuario = _cpfUsuario;
-    imovel.siglaEstado = sgl;
-    imovel.numero = numero;
-    imovel.cep = cep;
-    imovel.idUsuario = widget.document['idUsuario'];
-    imovel.nomeDaImagem = widget.document['nomeDaImagem'];
+                      Imovel imovel = Imovel();
+                      imovel.logadouro = log;
+                      imovel.bairro = bairro;
+                      imovel.cidade = cidade;
+                      imovel.complemento = comp;
+                      imovel.tipoImovel = tipoImovel;
+                      imovel.valor = valor;
+                      imovel.detalhes = deta;
+                      imovel.urlImagens = url;
+                      imovel.telefoneUsuario = _telefoneUsuario;
+                      imovel.cpfUsuario = _cpfUsuario;
+                      imovel.siglaEstado = sgl;
+                      imovel.numero = numero;
+                      imovel.cep = cep;
+                      imovel.idUsuario = widget.document['idUsuario'];
+                      imovel.nomeDaImagem = widget.document['nomeDaImagem'];
 
-    Firestore db = Firestore.instance;
-    db.collection("imoveis")
-        .document(widget.document.documentID)
-        .updateData(dadosAtualizar);
+                      Firestore db = Firestore.instance;
+                      db.collection("imoveis")
+                          .document(widget.document.documentID)
+                          .updateData(dadosAtualizar);
+
+                  } else {
+                    setState(() {
+                      _mensagemErro = "O Campo Cidade é obrigátorio!";
+                    });
+                  }
+              } else {
+                setState(() {
+                  _mensagemErro = "Digite um número";
+                });
+              }
+            } else {
+              setState(() {
+                _mensagemErro = 'Selecione uma opção';
+              });
+            }
+          } else {
+            setState(() {
+              _mensagemErro = "UF só possui 2 letras";
+            });
+          }
+        } else {
+          setState(() {
+            _mensagemErro = "Digite um valor";
+          });
+        }
+      } else {
+        setState(() {
+          _mensagemErro = 'Bairro tem que ser maior que 4 letras';
+        });
+      }
+    } else{
+      setState(() {
+        _mensagemErro = "Logradouro tem que ser maior que 4  letras";
+      });
+    }
 
   }
 
@@ -193,7 +236,6 @@ class _EditarImovelState extends State<EditarImovel> {
     Map<String, dynamic> dados = snapshot.data;
     _cpfUsuario = dados['cpf'];
     _telefoneUsuario = dados['telefone'];
-
     _controllerLogadouro.text = widget.document['logadouro'];
     _controllerComplemento.text = widget.document['complemento'];
     _controllerBairro.text = widget.document['bairro'];
@@ -202,13 +244,15 @@ class _EditarImovelState extends State<EditarImovel> {
     _controller.text = widget.document['valor'];
     _radioValue = widget.document['tipoImovel'];
     controllerCep.text = widget.document['cep'];
+    _controllerSigla.text = widget.document['siglaEstado'];
+    _localidadeController.text = widget.document['cidade'];
 
 
     setState(() {
       _urlImagemRecuperada = widget.document["urlImagens"];
     });
   }
-
+/*
   List<DropdownMenuItem<Estado>> buildDropdownMenuItens(List estados) {
     List<DropdownMenuItem<Estado>> items = List();
     for (Estado estado in estados) {
@@ -227,11 +271,11 @@ class _EditarImovelState extends State<EditarImovel> {
       _selectedEstado = selectedEstado;
     });
   }
-
+*/
   @override
   void initState() {
-    _dropdownMenuItens = buildDropdownMenuItens(_estados);
-    _selectedEstado = _dropdownMenuItens[widget.document['idEstado']].value;
+    //_dropdownMenuItens = buildDropdownMenuItens(_estados);
+    //_selectedEstado = _dropdownMenuItens[widget.document['idEstado']].value;
     super.initState();
     _recuperarDadosUsuario();
   }
@@ -298,6 +342,7 @@ class _EditarImovelState extends State<EditarImovel> {
                     ),
                   ],
                 ),
+                /*
                 Padding(
                   padding: EdgeInsets.only(bottom: 8, left: 10),
                   child: Row(
@@ -323,18 +368,58 @@ class _EditarImovelState extends State<EditarImovel> {
                         */
                     ],
                   ),
-                ),
+                ),*/
                 Padding(
                   padding: EdgeInsets.only(bottom: 8),
                   child: TextField(
                     controller: controllerCep,
+                    onEditingComplete: () {
+                      _searchCep();
+                    },
                     //autofocus: true,
                     keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.done,
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
                       hintText: 'Digite o seu CEP',
                       labelText: 'CEP',
+                      suffixIcon: Icon(Icons.search),
+                      filled: true,
+                      enabled: _enableField,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32)),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: TextField(
+                    controller: _controllerSigla,
+                    //autofocus: true,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(fontSize: 20),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                      labelText: 'Estado',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32)),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: TextField(
+                    controller: _localidadeController,
+                    //autofocus: true,
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(fontSize: 20),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                      labelText: 'Cidade',
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -346,7 +431,6 @@ class _EditarImovelState extends State<EditarImovel> {
                   padding: EdgeInsets.only(bottom: 8),
                   child: TextField(
                     controller: _controllerLogadouro,
-                    autofocus: true,
                     keyboardType: TextInputType.text,
                     style: TextStyle(fontSize: 20),
                     /*
@@ -355,7 +439,8 @@ class _EditarImovelState extends State<EditarImovel> {
                     },*/
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                      hintText: "Logadouro",
+                      hintText: "Digite seu endereço",
+                      labelText: 'Logradouro',
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -530,5 +615,39 @@ class _EditarImovelState extends State<EditarImovel> {
       ),
       ),
     );
+  }
+
+  bool _loading = false;
+  bool _enableField = true;
+  String _result;
+
+  void _searching(bool enable) {
+    setState(() {
+      _result = enable ? '' : _result;
+      _loading = enable;
+      _enableField = !enable;
+    });
+  }
+
+  Future _searchCep() async {
+    _searching(true);
+
+    final cep = controllerCep.text;
+
+
+    final resultCep = await ViaCepService.fetchCep(cep: cep);
+    controllerCep.text = resultCep.cep;
+    _localidadeController.text = resultCep.localidade;
+    _controllerSigla.text = resultCep.uf;
+    _controllerLogadouro.text = resultCep.logradouro;
+    _controllerBairro.text = resultCep.bairro;
+    print(resultCep.localidade);
+    print(resultCep.uf);// Exibindo somente a localidade no terminal
+
+    setState(() {
+      _result = resultCep.toJson();
+    });
+
+    _searching(false);
   }
 }

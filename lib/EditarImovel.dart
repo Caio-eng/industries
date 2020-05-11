@@ -146,7 +146,7 @@ class _EditarImovelState extends State<EditarImovel> {
 
     if (log.isNotEmpty && log.length >= 4) {
       if (bairro.isNotEmpty && bairro.length >= 4) {
-        if (valor.isNotEmpty) {
+        if (valor.isNotEmpty && valor.length >= 9) {
           if (sgl.isNotEmpty && sgl.length == 2) {
             if (tipoImovel.isNotEmpty) {
               if (numero.isNotEmpty) {
@@ -188,7 +188,7 @@ class _EditarImovelState extends State<EditarImovel> {
                       db.collection("imoveis")
                           .document(widget.document.documentID)
                           .updateData(dadosAtualizar);
-
+                      Navigator.pop(context);
                   } else {
                     setState(() {
                       _mensagemErro = "O Campo Cidade é obrigátorio!";
@@ -211,7 +211,7 @@ class _EditarImovelState extends State<EditarImovel> {
           }
         } else {
           setState(() {
-            _mensagemErro = "Digite um valor";
+            _mensagemErro = "Digite um valor maior ou igual que R\$ 100";
           });
         }
       } else {
@@ -604,10 +604,16 @@ class _EditarImovelState extends State<EditarImovel> {
                     onPressed: () {
                          //_atualizarNomeFirestore();
                          _atualizarUrlImagemFirestore(_urlImagemRecuperada);
-                         Navigator.pop(context);
+
                     },
                   ),
                 ),
+                Center(
+                  child: Text(
+                    _mensagemErro,
+                    style: TextStyle(color: Colors.red, fontSize: 20),
+                  ),
+                )
               ],
             ),
           ),

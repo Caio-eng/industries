@@ -77,6 +77,8 @@ flutter:
     - imagens/cadeado.png
     - imagens/google.png
     - imagens/tela.png
+    - imagens/cartao.png
+    - imagens/ad.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

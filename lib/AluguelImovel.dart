@@ -1,13 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
-import 'package:industries/ImovelAlugado.dart';
 import 'package:industries/model/AluguarImovel.dart';
 import 'package:industries/model/DonoDoImovel.dart';
 import 'package:industries/model/Imovel.dart';
-import 'package:intl/date_symbol_data_file.dart';
-import 'package:validadores/Validador.dart';
 
 class AluguelImovel extends StatefulWidget {
   final String user;
@@ -30,10 +26,10 @@ class tipoDePagamento {
 
   static List<tipoDePagamento> getTipoDePagamentos() {
     return <tipoDePagamento>[
-      tipoDePagamento(1, 'Dinheiro'),
-      tipoDePagamento(2, 'Cartão de Crédito'),
-      tipoDePagamento(3, 'Cartão de Débito'),
-      tipoDePagamento(4, 'As três opções acima'),
+      //tipoDePagamento(1, 'Dinheiro'),
+      tipoDePagamento(1, 'Cartão de Crédito'),
+      //tipoDePagamento(3, 'Cartão de Débito'),
+      //tipoDePagamento(4, 'As três opções acima'),
     ];
   }
 }
@@ -43,7 +39,8 @@ class _AluguelImovelState extends State<AluguelImovel> {
 
   TimeOfDay _time = new TimeOfDay.now();
 
-  List<tipoDePagamento> _tipoDePagamentos = tipoDePagamento.getTipoDePagamentos();
+  List<tipoDePagamento> _tipoDePagamentos =
+      tipoDePagamento.getTipoDePagamentos();
   List<DropdownMenuItem<tipoDePagamento>> _dropdownMenuItens;
   tipoDePagamento _selectedTipo;
 
@@ -65,7 +62,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
   String _idUsuarioLogado = "";
   String _idDono = "";
   String _mensagemErro = "";
-  String _url = "";
+  String _url, _id;
   String _log = "";
   String _comp = "";
   String _tipo = "";
@@ -92,64 +89,63 @@ class _AluguelImovelState extends State<AluguelImovel> {
   Firestore db = Firestore.instance;
 
   _validarCampos() {
-      // Para quem alugou
-      AlugarImovel alugarImovel = AlugarImovel();
-      Imovel imovel = Imovel();
-      alugarImovel.telefoneDoDono = _teleneDono;
-      alugarImovel.cpfDoDono = _cpfDono;
-      alugarImovel.cepImovelAlugado = _cep;
-      alugarImovel.cidadeImovelAlugado = _cidade;
-      alugarImovel.bairroImovelAlugado = _bairro;
-      alugarImovel.numeroImovelAlugado = _numero;
-      alugarImovel.nomeDaImagemImovelAlugado = _nomeDaFoto;
-      alugarImovel.dataFinal = "";
-      alugarImovel.idImovel = widget.document.documentID;
-      alugarImovel.estadoImovelAlugado = _estado;
-      alugarImovel.detalhesImovelAlugado = _detalhes;
-      alugarImovel.urlImagensImovelAlugado = _url;
-      alugarImovel.valorImovelAlugado = _valor;
-      alugarImovel.tipoImovelImovelAlugado = _tipo;
-      alugarImovel.complementoImovelAlugado = _comp;
-      alugarImovel.logadouroImovelAlugado = _log;
-      alugarImovel.nomeDoDono = _nomeDoDono;
-      alugarImovel.urlImagemDoDono = _photoDoDono;
-      alugarImovel.emailDoDono = _emailDoDono;
-      alugarImovel.idDono = _idDono;
-      alugarImovel.idLocatario = _idUsuarioLogado;
-      alugarImovel.tipoDePagamento = _selectedTipo.tipoDoPagamento;
-      alugarImovel.dataInicio =
-          formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
+    // Para quem alugou
+    AlugarImovel alugarImovel = AlugarImovel();
+    Imovel imovel = Imovel();
+    alugarImovel.telefoneDoDono = _teleneDono;
+    alugarImovel.cpfDoDono = _cpfDono;
+    alugarImovel.cepImovelAlugado = _cep;
+    alugarImovel.cidadeImovelAlugado = _cidade;
+    alugarImovel.bairroImovelAlugado = _bairro;
+    alugarImovel.numeroImovelAlugado = _numero;
+    alugarImovel.nomeDaImagemImovelAlugado = _nomeDaFoto;
+    alugarImovel.dataFinal = "";
+    alugarImovel.idImovel = widget.document.documentID;
+    alugarImovel.estadoImovelAlugado = _estado;
+    alugarImovel.detalhesImovelAlugado = _detalhes;
+    alugarImovel.urlImagensImovelAlugado = _url;
+    alugarImovel.valorImovelAlugado = _valor;
+    alugarImovel.tipoImovelImovelAlugado = _tipo;
+    alugarImovel.complementoImovelAlugado = _comp;
+    alugarImovel.logadouroImovelAlugado = _log;
+    alugarImovel.nomeDoDono = _nomeDoDono;
+    alugarImovel.urlImagemDoDono = _photoDoDono;
+    alugarImovel.emailDoDono = _emailDoDono;
+    alugarImovel.idDono = _idDono;
+    alugarImovel.idLocatario = _idUsuarioLogado;
+    alugarImovel.tipoDePagamento = _selectedTipo.tipoDoPagamento;
+    alugarImovel.dataInicio =
+        formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
 
-      // Para o dono do imovel
-      DonoDoImovel donoDoImovel = DonoDoImovel();
-      donoDoImovel.telefoneUsuario = _telefoneDoLocatario;
-      donoDoImovel.cpfUsuario = _cpfDoLocatario;
-      donoDoImovel.cepDonoDoImovel = _cep;
-      donoDoImovel.cidadeDonoDoImovel = _cidade;
-      donoDoImovel.bairroDonoDoImovel = _bairro;
-      donoDoImovel.numeroDonoDoImovel = _numero;
-      donoDoImovel.nomeDaImagemImovel = _nomeDaFoto;
-      donoDoImovel.dataFinal = "";
-      donoDoImovel.idImovelAlugado = widget.document.documentID;
-      donoDoImovel.estadoDoImovel = _estado;
-      donoDoImovel.detalhesDonoDoImovel = _detalhes;
-      donoDoImovel.urlImagensDonoDoImovel = _url;
-      donoDoImovel.valorDonoDoImovel = _valor;
-      donoDoImovel.tipoDonoDoImovel = _tipo;
-      donoDoImovel.complementoDonoDoImovel = _comp;
-      donoDoImovel.logadouroDonoDoImovel = _log;
-      donoDoImovel.nomeDoLocatario = _nomeDoLocatario;
-      donoDoImovel.urlImagemDoLocatario = _photoDoLocatario;
-      donoDoImovel.emailDoLocatario = _emailDoLocatario;
-      donoDoImovel.idDono = _idDono;
-      donoDoImovel.idLocatario = _idUsuarioLogado;
-      donoDoImovel.tipoDeRecibo = _selectedTipo.tipoDoPagamento;
-      donoDoImovel.dataInicio =
-          formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
-      _cadastrarDono(donoDoImovel);
-      _cadastrarAluguel(alugarImovel);
-      _excluirImovel(imovel);
-
+    // Para o dono do imovel
+    DonoDoImovel donoDoImovel = DonoDoImovel();
+    donoDoImovel.telefoneUsuario = _telefoneDoLocatario;
+    donoDoImovel.cpfUsuario = _cpfDoLocatario;
+    donoDoImovel.cepDonoDoImovel = _cep;
+    donoDoImovel.cidadeDonoDoImovel = _cidade;
+    donoDoImovel.bairroDonoDoImovel = _bairro;
+    donoDoImovel.numeroDonoDoImovel = _numero;
+    donoDoImovel.nomeDaImagemImovel = _nomeDaFoto;
+    donoDoImovel.dataFinal = "";
+    donoDoImovel.idImovelAlugado = widget.document.documentID;
+    donoDoImovel.estadoDoImovel = _estado;
+    donoDoImovel.detalhesDonoDoImovel = _detalhes;
+    donoDoImovel.urlImagensDonoDoImovel = _url;
+    donoDoImovel.valorDonoDoImovel = _valor;
+    donoDoImovel.tipoDonoDoImovel = _tipo;
+    donoDoImovel.complementoDonoDoImovel = _comp;
+    donoDoImovel.logadouroDonoDoImovel = _log;
+    donoDoImovel.nomeDoLocatario = _nomeDoLocatario;
+    donoDoImovel.urlImagemDoLocatario = _photoDoLocatario;
+    donoDoImovel.emailDoLocatario = _emailDoLocatario;
+    donoDoImovel.idDono = _idDono;
+    donoDoImovel.idLocatario = _idUsuarioLogado;
+    donoDoImovel.tipoDeRecibo = _selectedTipo.tipoDoPagamento;
+    donoDoImovel.dataInicio =
+        formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
+    _cadastrarDono(donoDoImovel);
+    _cadastrarAluguel(alugarImovel);
+    _excluirImovel(imovel);
   }
 
   _cadastrarAluguel(AlugarImovel alugarImovel) {
@@ -162,7 +158,6 @@ class _AluguelImovelState extends State<AluguelImovel> {
         .collection("Detalhes")
         .document(widget.document.documentID)
         .setData(alugarImovel.toMap());
-
   }
 
   _cadastrarDono(DonoDoImovel donoDoImovel) {
@@ -221,7 +216,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
 
     // Informação do usuario Logado
     DocumentSnapshot snapshot2 =
-    await db.collection("usuarios").document(widget.uid).get();
+        await db.collection("usuarios").document(widget.uid).get();
     Map<String, dynamic> dados2 = snapshot2.data;
     _nomeDoLocatario = dados2['nome'];
     _photoDoLocatario = dados2['photo'];
@@ -234,13 +229,14 @@ class _AluguelImovelState extends State<AluguelImovel> {
     print("CPF do Locatario: " + _cpfDoLocatario);
     print("Telefone do Locatario: " + _telefoneDoLocatario);
 
-
-//    //_idImovel = dados['idUsuario'];
-//    _url = dados['urlImagens'];
-//    _log = dados['logadouro'];
-//    _comp = dados['complemento'];
-//    _tipo = dados['tipoImovel'];
-//    _valor= dados['valor'];
+    //Cartao
+    DocumentSnapshot snapshot3 =
+        await db.collection("cartao").document(widget.uid).get();
+    Map<String, dynamic> dados3 = snapshot3.data;
+    setState(() {
+      _id = dados3['idUsuario'];
+      print("Aqui: " + _id);
+    });
   }
 
   @override
@@ -251,7 +247,63 @@ class _AluguelImovelState extends State<AluguelImovel> {
     super.initState();
   }
 
-  List<DropdownMenuItem<tipoDePagamento>> buildDropdownMenuItens(List tipoDePagamentos) {
+//  _tela() {
+//    return showDialog<void>(
+//      context: context,
+//      barrierDismissible: false, // user must tap button!
+//      builder: (BuildContext context) {
+//        return AlertDialog(
+//          title: Text(
+//            'Cadastrar Cartão',
+//            textAlign: TextAlign.center,
+//          ),
+//          content: SingleChildScrollView(
+//            child: ListBody(
+//              children: <Widget>[
+//                Padding(
+//                  padding: EdgeInsets.only(bottom: 32),
+//                  child: Image.asset(
+//                    "imagens/ad.png",
+//                    width: 200,
+//                    height: 150,
+//                  ),
+//                ),
+//                Text(
+//                    'Você não possui o cadastro do cartão de credito, necessita o cadastramentento, se Deseja cadastrar Clique em SIM, caso contrario Clique em NÃO!'),
+//              ],
+//            ),
+//          ),
+//          actions: <Widget>[
+//            Row(
+//              children: <Widget>[
+//                FlatButton(
+//                  child: Text('Não'),
+//                  onPressed: () {
+//                    Navigator.pop(context);
+//                  },
+//                ),
+//                FlatButton(
+//                  child: Text('Sim'),
+//                  onPressed: () {
+//                    Navigator.push(
+//                        context,
+//                        MaterialPageRoute(builder: (context) => CadastrarCartaoDeCredito(widget.user,
+//                            widget.photo, widget.emai, widget.uid)
+//                        ),
+//                    );
+//
+//                  },
+//                ),
+//              ],
+//            ),
+//          ],
+//        );
+//      },
+//    );
+//  }
+
+  List<DropdownMenuItem<tipoDePagamento>> buildDropdownMenuItens(
+      List tipoDePagamentos) {
     List<DropdownMenuItem<tipoDePagamento>> items = List();
     for (tipoDePagamento tipos in tipoDePagamentos) {
       items.add(
@@ -300,7 +352,6 @@ class _AluguelImovelState extends State<AluguelImovel> {
                         width: 0,
                       ),
                       InkWell(
-
                         onTap: () {
                           _selectedDate(context);
                         },
@@ -347,10 +398,11 @@ class _AluguelImovelState extends State<AluguelImovel> {
                         width: 30,
                       ),
                       DropdownButton(
+                        /*
                         icon: Icon(
                           Icons.arrow_downward,
                           color: Colors.blue,
-                        ),
+                        ),*/
                         value: _selectedTipo,
                         items: _dropdownMenuItens,
                         onChanged: onCgangeDropdownItem,
@@ -378,12 +430,16 @@ class _AluguelImovelState extends State<AluguelImovel> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32)),
                     onPressed: () {
+                      if (_id == _idUsuarioLogado) {
                         _validarCampos();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ImovelAlugado(
-                                    widget.user, widget.photo, widget.emai, widget.uid)));
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      } else {
+                        setState(() {
+                          _mensagemErro =
+                              "Para Alugar este imovel é necessario cadastrar o cartão de crédito, va nas três barrinhas do menu, e clique em Cartão, vai desenho do cartão e cadastre!";
+                        });
+                      }
                     },
                   ),
                 ),

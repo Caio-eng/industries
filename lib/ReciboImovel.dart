@@ -32,7 +32,8 @@ class _ReciboImovelState extends State<ReciboImovel> {
             subtitle: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Text(
-                'Nome do Dono: ${document['nomeDoDono'] + '\nCPF do Dono: ${document['cpfDoDono']}'  + '\n ${document.documentID}' + ' - Valor Pago: ' + document['valorTotal']}',
+                'Nome do Dono: ${document['nomeDoDono'] + '\nCPF do Dono: ${document['cpfDoDono']}'  +  
+                    '\n ${document.documentID}' + ' - Valor Pago: ' + document['valorTotal']}',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               ),
@@ -48,7 +49,7 @@ class _ReciboImovelState extends State<ReciboImovel> {
     _logado = widget.uid;
     print(_logado);
     Firestore db = Firestore.instance;
-    QuerySnapshot querySnapshot = await db.collection("idEnvios").where('idUsuarioLogado', isEqualTo: widget.uid).getDocuments();
+    QuerySnapshot querySnapshot = await db.collection("idEnvios").where('idUsuarioLogado', isEqualTo: _idEnvioLogado).getDocuments();
 
     for (DocumentSnapshot item in querySnapshot.documents) {
       var dados = item.data;

@@ -1,16 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:industries/MeuCartao.dart';
 import 'package:industries/Configuracoes.dart';
-import 'package:industries/ConsultarCep.dart';
 import 'package:industries/Detalhes.dart';
 import 'package:industries/Chat.dart';
 import 'package:industries/EditarImovel.dart';
 import 'package:industries/ImovelAlugado.dart';
 import 'package:industries/MeuImovel.dart';
 import 'package:industries/ReciboImovel.dart';
-import 'package:industries/model/Imovel.dart';
 import 'CadastroImoveis.dart';
 
 class Home extends StatefulWidget {
@@ -39,6 +37,7 @@ class _HomeState extends State<Home> {
   String _id = "";
   String _nome;
   String _photo;
+  String _cpf;
   String filter;
   var profile;
 
@@ -105,6 +104,8 @@ class _HomeState extends State<Home> {
           break;
       }
     }
+
+
 
     return Card(
       child: document['idUsuario'] != _idUsuarioLogado
@@ -257,12 +258,13 @@ class _HomeState extends State<Home> {
 
     Firestore db = Firestore.instance;
     DocumentSnapshot snapshot =
-        await db.collection("usuarios").document(_idUsuarioLogado).get();
+        await db.collection("usuarios").document(widget.uid).get();
     Map<String, dynamic> dados = snapshot.data;
     setState(() {
       _id = dados['idUsuario'];
       _nome = dados['nome'];
       _photo = dados['urlImagem'];
+      _cpf = dados['cpf'];
       print("_id: " + _id);
     });
   }
@@ -308,15 +310,32 @@ class _HomeState extends State<Home> {
 //          ),
         ),
         actions: <Widget>[
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CadastroImoveis(
-                          widget.user, widget.photo, widget.emai, widget.uid)));
-            },
-            child: Icon(Icons.add),
+          Row(
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Configuracoes(widget.user,
+                              widget.photo, widget.emai, widget.uid)));
+                },
+                child: Icon(Icons.person),
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CadastroImoveis(
+                              widget.user, widget.photo, widget.emai, widget.uid)));
+                },
+                child: Icon(Icons.add),
+              ),
+            ],
           ),
           Padding(
             padding: EdgeInsets.only(right: 18),
@@ -328,13 +347,14 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             _idUsuarioLogado == _id
                 ? UserAccountsDrawerHeader(
+                  /*
                     onDetailsPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => Configuracoes(widget.user,
                                   widget.photo, widget.emai, widget.uid)));
-                    },
+                    },*/
                     accountName: Text('${_nome}'),
                     accountEmail: Text("${widget.emai}"),
                     currentAccountPicture: CircleAvatar(
@@ -554,7 +574,8 @@ class _HomeState extends State<Home> {
                 child: InkWell(
                   splashColor: Colors.blue,
                   onTap: () => {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ConsultarCep()))
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => MeuCartao(widget.user,
+                        widget.photo, widget.emai, widget.uid)))
                   },
                   child: Container(
                     height: 50,
@@ -691,7 +712,6 @@ class _HomeState extends State<Home> {
                 controller: editingController,
                 onChanged: (texto) {
                   texto = _pesquisar();
-
                 },
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(

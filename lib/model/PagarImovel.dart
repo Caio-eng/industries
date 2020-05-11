@@ -23,11 +23,15 @@ class PagarImovel {
   String _cep;
   String _bairro;
   String _numero;
+  String _idUsuarioDoCartao, _nomeUsuarioDoCartao, _cpfUsuarioDoCartao;
 
   PagarImovel();
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
+      "idUsuarioDoCartao" : this.idUsuarioDoCartao,
+      "nomeUsuarioDoCartao" : this.nomeUsuarioDoCartao,
+      "cpfUsuarioDoCartao" : this.cpfUsuarioDoCartao,
       "idPagamento" : this.idPagamento,
       "valorDoPagamento" : this.valorDoPagamento,
       "juroDeAtraso" : this.juroDeAtraso,
@@ -57,6 +61,12 @@ class PagarImovel {
 
   }
 
+
+  String get idUsuarioDoCartao => _idUsuarioDoCartao;
+
+  set idUsuarioDoCartao(String value) {
+    _idUsuarioDoCartao = value;
+  }
 
   String get cidade => _cidade;
 
@@ -194,6 +204,18 @@ class PagarImovel {
 
   set numero(String value) {
     _numero = value;
+  }
+
+  get nomeUsuarioDoCartao => _nomeUsuarioDoCartao;
+
+  set nomeUsuarioDoCartao(value) {
+    _nomeUsuarioDoCartao = value;
+  }
+
+  get cpfUsuarioDoCartao => _cpfUsuarioDoCartao;
+
+  set cpfUsuarioDoCartao(value) {
+    _cpfUsuarioDoCartao = value;
   }
 
 

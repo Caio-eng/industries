@@ -1,7 +1,9 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/Home.dart';
 import 'package:industries/model/IdEnviar.dart';
@@ -35,7 +37,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
   String _cpf, _nome, _email, _photo;
   String _deta = "";
   String _estado, _cep, _numero, _bairro, _cidade;
-  String _dataInicio = "";
+  String _dataInicio, _idUsuarioDoCartao, _nomeUsuarioDoCartao, _cpfUsuarioDoCartao;
   String _idImovel, _idUsuario, _idReceber, _idPagar, _dados;
   List<String> itensMenu = [
     "Informações",
@@ -77,7 +79,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                       Navigator.pop(context);
                     },
                   ),
-                  dados3 == null || dados3['idDoPagador'] == null
+                  dados3 == null || dados3['idDoPagador'] == null || _idUsuarioDoCartao == null
                   ? FlatButton(
                     child: Text('Cancelar'),
                     onPressed: () {
@@ -127,6 +129,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
     }
 
 
+
     _pagarAluguel() async {
       _idDono = document['idDono'];
       _nomeDoDono = document['nomeDoDono'];
@@ -151,18 +154,20 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
       _cep = document['cepImovelAlugado'];
       _bairro = document['bairroImovelAlugado'];
       _numero = document['numeroImovelAlugado'];
+
       DocumentSnapshot snapshot3 = await db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela1').get();
       Map<String, dynamic> dados3 = snapshot3.data;
 
       DocumentSnapshot snapshot4 = await db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela2').get();
       Map<String, dynamic> dados4 = snapshot4.data;
+      print("Olá: " + dados3.toString());
 
       final todayDate = DateTime.now();
       print(todayDate.month + 1);
       String dia;
       String mes1;
       String ano;
-      dia = todayDate.day.toString();
+      dia = document['dataInicio'].toString();
       mes1 = (todayDate.month + 1).toString();
       ano = todayDate.year.toString();
       return showDialog<void>(
@@ -178,44 +183,87 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  dados3 == null || dados3['idDoPagador'] == null
+                  dados3 == null || dados3['idDoPagador'] == null || _idUsuarioDoCartao == null
                   ? InkWell(
                     splashColor: Colors.blue,
                     onTap: () {
-                      PagarImovel pagarImovel = PagarImovel();
-                      pagarImovel.idDoPagador = widget.uid;
-                      pagarImovel.idDoRecebedor = _idDono;
-                      pagarImovel.tipoDoPagamento = _tipoDoPagamento;
-                      pagarImovel.dataDoPagamento = formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
-                      pagarImovel.valorDoPagamento = _valor;
-                      pagarImovel.juroDeAtraso = "0";
-                      pagarImovel.valorTotal = _valor;
-                      pagarImovel.idDoImovel = document['idImovel'];
-                      pagarImovel.logadouro = _log;
-                      pagarImovel.comp = _comp;
-                      pagarImovel.cidade = _cidade;
-                      pagarImovel.cep = _cep;
-                      pagarImovel.bairro = _bairro;
-                      pagarImovel.numero = _numero;
-                      pagarImovel.cpfDoDono = _cpfDoDono;
-                      pagarImovel.nomeDoDono = _nomeDoDono;
-                      pagarImovel.nome = nome;
-                      pagarImovel.cpf = cpf;
-                      pagarImovel.tipo = _tipo;
-                      pagarImovel.estado = _estado;
-                      pagarImovel.detalhes = _detalhes;
-                      IdEnviar idEnviar = IdEnviar();
-                      idEnviar.idUsuarioLogado = widget.uid;
-                      idEnviar.idUsuarioDeslogado = _idDono;
-                      idEnviar.idDoImovel = document['idImovel'];
-                      db.collection("idEnvios").document(widget.uid).setData(idEnviar.toMap());
-                      db.collection('idEnvios').document(_idDono).setData(idEnviar.toMap());
-                      //db.collection("idEnvios").document(_log).setData(idEnviar.toMap());
-                      db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela1').setData(pagarImovel.toMap());
-                      Navigator.pop(context);
-                      print("Pago");
+                      return showDialog<void>(
+                        context: context,
+                        barrierDismissible: false, // user must tap button!
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text(
+                              'Confirmar Pagamento',
+                              textAlign: TextAlign.center,
+                            ),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  Text(
+                                      'Clique em confirmar para efetuar o pagamento!'),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  FlatButton(
+                                    child: Text('Voltar'),
+                                    onPressed: () {
+                                        Navigator.pop(context);
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: Text('Confirmar'),
+                                    onPressed: () {
+                                      PagarImovel pagarImovel = PagarImovel();
+                                      pagarImovel.idDoPagador = widget.uid;
+                                      pagarImovel.idDoRecebedor = _idDono;
+                                      pagarImovel.tipoDoPagamento = _tipoDoPagamento;
+                                      pagarImovel.dataDoPagamento = formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
+                                      pagarImovel.valorDoPagamento = _valor;
+                                      pagarImovel.juroDeAtraso = "0";
+                                      pagarImovel.valorTotal = _valor;
+                                      pagarImovel.idDoImovel = document['idImovel'];
+                                      pagarImovel.logadouro = _log;
+                                      pagarImovel.comp = _comp;
+                                      pagarImovel.cidade = _cidade;
+                                      pagarImovel.cep = _cep;
+                                      pagarImovel.bairro = _bairro;
+                                      pagarImovel.numero = _numero;
+                                      pagarImovel.cpfDoDono = _cpfDoDono;
+                                      pagarImovel.nomeDoDono = _nomeDoDono;
+                                      pagarImovel.nome = nome;
+                                      pagarImovel.cpf = cpf;
+                                      pagarImovel.tipo = _tipo;
+                                      pagarImovel.estado = _estado;
+                                      pagarImovel.detalhes = _detalhes;
+                                      pagarImovel.idUsuarioDoCartao = _idUsuarioDoCartao;
+                                      pagarImovel.nomeUsuarioDoCartao = _nomeUsuarioDoCartao;
+                                      pagarImovel.cpfUsuarioDoCartao = _cpfUsuarioDoCartao;
+                                      IdEnviar idEnviar = IdEnviar();
+                                      idEnviar.idUsuarioLogado = widget.uid;
+                                      idEnviar.idUsuarioDeslogado = _idDono;
+                                      idEnviar.idDoImovel = document['idImovel'];
+                                      db.collection("idEnvios").document(widget.uid).setData(idEnviar.toMap());
+                                      db.collection('idEnvios').document(_idDono).setData(idEnviar.toMap());
+                                      //db.collection("idEnvios").document(_log).setData(idEnviar.toMap());
+                                      db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela1').setData(pagarImovel.toMap());
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      print("Pago");
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
-                    child: Text(
+                    child: _idUsuarioDoCartao == null
+                   ? Text("Cadastre seu cartão", style: TextStyle(color: Colors.red, fontSize: 20),)
+                    : Text(
                       "Parcela 1 " + " - Valor: " + _valor + "\nData de Venc: ${formatDate(_date, [dd, '/', mm, '/', yyyy]).toString()}",
                       style: TextStyle(color: Colors.blue, fontSize: 18),
                     ),
@@ -224,45 +272,124 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                     "Parcela 1 " + " - Paga",
                     style: TextStyle(color: Colors.green, fontSize: 18),
                   ),
-                  dados4 == null || dados4['idDoPagador'] == null
+                  dados4 == null || dados4['idDoPagador'] == null || _idUsuarioDoCartao == null
                       ? InkWell(
                     splashColor: Colors.blue,
                     onTap: () {
-                      PagarImovel pagarImovel = PagarImovel();
-                      pagarImovel.idDoPagador = widget.uid;
-                      pagarImovel.idDoRecebedor = _idDono;
-                      pagarImovel.tipoDoPagamento = _tipoDoPagamento;
-                      pagarImovel.dataDoPagamento = formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
-                      pagarImovel.valorDoPagamento = _valor;
-                      pagarImovel.juroDeAtraso = "0";
-                      pagarImovel.valorTotal = _valor;
-                      pagarImovel.idDoImovel = document['idImovel'];
-                      pagarImovel.logadouro = _log;
-                      pagarImovel.comp = _comp;
-                      pagarImovel.cidade = _cidade;
-                      pagarImovel.cep = _cep;
-                      pagarImovel.bairro = _bairro;
-                      pagarImovel.numero = _numero;
-                      pagarImovel.cpfDoDono = _cpfDoDono;
-                      pagarImovel.nomeDoDono = _nomeDoDono;
-                      pagarImovel.nome = nome;
-                      pagarImovel.cpf = cpf;
-                      pagarImovel.tipo = _tipo;
-                      pagarImovel.estado = _estado;
-                      pagarImovel.detalhes = _detalhes;
-                      IdEnviar idEnviar = IdEnviar();
-                      idEnviar.idUsuarioLogado = widget.uid;
-                      idEnviar.idUsuarioDeslogado = _idDono;
-                      idEnviar.idDoImovel = document['idImovel'];
-                      db.collection("idEnvios").document(widget.uid).setData(idEnviar.toMap());
-                      db.collection('idEnvios').document(_idDono).setData(idEnviar.toMap());
-                      //db.collection("idEnvios").document(_log).setData(idEnviar.toMap());
-                      db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela2').setData(pagarImovel.toMap());
-                      Navigator.pop(context);
-                      print("Pago");
+                      if (dados3 == null ) {
+                        return showDialog<void>(
+                          context: context,
+                          barrierDismissible: false, // user must tap button!
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(
+                                'Pagamento 2',
+                                textAlign: TextAlign.center,
+                              ),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: <Widget>[
+                                    Text(
+                                        'Efetue o pagamento 1 para ter acesso ao pagamento 2!'),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    FlatButton(
+                                      child: Text('Voltar'),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        return showDialog<void>(
+                          context: context,
+                          barrierDismissible: false, // user must tap button!
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text(
+                                'Confirmar Pagamento 2',
+                                textAlign: TextAlign.center,
+                              ),
+                              content: SingleChildScrollView(
+                                child: ListBody(
+                                  children: <Widget>[
+                                    Text(
+                                        'Clique em confirmar para efetuar o pagamento 2!'),
+                                  ],
+                                ),
+                              ),
+                              actions: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    FlatButton(
+                                      child: Text('Voltar'),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child: Text('Confirmar'),
+                                      onPressed: () {
+                                        PagarImovel pagarImovel = PagarImovel();
+                                        pagarImovel.idDoPagador = widget.uid;
+                                        pagarImovel.idDoRecebedor = _idDono;
+                                        pagarImovel.tipoDoPagamento = _tipoDoPagamento;
+                                        pagarImovel.dataDoPagamento = formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
+                                        pagarImovel.valorDoPagamento = _valor;
+                                        pagarImovel.juroDeAtraso = "0";
+                                        pagarImovel.valorTotal = _valor;
+                                        pagarImovel.idDoImovel = document['idImovel'];
+                                        pagarImovel.logadouro = _log;
+                                        pagarImovel.comp = _comp;
+                                        pagarImovel.cidade = _cidade;
+                                        pagarImovel.cep = _cep;
+                                        pagarImovel.bairro = _bairro;
+                                        pagarImovel.numero = _numero;
+                                        pagarImovel.cpfDoDono = _cpfDoDono;
+                                        pagarImovel.nomeDoDono = _nomeDoDono;
+                                        pagarImovel.nome = nome;
+                                        pagarImovel.cpf = cpf;
+                                        pagarImovel.tipo = _tipo;
+                                        pagarImovel.estado = _estado;
+                                        pagarImovel.detalhes = _detalhes;
+                                        pagarImovel.idUsuarioDoCartao = _idUsuarioDoCartao;
+                                        pagarImovel.nomeUsuarioDoCartao = _nomeUsuarioDoCartao;
+                                        pagarImovel.cpfUsuarioDoCartao = _cpfUsuarioDoCartao;
+                                        IdEnviar idEnviar = IdEnviar();
+                                        idEnviar.idUsuarioLogado = widget.uid;
+                                        idEnviar.idUsuarioDeslogado = _idDono;
+                                        idEnviar.idDoImovel = document['idImovel'];
+                                        db.collection("idEnvios").document(widget.uid).setData(idEnviar.toMap());
+                                        db.collection('idEnvios').document(_idDono).setData(idEnviar.toMap());
+                                        //db.collection("idEnvios").document(_log).setData(idEnviar.toMap());
+                                        db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela2').setData(pagarImovel.toMap());
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                        print("Pago");
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+
                     },
-                    child: Text(
-                      "Parcela 2 " + " - Valor: " + _valor + "\nData de Venc: " + dia + '/' + mes1 + '/' + ano,
+                    child: _idUsuarioDoCartao == null
+                      ? Text("Cadastre seu cartão", style: TextStyle(color: Colors.red, fontSize: 20),)
+                      : Text(
+                      "Parcela 2 " + " - Valor: " + _valor + "\nData de Venc: " + dia.substring(0, 2) + '/' + mes1 + '/' + ano,
                       style: TextStyle(color: Colors.orange, fontSize: 18),
                     ),
                   )
@@ -464,7 +591,20 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
         "Locatário de id: ${widget.uid}, tem o nome de ${_nome}, seu email é ${_email}, portador do CPF: ${_cpf} e tem o telefone: ${_telefone}");
     print(_photo);
     //print(_idUsuarioLogado);
+
+    DocumentSnapshot _snapshot =
+    await db.collection("cartao").document(widget.uid).get();
+    Map<String, dynamic> _dados = _snapshot.data;
+
+    _idUsuarioDoCartao = _dados['idUsuario'];
+    _nomeUsuarioDoCartao = _dados['nomeDoTitularDoCartao'];
+    _cpfUsuarioDoCartao = _dados['cpfDoTitularDoCartao'];
+    print("idCartao: " + _idUsuarioDoCartao);
+    print("Número Do Cartao: " + _nomeUsuarioDoCartao);
+    print("CPF do Cartão: " + _cpfUsuarioDoCartao);
   }
+
+
 
   @override
   void initState() {

@@ -136,7 +136,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     String cidade = _localidadeController.text;
     if (logadouro.isNotEmpty && logadouro.length >= 4) {
       if (bairro.isNotEmpty && bairro.length >= 4) {
-        if (valor.isNotEmpty) {
+        if (valor.isNotEmpty && valor.length >= 9) {
           if (sigl.isNotEmpty && sigl.length == 2) {
             if (tipoImovel.isNotEmpty) {
               if (numero.isNotEmpty) {
@@ -158,11 +158,9 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     imovel.idUsuario = widget.uid;
                     imovel.nomeDaImagem = _nomeDaFoto;
 
-                    Firestore db = Firestore.instance;
-                    db.collection("imoveis")
-                        .document()
-                        .setData(imovel.toMap());
-                      Navigator.pop(context);
+                    _cadastrarImoveis(imovel);
+
+
                   } else {
                     setState(() {
                       _mensagemErro = "O Campo Cidade é obrigátorio!";
@@ -185,7 +183,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
           }
         } else {
           setState(() {
-            _mensagemErro = "Digite um valor";
+            _mensagemErro = "Digite um valor maior ou igual que R\$ 100";
           });
         }
       } else {
@@ -198,6 +196,14 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
         _mensagemErro = "Logradouro tem que ser maior que 4  letras";
       });
     }
+  }
+
+  _cadastrarImoveis(Imovel imovel) {
+    Firestore db = Firestore.instance;
+    db.collection("imoveis")
+        .document()
+        .setData(imovel.toMap());
+    Navigator.pop(context);
   }
 
   Future _recuperarImagem(String origemImagem) async {
@@ -283,7 +289,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     Map<String, dynamic> dados = snapshot.data;
     _cpfUsuario = dados['cpf'];
     _telefoneUsuario = dados['telefone'];
-
+    print(_cpfUsuario);
 
 
   }
@@ -435,7 +441,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
                       controller: controllerCep,
-                      autofocus: true,
                       onEditingComplete: () {
                         _searchCep();
                       },
@@ -449,7 +454,13 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                         labelText: 'CEP',
                         filled: true,
                         enabled: _enableField,
-                        suffixIcon: Icon(Icons.search),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            _searchCep();
+                          },
+                          autofocus: true,
+                          icon: Icon(Icons.search),
+                        ),
 
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
@@ -536,6 +547,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
                         labelText: 'Número',
+                        hintText: 'Ex: 000',
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
@@ -710,7 +722,15 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(32)),
                       onPressed: () {
+                        if (_cpfUsuario != null) {
                           _validarCampos();
+
+                        } else {
+                          print("entrou aqui");
+                          setState(() {
+                            _mensagemErro = 'Cadastre o seu CPF para poder usufluir do aplicativo';
+                          });
+                        }
                       },
                     ),
                   ),

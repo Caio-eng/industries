@@ -41,6 +41,7 @@ class _MeuImovelState extends State<MeuImovel> {
   Firestore db = Firestore.instance;
 
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
+
     _informacaoImovel() {
       _idDoLocatario = document['idLocatario'];
       _nomeDoLocatario = document['nomeDoLocatario'];
@@ -56,6 +57,7 @@ class _MeuImovelState extends State<MeuImovel> {
       _tipo = document['tipoDonoDoImovel'];
       _estado = document['estadoDoImovel'];
       _dataInicio = document['dataInicio'];
+      _cidade = document['cidadeDonoDoImovel'];
 
       return showDialog<void>(
         context: context,
@@ -70,14 +72,12 @@ class _MeuImovelState extends State<MeuImovel> {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(
-                    'Tipo do Imóvel: ' +
-                        _tipo +
-                        '\nLocalização: ${_cidade} - ' +
-                        _estado +
-                        "\nValor Alugado: " +
-                        _valor,
-                    textAlign: TextAlign.center,
+                 Text(
+                  ' Tipo do Imóvel: ' + _tipo +
+                    '\nLocalização: ' + _cidade + ' - ' +
+                      _estado +
+                      "\nValor Alugado: " + _valor,
+                      textAlign: TextAlign.center,
                   ),
                   CircleAvatar(
                     backgroundImage: NetworkImage(_url),
@@ -86,13 +86,12 @@ class _MeuImovelState extends State<MeuImovel> {
                   Text(
                     "Logadouro: " +
                         _log + " - " + _bairro +
-                        "\nComplemento: ${_comp}" +
-                        '\nDetalhes: ' +
-                        "\nCEP: ${_cep}" + " N°: ${_numero}" +
-                        _deta +
+                        "\nComplemento: " + _comp +
+                        '\nDetalhes: ' + _deta +
+                        "\nCEP: " + _cep + " N°: " + _numero +
                         '\nData Inicial: ' +
                         _dataInicio,
-                    textAlign: TextAlign.center,
+                   textAlign: TextAlign.center,
                   ),
                   SizedBox(
                     height: 5,
@@ -173,7 +172,7 @@ class _MeuImovelState extends State<MeuImovel> {
           .get();
       Map<String, dynamic> dados4 = snapshot4.data;
 
-      dados3['dataDoPagamento']
+
 
       return showDialog<void>(
         context: context,

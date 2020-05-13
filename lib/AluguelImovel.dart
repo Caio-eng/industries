@@ -430,7 +430,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32)),
                     onPressed: () {
-                      if (_id == _idUsuarioLogado) {
+                      if (_id == _idUsuarioLogado || _cpfDoLocatario == null) {
                         _validarCampos();
                         Navigator.pop(context);
                         Navigator.pop(context);

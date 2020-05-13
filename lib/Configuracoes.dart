@@ -25,7 +25,7 @@ class _ConfiguracoesState extends State<Configuracoes> {
   TextEditingController _controllerNome = TextEditingController();
   File _imagem;
   String _urlImagemRecuperada;
-  String _idUsuarioLogado;
+  String _idUsuarioLogado, _nome;
   bool _subindoImagem = false;
   var controllerTelefone = new MaskedTextController(mask: '(00) 00000 - 0000');
   var controllerCPF = new MaskedTextController(mask: '000.000.000-00');
@@ -144,7 +144,11 @@ class _ConfiguracoesState extends State<Configuracoes> {
         await db.collection("usuarios").document(_idUsuarioLogado).get();
 
     Map<String, dynamic> dados = snapshot.data;
-    _controllerNome.text = dados['nome'];
+    if (dados == null) {
+      _controllerNome.text = widget.user;
+    } else {
+       _controllerNome.text = dados['nome'];
+    }
     controllerCPF.text = dados['cpf'];
     controllerTelefone.text = dados['telefone'];
     print(dados['urlImagem']);

@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/AluguelImovel.dart';
+import 'package:industries/model/Conversa.dart';
+import 'package:industries/telas/Mensagens.dart';
 
 import 'Home.dart';
+import 'model/Usuario.dart';
 
 class Detalhes extends StatefulWidget {
   final String user;
@@ -35,7 +40,10 @@ class _DetalhesState extends State<Detalhes>  {
   String _locali;
   Firestore db = Firestore.instance;
 
+
+
   String _mensagem = '';
+
 
 
   @override
@@ -64,7 +72,11 @@ class _DetalhesState extends State<Detalhes>  {
     Map<String, dynamic> dados = snapshot.data;
     print(dados['nome']);
     _nomeUsuario = dados['nome'];
+
+
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +165,8 @@ class _DetalhesState extends State<Detalhes>  {
                     onPressed: () {
                       print(_idImovel);
                       print(_nomeUsuario);
+
+
                     },
                   ),
                 ),

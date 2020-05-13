@@ -38,6 +38,7 @@ class _HomeState extends State<Home> {
   String _nome;
   String _photo;
   String _cpf;
+  var _pes;
   String filter;
   var profile;
 
@@ -242,6 +243,10 @@ class _HomeState extends State<Home> {
         .where("logadouro" , isLessThanOrEqualTo: pesquisa + "\uf8ff"  )
         .getDocuments();
 
+    setState(() {
+      _pes = querySnapshot.documents;
+    });
+
     for( DocumentSnapshot item in querySnapshot.documents ) {
       var dados = item.data;
       setState(() {
@@ -272,6 +277,8 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     _pesquisar();
+    _pes = [];
+
     _recuperarDados();
     controller.addListener(() {
       setState(() {
@@ -736,13 +743,23 @@ class _HomeState extends State<Home> {
                   if (!snapshot.hasData) {
                     return Text("Loading..");
                   }
+                  var docs = snapshot.data.documents;
+                  var docs2 = [
+                  ];
+                  //print(this._pesquisar());
+                  for (var d in docs) {
+                    //print(d);
+                    docs2.add(d);
+                  }
+                  docs = docs2;
+                  //print("Quantidade: " + _pes.snapshot.data.lengh.toString());
 
                   return ListView.builder(
                     itemExtent: 80.0,
-                    itemCount: snapshot.data.documents.length,
+                    itemCount: docs.length,
                     itemBuilder: (_, index) {
                       return _buildList(
-                          context, snapshot.data.documents[index]);
+                          context, docs[index]);
                     },
                   );
                 },

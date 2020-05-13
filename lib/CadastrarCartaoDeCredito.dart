@@ -256,6 +256,10 @@ class _CadastrarCartaoDeCreditoState extends State<CadastrarCartaoDeCredito> {
                           setState(() {
                             _mensagemErro = "Existe um cadastro, se quiser delete o mesmo, ou em caso de erro edite";
                           });
+                        } else if (_cpfUsuario == null) {
+                          setState(() {
+                            _mensagemErro = "Cadastre seu Cpf, para cadastrar o cartão";
+                          });
                         } else {
                           if (_formKey.currentState.validate()) {
                             _validarCartao();

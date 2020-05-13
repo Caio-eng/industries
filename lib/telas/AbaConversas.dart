@@ -24,6 +24,7 @@ class _AbaConversasState extends State<AbaConversas> {
   final _controller = StreamController<QuerySnapshot>.broadcast();
   Firestore db = Firestore.instance;
   String _idUsuarioLogado;
+  String _photo;
 
 
   @override
@@ -48,17 +49,23 @@ class _AbaConversasState extends State<AbaConversas> {
         .snapshots();
 
     stream.listen((dados) {
+
       _controller.add( dados );
     });
 
   }
 
   _recuperarDadosUsuario() async {
-    _idUsuarioLogado = widget.uid;
 
+
+    setState(() {
+      _idUsuarioLogado = widget.uid;
+    });
     _adicionarListenerConversas();
 
   }
+
+
 
   @override
   void dispose() {
@@ -112,15 +119,19 @@ class _AbaConversasState extends State<AbaConversas> {
                     List<DocumentSnapshot> conversas = querySnapshot.documents.toList();
                     DocumentSnapshot item = conversas[indice];
 
+                    print(item['nome']);
+
                     String urlImagem = item["caminhoFoto"];
                     String tipo = item["tipoMensagem"];
                     String mensagem = item["mensagem"];
                     String nome = item["nome"];
+                    String photo = item['photo'];
                     String idDestinatario = item["idDestinatario"];
 
                     Usuario usuario = Usuario();
                     usuario.nome = nome;
                     usuario.urlImagem = urlImagem;
+                    usuario.photo = photo;
                     usuario.idUsuario = idDestinatario;
 
                     return ListTile(
@@ -136,9 +147,9 @@ class _AbaConversasState extends State<AbaConversas> {
                         backgroundColor: Colors.grey,
                         backgroundImage: urlImagem != null
                           ? NetworkImage( urlImagem )
-                          : null,
+                          : NetworkImage(photo),
                       ),
-                      title: Text(
+                      title:  Text(
                         nome,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,

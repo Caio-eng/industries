@@ -7,6 +7,7 @@ class Conversa {
   String _nome;
   String _mensagem;
   String _caminhoFoto;
+  String _photo;
   String _tipoMensagem;// texto ou imagem
 
 
@@ -41,6 +42,7 @@ class Conversa {
       "idRemetente" : this.idRemetente,
       "idDestinatario" :this.idDestinatario,
       "nome" : this.nome,
+      "photo" : this.photo,
       "mensagem" :  this.mensagem,
       "caminhoFoto" : this.caminhoFoto,
       "tipoMensagem" : this.tipoMensagem
@@ -50,6 +52,12 @@ class Conversa {
 
   }
 
+
+  String get photo => _photo;
+
+  set photo(String value) {
+    _photo = value;
+  }
 
   String get idRemetente => _idRemetente;
 

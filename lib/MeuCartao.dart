@@ -156,24 +156,33 @@ class _MeuCartaoState extends State<MeuCartao> {
           ),
         ],
       ),
-      body: StreamBuilder(
-          stream: Firestore.instance.collection('cartao').where('idUsuario', isEqualTo: _idUsuarioLogado).snapshots(),
-          //print an integer every 2secs, 10 times
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Text("Loading..");
-            }
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Divider(),
+            Expanded (
+             child :StreamBuilder(
+                stream: Firestore.instance.collection('cartao').where('idUsuario', isEqualTo: _idUsuarioLogado).snapshots(),
+                //print an integer every 2secs, 10 times
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text("Loading..");
+                  }
 
-            return ListView.builder(
-              itemExtent: 80.0,
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (_, index) {
-                return _buildList(
-                    context, snapshot.data.documents[index]);
-              },
-            );
-          },
+                  return ListView.builder(
+                    itemExtent: 80.0,
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (_, index) {
+                      return _buildList(
+                          context, snapshot.data.documents[index]);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }

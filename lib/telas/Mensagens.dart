@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_format/date_format.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class _MensagensState extends State<Mensagens> {
 
   File _imagem;
   bool _subindoImagem = false;
-  String _idUsuarioLogado;
+  String _idUsuarioLogado, _nomeUsuarioLogado, _urlImagemUsuarioLogado, _photoUsuarioLogado;
   String _idUsuarioDestinatario;
   Firestore db = Firestore.instance;
   TextEditingController _controllerMensagem = TextEditingController();
@@ -41,6 +42,7 @@ class _MensagensState extends State<Mensagens> {
       mensagem.mensagem = textoMensagem;
       mensagem.urlImagem = "";
       mensagem.tipo = "texto";
+      mensagem.data = Timestamp.now().toString();
 
       //Salvar mensagem para remetente
       _salvarMensagem(_idUsuarioLogado, _idUsuarioDestinatario, mensagem);
@@ -60,6 +62,7 @@ class _MensagensState extends State<Mensagens> {
     cRemetente.idDestinatario = _idUsuarioDestinatario;
     cRemetente.mensagem = msg.mensagem;
     cRemetente.nome = widget.contato.nome;
+    cRemetente.photo = widget.contato.photo;
     cRemetente.caminhoFoto = widget.contato.urlImagem;
     cRemetente.tipoMensagem = msg.tipo;
     cRemetente.salvar();
@@ -69,8 +72,9 @@ class _MensagensState extends State<Mensagens> {
     cDestinatario.idRemetente = _idUsuarioDestinatario;
     cDestinatario.idDestinatario = _idUsuarioLogado;
     cDestinatario.mensagem = msg.mensagem;
-    cDestinatario.nome = widget.contato.nome;
-    cDestinatario.caminhoFoto = widget.contato.urlImagem;
+    cDestinatario.photo = _photoUsuarioLogado;
+    cDestinatario.nome = _nomeUsuarioLogado;
+    cDestinatario.caminhoFoto = _urlImagemUsuarioLogado;
     cDestinatario.tipoMensagem = msg.tipo;
     cDestinatario.salvar();
   }
@@ -131,6 +135,7 @@ class _MensagensState extends State<Mensagens> {
     mensagem.mensagem = "";
     mensagem.urlImagem = url;
     mensagem.tipo = "imagem";
+    mensagem.data = Timestamp.now().toString();
 
     //Salvar mensagem para remetente
     _salvarMensagem(_idUsuarioLogado, _idUsuarioDestinatario, mensagem);
@@ -140,8 +145,16 @@ class _MensagensState extends State<Mensagens> {
   }
 
   _recuperarDadosUsuario() async {
-    _idUsuarioLogado = widget.uid;
     _idUsuarioDestinatario = widget.contato.idUsuario;
+    DocumentSnapshot snapshot =
+    await db.collection("usuarios").document(widget.uid).get();
+    Map<String, dynamic> dados = snapshot.data;
+    setState(() {
+      _nomeUsuarioLogado = dados['nome'];
+      _urlImagemUsuarioLogado = dados['urlImagem'];
+      _photoUsuarioLogado = dados['photo'];
+      _idUsuarioLogado = widget.uid;
+    });
 
     _adicionarListenerMensagens();
   }
@@ -151,6 +164,7 @@ class _MensagensState extends State<Mensagens> {
     final stream = db.collection("mensagens")
         .document(_idUsuarioLogado)
         .collection(_idUsuarioDestinatario)
+        .orderBy("data", descending: false)
         .snapshots();
 
     stream.listen((dados) {
@@ -298,7 +312,7 @@ class _MensagensState extends State<Mensagens> {
                 backgroundColor: Colors.grey,
                 backgroundImage: widget.contato.urlImagem != null
                     ? NetworkImage(widget.contato.urlImagem)
-                    : null),
+                    : NetworkImage(widget.contato.photo)),
             Padding(
               padding: EdgeInsets.only(left: 8),
               child: Text(widget.contato.nome),

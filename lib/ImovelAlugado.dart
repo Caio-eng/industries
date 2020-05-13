@@ -176,7 +176,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Parcelas do Aluguel\nATENÇÃO: AO CLICAR SERA EFETUADO O PAGAMENTO AUTOMATICAMENTE',
+              'Parcelas do Aluguel',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18),
             ),

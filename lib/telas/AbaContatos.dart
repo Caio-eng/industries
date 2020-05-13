@@ -34,6 +34,7 @@ class _AbaContatosState extends State<AbaContatos> {
       usuario.idUsuario = item.documentID;
       usuario.email = dados["email"];
       usuario.nome = dados["nome"];
+      usuario.photo = dados['photo'];
       usuario.urlImagem = dados["urlImagem"];
 
       listaUsuarios.add(usuario);
@@ -42,7 +43,11 @@ class _AbaContatosState extends State<AbaContatos> {
   }
 
   _recuperarDadosUsuario() async {
-    _idUsuarioLogado = widget.uid;
+
+
+    setState(() {
+      _idUsuarioLogado = widget.uid;
+    });
     _emailUsuarioLogado = widget.emai;
     _nomeUsuarioLogado = widget.user;
   }
@@ -92,7 +97,7 @@ class _AbaContatosState extends State<AbaContatos> {
                         backgroundColor: Colors.grey,
                         backgroundImage: usuario.urlImagem != null
                             ? NetworkImage(usuario.urlImagem)
-                            : null),
+                            : NetworkImage(usuario.photo)),
                     title: Text(
                       usuario.nome,
                       style:

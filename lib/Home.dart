@@ -363,13 +363,14 @@ class _HomeState extends State<Home> {
                             : NetworkImage('${widget.photo}')),
                   )
                 : UserAccountsDrawerHeader(
+              /*
                     onDetailsPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => Configuracoes(widget.user,
                                   widget.photo, widget.emai, widget.uid)));
-                    },
+                    },*/
                     accountName: Text('${widget.user}'),
                     accountEmail: Text("${widget.emai}"),
                     currentAccountPicture: CircleAvatar(

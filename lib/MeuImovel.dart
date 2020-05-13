@@ -44,20 +44,7 @@ class _MeuImovelState extends State<MeuImovel> {
 
     _informacaoImovel() {
       _idDoLocatario = document['idLocatario'];
-      _nomeDoLocatario = document['nomeDoLocatario'];
-      _emailDoLocatario = document['emailDoLocatario'];
-      _cpfDoLocatario = document['cpfUsuario'];
-      _telefoneDoLocatario = document['telefoneUsuario'];
       _photoDoLocatario = document['urlImagemDoLocatario'];
-      _valor = document['valorDonoDoImovel'];
-      _log = document['logadouroDonoDoImovel'];
-      _comp = document['complementoDonoDoImovel'];
-      _url = document['urlImagensDonoDoImovel'];
-      _deta = document['detalhesDonoDoImovel'];
-      _tipo = document['tipoDonoDoImovel'];
-      _estado = document['estadoDoImovel'];
-      _dataInicio = document['dataInicio'];
-      _cidade = document['cidadeDonoDoImovel'];
 
       return showDialog<void>(
         context: context,
@@ -73,24 +60,24 @@ class _MeuImovelState extends State<MeuImovel> {
               child: ListBody(
                 children: <Widget>[
                  Text(
-                  ' Tipo do Imóvel: ' + _tipo +
-                    '\nLocalização: ' + _cidade + ' - ' +
-                      _estado +
-                      "\nValor Alugado: " + _valor,
+                  ' Tipo do Imóvel: ' + document['tipoDonoDoImovel'] +
+                    '\nLocalização: ' + document['cidadeDonoDoImovel'] + ' - ' +
+                      document['estadoDoImovel'] +
+                      "\nValor Alugado: " + document['valorDonoDoImovel'],
                       textAlign: TextAlign.center,
                   ),
                   CircleAvatar(
-                    backgroundImage: NetworkImage(_url),
+                    backgroundImage: NetworkImage(document['urlImagensDonoDoImovel']),
                     radius: 30,
                   ),
                   Text(
                     "Logadouro: " +
-                        _log + " - " + _bairro +
-                        "\nComplemento: " + _comp +
-                        '\nDetalhes: ' + _deta +
-                        "\nCEP: " + _cep + " N°: " + _numero +
+                        document['logadouroDonoDoImovel'] + " - " + document['bairroDonoDoImovel']+
+                        "\nComplemento: " + document['complementoDonoDoImovel'] +
+                        '\nDetalhes: ' + document['detalhesDonoDoImovel'] +
+                        "\nCEP: " + document['cepDonoDoImovel'] + " N°: " + document['numeroDono'] +
                         '\nData Inicial: ' +
-                        _dataInicio,
+                        document['dataInicio'],
                    textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -106,13 +93,13 @@ class _MeuImovelState extends State<MeuImovel> {
                   ),
                   Text(
                     'Nome: ' +
-                        _nomeDoLocatario +
+                        document['nomeDoLocatario'] +
                         " Email: " +
-                        _emailDoLocatario +
+                        document['emailDoLocatario'] +
                         "\nCPF: " +
-                        _cpfDoLocatario +
+                        document['cpfUsuario'] +
                         "\nTelefone: " +
-                        _telefoneDoLocatario,
+                        document['telefoneUsuario'],
                     textAlign: TextAlign.center,
                   ),
                 ],

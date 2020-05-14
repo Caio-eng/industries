@@ -26,7 +26,7 @@ class _CadastrarCartaoDeCreditoState extends State<CadastrarCartaoDeCredito> {
   DateTime _date = new DateTime.now();
   String _idUsuario, _cpfUsuario, _telefoneUsuario;
   String _mensagemErro = "";
-  String _id;
+  String _id, _idCar;
 
 
   Firestore db = Firestore.instance;
@@ -95,13 +95,20 @@ class _CadastrarCartaoDeCreditoState extends State<CadastrarCartaoDeCredito> {
     _cpfUsuario = dados['cpf'];
     _telefoneUsuario = dados['telefone'];
     print(_cpfUsuario);
-    DocumentSnapshot snapshot2 =
+
+  }
+
+  _recuperarDadosCartao() async {
+    Firestore db = Firestore.instance;
+
+    DocumentSnapshot snapshot3 =
     await db.collection("cartao").document(widget.uid).get();
-    Map<String, dynamic> dados2 = snapshot2.data;
+    Map<String, dynamic> dados3 = snapshot3.data;
+
     setState(() {
-      _id = dados2['idUsuario'];
-      print("Aqui: " + _id);
+      _idCar = dados3['idUsuario'];
     });
+    print("Aqui: " + _idCar);
   }
 
   @override
@@ -111,6 +118,7 @@ class _CadastrarCartaoDeCreditoState extends State<CadastrarCartaoDeCredito> {
     super.initState();
 
     _recuperarDadosUsuario();
+    _recuperarDadosCartao();
     //listaTela.add(_imagem);
   }
 
@@ -252,13 +260,13 @@ class _CadastrarCartaoDeCreditoState extends State<CadastrarCartaoDeCredito> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(32)),
                       onPressed: () {
-                        if (_id == widget.uid) {
+                        if (_idCar == widget.uid) {
                           setState(() {
                             _mensagemErro = "Existe um cadastro, se quiser delete o mesmo, ou em caso de erro edite";
                           });
                         } else if (_cpfUsuario == null) {
                           setState(() {
-                            _mensagemErro = "Cadastre seu Cpf, para cadastrar o cartão";
+                            _mensagemErro = "Cadastre o CPF do usuário, para cadastrar o cartão!";
                           });
                         } else {
                           if (_formKey.currentState.validate()) {

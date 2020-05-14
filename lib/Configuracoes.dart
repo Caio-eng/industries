@@ -25,7 +25,7 @@ class _ConfiguracoesState extends State<Configuracoes> {
   TextEditingController _controllerNome = TextEditingController();
   File _imagem;
   String _urlImagemRecuperada;
-  String _idUsuarioLogado, _nome;
+  String _idUsuarioLogado, _nome, _idCar;
   bool _subindoImagem = false;
   var controllerTelefone = new MaskedTextController(mask: '(00) 00000 - 0000');
   var controllerCPF = new MaskedTextController(mask: '000.000.000-00');
@@ -140,6 +140,7 @@ class _ConfiguracoesState extends State<Configuracoes> {
     _idUsuarioLogado = widget.uid;
 
     Firestore db = Firestore.instance;
+
     DocumentSnapshot snapshot =
         await db.collection("usuarios").document(_idUsuarioLogado).get();
 
@@ -155,7 +156,11 @@ class _ConfiguracoesState extends State<Configuracoes> {
     setState(() {
       _urlImagemRecuperada = dados["urlImagem"];
     });
+
+
   }
+
+
 
   @override
   void initState() {
@@ -286,13 +291,19 @@ class _ConfiguracoesState extends State<Configuracoes> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(32)),
                       onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          //_atualizarNomeFirestore();
-                          _atualizarUrlImagemFirestore(_urlImagemRecuperada);
-                        }
+                          if (_formKey.currentState.validate()) {
+                            //_atualizarNomeFirestore();
+                            _atualizarUrlImagemFirestore(_urlImagemRecuperada);
+                          }
                       },
                     ),
                   ),
+                  Center(
+                    child: Text(
+                      _mensagemErro,
+                      style: TextStyle(color: Colors.red, fontSize: 20),
+                    ),
+                  )
                 ],
               ),
             ),

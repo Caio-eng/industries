@@ -87,7 +87,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   bool _subindoImagem = false;
   File _imagem;
   int _id;
-  String _nome;
+  String _nome, _idCar;
   String _sigla;
   String _telefoneUsuario;
   String _cpfUsuario;
@@ -281,21 +281,34 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   }
 
   _recuperarDadosUsuario() async {
+    Firestore db = Firestore.instance;
 
-    _idUsuario = widget.uid;
 
     DocumentSnapshot snapshot =
     await db.collection("usuarios").document(widget.uid).get();
     Map<String, dynamic> dados = snapshot.data;
     _cpfUsuario = dados['cpf'];
     _telefoneUsuario = dados['telefone'];
+    _idUsuario = dados['idUsuario'];
     print(_cpfUsuario);
+  }
 
+  _recuperarDadosCartao() async {
+    Firestore db2 = Firestore.instance;
 
+    DocumentSnapshot snapshot2 =
+    await db2.collection("cartao").document(widget.uid).get();
+    Map<String, dynamic> dados2 = snapshot2.data;
+
+    setState(() {
+      _idCar = dados2['idUsuario'];
+    });
+    print("Aqui: " + _idCar);
   }
 
   @override
   void initState() {
+    _recuperarDadosCartao();
     //_dropdownMenuItens = buildDropdownMenuItens(_estados);
     //_selectedEstado = _dropdownMenuItens[8].value;
     super.initState();
@@ -722,14 +735,13 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(32)),
                       onPressed: () {
-                        if (_cpfUsuario != null) {
-                          _validarCampos();
-
-                        } else {
-                          print("entrou aqui");
+                        if (_idCar == null ) {
                           setState(() {
-                            _mensagemErro = 'Cadastre o seu CPF para poder usufluir do aplicativo';
+                            _mensagemErro = 'Cadastre o seu Cartão para poder usufluir do aplicativo!';
                           });
+                        } else if (_idCar == widget.uid) {
+                          print("entrou aqui");
+                          _validarCampos();
                         }
                       },
                     ),

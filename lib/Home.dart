@@ -8,6 +8,7 @@ import 'package:industries/Chat.dart';
 import 'package:industries/EditarImovel.dart';
 import 'package:industries/ImovelAlugado.dart';
 import 'package:industries/MeuImovel.dart';
+import 'package:industries/Propostas.dart';
 import 'package:industries/ReciboImovel.dart';
 import 'CadastroImoveis.dart';
 
@@ -402,7 +403,7 @@ class _HomeState extends State<Home> {
                                 widget.photo, widget.emai, widget.uid)))
                   },
                   child: Container(
-                    height: 50,
+                    height: 40,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -556,6 +557,53 @@ class _HomeState extends State<Home> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 'Recibos',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.arrow_right,
+                          color: Colors.blue,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade400))),
+                child: InkWell(
+                  splashColor: Colors.blue,
+                  onTap: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Propostas(widget.user,
+                            widget.photo, widget.emai, widget.uid))
+                    )
+                  },
+                  child: Container(
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.business_center,
+                              color: Colors.blue,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'propostas',
                                 style: TextStyle(
                                   fontSize: 16.0,
                                 ),

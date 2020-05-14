@@ -26,42 +26,71 @@ class _MeuCartaoState extends State<MeuCartao> {
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-              'Deletar Cartao',
-              textAlign: TextAlign.center,
-            ),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text(
-                      'Você deseja deletar este cartão se sim, você clicara em Excluir se não clicara em cancelar!'),
-                ],
+          if (_id == null) {
+            return AlertDialog(
+              title: Text(
+                'Deletar Cartao',
+                textAlign: TextAlign.center,
               ),
-            ),
-            actions: <Widget>[
-              Row(
-                children: <Widget>[
-                  FlatButton(
-                    child: Text('Cancelar'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  FlatButton(
-                    child: Text('Excluir'),
-                    onPressed: () {
-                      db
-                          .collection("cartao")
-                          .document(document.documentID)
-                          .delete();
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        'Você deseja deletar este cartão se sim, você clicara em Excluir se não clicara em cancelar!'),
+                  ],
+                ),
               ),
-            ],
-          );
+              actions: <Widget>[
+                Row(
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text('Cancelar'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    FlatButton(
+                      child: Text('Excluir'),
+                      onPressed: () {
+                        db
+                            .collection("cartao")
+                            .document(document.documentID)
+                            .delete();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            );
+          } else {
+            return AlertDialog(
+              title: Text(
+                'Deletar Cartao',
+                textAlign: TextAlign.center,
+              ),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(
+                        'Você cadastrou seu CPF, delete seu usuario para deletar o cartão!'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                Row(
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text('Voltar'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }
         },
       );
     }

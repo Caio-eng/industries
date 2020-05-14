@@ -89,8 +89,19 @@ class _EditarCartaoDeCreditoState extends State<EditarCartaoDeCredito> {
 
   _recuperarDadosUsuario() async {
     _idUsuario = widget.uid;
-
     Firestore db = Firestore.instance;
+
+    DocumentSnapshot snapshot4 = await db.collection("cartao").document(_idUsuario).get();
+    Map<String, dynamic> dados4 = snapshot4.data;
+    setState(() {
+      _controllerNome.text = dados4['nomeDoTitularDoCartao'];
+      controllerNumeroDoCartao.text = dados4['numeroDoCartao'];
+      controllerCvv.text = dados4['cvv'];
+      controllerCPF.text = dados4['cpfDoTitularDoCartao'];
+      controllerDataDeVencimento.text = dados4['dataDeValidadeDoCartao'];
+    });
+
+
     QuerySnapshot querySnapshot = await db.collection("idEnvios").where(
         'idUsuarioLogado', isEqualTo: _idEnvioLogado).getDocuments();
 
@@ -111,15 +122,7 @@ class _EditarCartaoDeCreditoState extends State<EditarCartaoDeCredito> {
       _idCartao = dados3['idUsuarioDoCartao'];
       print('Logadouro: ' + dados3['idUsuarioDoCartao']);
 
-      DocumentSnapshot snapshot4 = await db.collection("cartao").document(widget.uid).get();
-      Map<String, dynamic> dados4 = snapshot4.data;
-      setState(() {
-        _controllerNome.text = dados4['nomeDoTitularDoCartao'];
-        controllerNumeroDoCartao.text = dados4['numeroDoCartao'];
-        controllerCvv.text = dados4['cvv'];
-        controllerCPF.text = dados4['cpfDoTitularDoCartao'];
-        controllerDataDeVencimento.text = dados4['dataDeValidadeDoCartao'];
-      });
+
     }
   }
 
@@ -271,15 +274,16 @@ class _EditarCartaoDeCreditoState extends State<EditarCartaoDeCredito> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(32)),
                       onPressed: () {
-                        if (_idCartao == widget.uid || _idCartao == _idEnvioLogado) {
-                          setState(() {
-                            _mensagemErro = "No momento você está alugando um imovel, so da para iditar se o cartão não estiver sendo utilizado!";
-                          });
-                        } else {
-                          if (_formKey.currentState.validate()) {
-                            _atualizarCartao();
-                          }
+                        if (_formKey.currentState.validate()) {
+                          _atualizarCartao();
                         }
+//                        if (_idCartao == widget.uid || _idCartao == _idEnvioLogado) {
+//                          setState(() {
+//                            _mensagemErro = "No momento você está alugando um imovel, so da para iditar se o cartão não estiver sendo utilizado!";
+//                          });
+//                        } else {
+//
+//                        }
                       },
                     ),
                   ),

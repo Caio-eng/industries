@@ -84,7 +84,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
   String _cidade = "";
   String _bairro = "";
   String _cep = "";
-  String _numero = "";
+  String _numero, _idU;
 
   Firestore db = Firestore.instance;
 
@@ -218,6 +218,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
     DocumentSnapshot snapshot2 =
         await db.collection("usuarios").document(widget.uid).get();
     Map<String, dynamic> dados2 = snapshot2.data;
+    _idU = dados2['idUsuario'];
     _nomeDoLocatario = dados2['nome'];
     _photoDoLocatario = dados2['photo'];
     _emailDoLocatario = dados2['email'];
@@ -430,14 +431,14 @@ class _AluguelImovelState extends State<AluguelImovel> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32)),
                     onPressed: () {
-                      if (_id == _idUsuarioLogado || _cpfDoLocatario == null) {
+                      if (_id == widget.uid)  {
                         _validarCampos();
                         Navigator.pop(context);
                         Navigator.pop(context);
                       } else {
                         setState(() {
                           _mensagemErro =
-                              "Para Alugar este imovel é necessario cadastrar o cartão de crédito, va nas três barrinhas do menu, e clique em Cartão, vai desenho do cartão e cadastre!";
+                          "Para Alugar este imovel é necessario cadastrar o cartão";
                         });
                       }
                     },

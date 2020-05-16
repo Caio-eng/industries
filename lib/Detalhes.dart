@@ -138,7 +138,7 @@ class _DetalhesState extends State<Detalhes>  {
       print("Aqui: " + _id);
     });
 
-    ;
+
 
   }
 

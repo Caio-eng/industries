@@ -20,6 +20,8 @@ class Proposta {
   String _id;
   String _idProposta;
   String _idCotra;
+  String _url;
+  String _url2;
   Proposta();
 
   Map<String, dynamic> toMap() {
@@ -50,6 +52,18 @@ class Proposta {
 
   }
 
+
+  String get url2 => _url2;
+
+  set url2(String value) {
+    _url2 = value;
+  }
+
+  String get url => _url;
+
+  set url(String value) {
+    _url = value;
+  }
 
   String get idCotra => _idCotra;
 

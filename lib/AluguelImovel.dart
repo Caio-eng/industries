@@ -179,7 +179,7 @@ class _AluguelImovelState extends State<AluguelImovel> {
 
   _recuperarDados() async {
     // Informação do Dono do imovel
-    _idDono = widget.document['idUsuario'];
+    _idDono = widget.document['idCotra'];
     _idUsuarioLogado = widget.uid;
     _url = widget.document['urlImagens'];
     _log = widget.document['logadouro'];

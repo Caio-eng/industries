@@ -808,7 +808,7 @@ class _EditarImovelState extends State<EditarImovel> {
                       _searchCep();
                     },
                     //autofocus: true,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.done,
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
@@ -902,7 +902,7 @@ class _EditarImovelState extends State<EditarImovel> {
                   padding: EdgeInsets.only(bottom: 8),
                   child: TextField(
                     controller: controllerNumero,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
@@ -993,7 +993,7 @@ class _EditarImovelState extends State<EditarImovel> {
                   padding: EdgeInsets.only(bottom: 8),
                   child: TextField(
                     controller: _controller,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),

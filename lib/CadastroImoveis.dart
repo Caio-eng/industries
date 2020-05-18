@@ -875,7 +875,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                         _searchCep();
                       },
                       //autofocus: true,
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
@@ -972,7 +972,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
                       controller: controllerNumero,
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.number,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
@@ -1065,7 +1065,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
                       controller: controller,
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.number,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),

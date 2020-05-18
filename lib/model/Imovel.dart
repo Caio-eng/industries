@@ -13,8 +13,16 @@ class Imovel {
   String _detalhes;
   String _idUsuario;
   String _urlImagens;
+  String _url2;
+  String _url3;
+  String _url4;
+  String _url5;
   String _valor;
   String _nomeDaImagem;
+  String _nomeDaImagem2;
+  String _nomeDaImagem3;
+  String _nomeDaImagem4;
+  String _nomeDaImagem5;
   int _idEstado;
   String _ibge;
   String _gia;
@@ -27,6 +35,14 @@ class Imovel {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
       "cep" : this.cep,
+      "url2" : this.url2,
+      "url3" : this.url3,
+      "url4" : this.url4,
+      "url5" : this.url5,
+      "nomeDaImagem2" : this.nomeDaImagem2,
+      "nomeDaImagem3" : this.nomeDaImagem3,
+      "nomeDaImagem4" : this.nomeDaImagem4,
+      "nomeDaImagem5" : this.nomeDaImagem5,
       "cidade" : this.cidade,
       "siglaEstado" : this.siglaEstado,
       "logadouro" : this.logadouro,
@@ -47,6 +63,18 @@ class Imovel {
 
   }
 
+
+  String get nomeDaImagem2 => _nomeDaImagem2;
+
+  set nomeDaImagem2(String value) {
+    _nomeDaImagem2 = value;
+  }
+
+  String get url2 => _url2;
+
+  set url2(String value) {
+    _url2 = value;
+  }
 
   String get ibge => _ibge;
 
@@ -160,6 +188,42 @@ class Imovel {
 
   set gia(String value) {
     _gia = value;
+  }
+
+  String get url3 => _url3;
+
+  set url3(String value) {
+    _url3 = value;
+  }
+
+  String get url4 => _url4;
+
+  set url4(String value) {
+    _url4 = value;
+  }
+
+  String get url5 => _url5;
+
+  set url5(String value) {
+    _url5 = value;
+  }
+
+  String get nomeDaImagem3 => _nomeDaImagem3;
+
+  set nomeDaImagem3(String value) {
+    _nomeDaImagem3 = value;
+  }
+
+  String get nomeDaImagem4 => _nomeDaImagem4;
+
+  set nomeDaImagem4(String value) {
+    _nomeDaImagem4 = value;
+  }
+
+  String get nomeDaImagem5 => _nomeDaImagem5;
+
+  set nomeDaImagem5(String value) {
+    _nomeDaImagem5 = value;
   }
 
 

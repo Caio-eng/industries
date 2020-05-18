@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class _DetalhesState extends State<Detalhes>  {
   String _idUsuarioLogado = "";
   String _id;
   String _idImovel = "";
-  String _url = "";
+  String _url, _url2, _url3, _url4, _url5;
   String _log = "";
   String _comp = "";
   String _tipo = "";
@@ -58,11 +59,19 @@ class _DetalhesState extends State<Detalhes>  {
     propostaD.estado = _sig;
     propostaD.detalhes = _deta;
     propostaD.urlImagens = _url;
+    propostaD.urlImagens2 = _url2;
+    propostaD.urlImagens3 = _url3;
+    propostaD.urlImagens4 = _url4;
+    propostaD.urlImagens5 = _url5;
     propostaD.valor = _valor;
     propostaD.tipo = _tipo;
     propostaD.complemento = _comp;
     propostaD.logadouro = _log;
     propostaD.nomeDaImagem = widget.document['nomeDaImagem'];
+    propostaD.nomeDaImagem2 = widget.document['nomeDaImagem2'];
+    propostaD.nomeDaImagem3 = widget.document['nomeDaImagem3'];
+    propostaD.nomeDaImagem4 = widget.document['nomeDaImagem4'];
+    propostaD.nomeDaImagem5 = widget.document['nomeDaImagem5'];
     propostaD.telefone = widget.document['telefoneUsuario'];
     propostaD.cpf = widget.document['cpfUsuario'];
     propostaD.proposta = 'Prop. enviada pelo locatário';
@@ -81,11 +90,19 @@ class _DetalhesState extends State<Detalhes>  {
     proposta.estado = _sig;
     proposta.detalhes = _deta;
     proposta.urlImagens = _url;
+    proposta.urlImagens2 = _url2;
+    proposta.urlImagens3 = _url3;
+    proposta.urlImagens4 = _url4;
+    proposta.urlImagens5 = _url5;
     proposta.valor = _valor;
     proposta.tipo = _tipo;
     proposta.complemento = _comp;
     proposta.logadouro = _log;
     proposta.nomeDaImagem = widget.document['nomeDaImagem'];
+    proposta.nomeDaImagem2 = widget.document['nomeDaImagem2'];
+    proposta.nomeDaImagem3 = widget.document['nomeDaImagem3'];
+    proposta.nomeDaImagem4 = widget.document['nomeDaImagem4'];
+    proposta.nomeDaImagem5 = widget.document['nomeDaImagem5'];
     proposta.telefone = _telefoneUser;
     proposta.cpf = _cpfUser;
     proposta.proposta = 'Aguardando Envio do Contrato';
@@ -109,6 +126,10 @@ class _DetalhesState extends State<Detalhes>  {
     _idUsuarioLogado = widget.uid;
     _idImovel = widget.document['idUsuario'];
     _url = widget.document['urlImagens'];
+    _url2 = widget.document['url2'];
+    _url3 = widget.document['url3'];
+    _url4 = widget.document['url4'];
+    _url5 = widget.document['url5'];
     _log = widget.document['logadouro'];
     _comp = widget.document['complemento'];
     _tipo = widget.document['tipoImovel'];
@@ -155,41 +176,92 @@ class _DetalhesState extends State<Detalhes>  {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(40),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 children: <Widget>[
-                  Text(
-                      "Localização: ${_locali} - " + _sig,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  SizedBox(
-                    height: 3,
-                  ),
                   CircleAvatar(
                     radius: 110,
-                    backgroundImage: NetworkImage(_url),
+                    child: Carousel(
+                      images: [
+                        NetworkImage(_url),
+                        NetworkImage(_url2),
+                        NetworkImage(_url3),
+                        NetworkImage(_url4),
+                        NetworkImage(_url5),
+                      ],
+                      dotSize: 4,
+                      dotSpacing: 15,
+                      dotBgColor: Colors.blue.withOpacity(0.5),
+                      indicatorBgPadding: 4,
+                      borderRadius: true,
+                    ),
                   ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Text(
-                    _log + " - " + _bairro + " " +  _comp + " Nº ${_nume}" + "\nCEP: ${_cep}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 17),
-                  ),
-                  Text(
-                    "Valor do Imóvel: " + _valor,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 17, ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                      _deta,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14, ),
-                  ),
+                  Divider(),
+                  GestureDetector(
+                    onTap: () {
+                      return showDialog<void>(
+                        context: context,
+                        barrierDismissible: false, // user must tap button!
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text(
+                              'Informações Extras',
+                              textAlign: TextAlign.center,
+                            ),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  Text('4 Quartos, Sala, Cozinha', textAlign: TextAlign.center,),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  FlatButton(
+                                    child: Text('Voltar'),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: Card(
+                      color: Colors.white.withOpacity(0.8),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            "Localização: ${_locali} - " + _sig,
+                            style: TextStyle(fontSize: 17),
+                          ),
+                          Text(
+                            _log + " - " + _bairro + " " +  _comp + " Nº ${_nume}" + "\nCEP: ${_cep}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 17),
+                          ),
+                          Text(
+                            "Valor do Imóvel: " + _valor,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 17, ),
+                          ),
+                          SizedBox(
+                            height: 3,
+                          ),
+                          Text(
+                            _deta,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14, ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+
 
                 ],
               ),
@@ -213,12 +285,20 @@ class _DetalhesState extends State<Detalhes>  {
                   if (_id == widget.uid) {
                     _mandarProposta();
                   } else {
-                    _mensagem = 'Para mandar a proposta neste imovel é necessario ter cadastrado o cartão';
+                    setState(() {
+                      _mensagem = 'Para mandar a proposta neste imovel é necessario ter cadastrado o cartão';
+                    });
                   }
                 },
               ),
 
             ),
+            Center(
+              child: Text(
+                _mensagem,
+                style: TextStyle(color: Colors.red, fontSize: 20),
+              ),
+            )
           ],
         ),
       ),

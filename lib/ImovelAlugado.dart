@@ -1,9 +1,11 @@
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/Home.dart';
 import 'package:industries/model/IdEnviar.dart';
@@ -91,19 +93,33 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                       imovel.tipoImovel = document['tipoImovelImovelAlugado'];
                       imovel.valor = document['valorImovelAlugado'];
                       imovel.urlImagens = document['urlImagensImovelAlugado'];
+                      imovel.url2 = document['urlImagensImovelAlugado2'];
+                      imovel.url3 = document['urlImagensImovelAlugado3'];
+                      imovel.url4 = document['urlImagensImovelAlugado4'];
+                      imovel.url5 = document['urlImagensImovelAlugado5'];
                       imovel.siglaEstado = document['estadoImovelAlugado'];
                       imovel.cep = document['cepImovelAlugado'];
                       imovel.cidade = document['cidadeImovelAlugado'];
                       imovel.bairro = document['bairroImovelAlugado'];
                       imovel.numero = document['numeroImovelAlugado'];
-                      imovel.nomeDaImagem =
-                          document['nomeDaImagemImovelAlugado'];
+                      imovel.nomeDaImagem = document['nomeDaImagemImovelAlugado'];
+                      imovel.nomeDaImagem2 = document['nomeDaImagemImovelAlugado2'];
+                      imovel.nomeDaImagem3 = document['nomeDaImagemImovelAlugado3'];
+                      imovel.nomeDaImagem4 = document['nomeDaImagemImovelAlugado4'];
+                      imovel.nomeDaImagem5 = document['nomeDaImagemImovelAlugado5'];
                       imovel.cpfUsuario = document['cpfDoDono'];
                       imovel.telefoneUsuario = document['telefoneDoDono'];
                       db
                           .collection("imoveis")
                           .document()
                           .setData(imovel.toMap());
+
+                      db.collection("propostas")
+                          .document(widget.uid)
+                          .delete();
+                      db.collection("propostas")
+                        .document(document['idDono'])
+                        .delete();
                       db
                           .collection("imovelAlugado")
                           .document(document['idLocatario'])
@@ -164,10 +180,12 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
 
       final todayDate = DateTime.now();
       print(todayDate.month + 1);
+      String diaIni;
       String dia;
       String mes1;
       String ano;
-      dia = document['dataInicio'].toString();
+      dia = document['dataFinal'].toString();
+      diaIni = document['dataInicio'].toString();
       mes1 = (todayDate.month + 1).toString();
       ano = todayDate.year.toString();
       return showDialog<void>(
@@ -199,8 +217,21 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                             content: SingleChildScrollView(
                               child: ListBody(
                                 children: <Widget>[
+                                  Text('Informações da 1ª Parcela', textAlign: TextAlign.center,),
+                                  Divider(),
+                                  Text('Locador: ' + document['nomeDoDono'], textAlign: TextAlign.center,),
+                                  Text('CPF: ' + document['cpfDoDono'], textAlign: TextAlign.center,),
+                                  Text('Data Inicial: ' + document['dataInicio'], textAlign: TextAlign.center,),
+                                  Text('Data Limite: '  + document['dataFinal'], textAlign: TextAlign.center,),
+                                  Text("Localização: " + document['cidadeImovelAlugado'] + ' - ' + document['estadoImovelAlugado'], textAlign: TextAlign.center,),
+                                  Text('Endreço: ' + document['logadouroImovelAlugado'] + " "
+                                      +  document['complementoImovelAlugado'] + "\nBairro: " + document['bairroImovelAlugado']
+                                      + " - Número: " + document['numeroImovelAlugado'] + "\nCEP: " + document['cepImovelAlugado'],
+                                    textAlign: TextAlign.center,),
+                                  Text('Valor do Aluguel: ' + document['valorImovelAlugado'], textAlign: TextAlign.center,),
+                                  Divider(),
                                   Text(
-                                      'Clique em confirmar para efetuar o pagamento!'),
+                                      'Clique em confirmar para efetuar o pagamento!', textAlign: TextAlign.center,),
                                 ],
                               ),
                             ),
@@ -264,13 +295,48 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                     child: _idUsuarioDoCartao == null
                    ? Text("Cadastre seu cartão", style: TextStyle(color: Colors.red, fontSize: 20),)
                     : Text(
-                      "Parcela 1 " + " - Valor: " + _valor + "\nData de Venc: ${formatDate(_date, [dd, '/', mm, '/', yyyy]).toString()}",
-                      style: TextStyle(color: Colors.blue, fontSize: 18),
+                      "Parcela 1 " + " - Valor: " + _valor + "\nData de Venc: ${document['dataFinal']}",
+                      style: TextStyle(color: Colors.blue, fontSize: 18), textAlign: TextAlign.center,
                     ),
                   )
-                  : Text(
-                    "Parcela 1 " + " - Paga",
-                    style: TextStyle(color: Colors.green, fontSize: 18),
+                  : GestureDetector(
+                    onTap: () {
+                      return showDialog<void>(
+                        context: context,
+                        barrierDismissible: false, // user must tap button!
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text(
+                              'Informação',
+                              textAlign: TextAlign.center,
+                            ),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  Text('Vá para a tela de recibos para ver seu Comprovante deste mês', textAlign: TextAlign.center,),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  FlatButton(
+                                    child: Text('Voltar'),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: Text(
+                      "Parcela 1 " + " - Paga",
+                      style: TextStyle(color: Colors.green, fontSize: 18), textAlign: TextAlign.center,
+                    ),
                   ),
                   dados4 == null || dados4['idDoPagador'] == null || _idUsuarioDoCartao == null
                       ? InkWell(
@@ -290,7 +356,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                 child: ListBody(
                                   children: <Widget>[
                                     Text(
-                                        'Efetue o pagamento 1 para ter acesso ao pagamento 2!'),
+                                        'Efetue o pagamento 1 para ter acesso ao pagamento 2!', textAlign: TextAlign.center,),
                                   ],
                                 ),
                               ),
@@ -322,8 +388,21 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                               content: SingleChildScrollView(
                                 child: ListBody(
                                   children: <Widget>[
+                                    Text('Informações da 2ª Parcela', textAlign: TextAlign.center,),
+                                    Divider(),
+                                    Text('Locador: ' + document['nomeDoDono'], textAlign: TextAlign.center,),
+                                    Text('CPF: ' + document['cpfDoDono'], textAlign: TextAlign.center,),
+                                    Text('Data Inicial: ' + diaIni.substring(0, 2) + '/' + mes1 + '/' + ano, textAlign: TextAlign.center,),
+                                    Text('Data Limite: '  + dia.substring(0, 2) + '/' + mes1 + '/' + ano, textAlign: TextAlign.center,),
+                                    Text("Localização: " + document['cidadeImovelAlugado'] + ' - ' + document['estadoImovelAlugado'], textAlign: TextAlign.center,),
+                                    Text('Endreço: ' + document['logadouroImovelAlugado'] + " "
+                                        +  document['complementoImovelAlugado'] + "\nBairro: " + document['bairroImovelAlugado']
+                                        + " - Número: " + document['numeroImovelAlugado'] + "\nCEP: " + document['cepImovelAlugado'],
+                                      textAlign: TextAlign.center,),
+                                    Text('Valor do Aluguel: ' + document['valorImovelAlugado'], textAlign: TextAlign.center,),
+                                    Divider(),
                                     Text(
-                                        'Clique em confirmar para efetuar o pagamento 2!'),
+                                        'Clique em confirmar para efetuar o pagamento 2!', textAlign: TextAlign.center,),
                                   ],
                                 ),
                               ),
@@ -345,6 +424,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                         pagarImovel.tipoDoPagamento = _tipoDoPagamento;
                                         pagarImovel.dataDoPagamento = formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
                                         pagarImovel.valorDoPagamento = _valor;
+                                        pagarImovel.dataDoVencimento = document['dataFinal'];
                                         pagarImovel.juroDeAtraso = "0";
                                         pagarImovel.valorTotal = _valor;
                                         pagarImovel.idDoImovel = document['idImovel'];
@@ -387,36 +467,69 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
 
                     },
                     child: _idUsuarioDoCartao == null
-                      ? Text("Cadastre seu cartão", style: TextStyle(color: Colors.red, fontSize: 20),)
-                      : Text(
-                      "Parcela 2 " + " - Valor: " + _valor + "\nData de Venc: " + dia.substring(0, 2) + '/' + mes1 + '/' + ano,
-                      style: TextStyle(color: Colors.orange, fontSize: 18),
+                      ? Text("Cadastre seu cartão", style: TextStyle(color: Colors.red, fontSize: 20), textAlign: TextAlign.center,)
+                      : Text("Parcela 2 " + " - Valor: " + _valor + "\nData de Venc: " + dia.substring(0, 2) + '/' + mes1 + '/' + ano, textAlign: TextAlign.center, style: TextStyle(color: Colors.orange, fontSize: 18),
                     ),
                   )
-                      : Text(
-                    "Parcela 2 " + " - Paga",
-                    style: TextStyle(color: Colors.green, fontSize: 18),
-                  ),
+                      : GestureDetector(
+                        onTap: () {
+                          return showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(
+                                  'Informação',
+                                  textAlign: TextAlign.center,
+                                ),
+                                content: SingleChildScrollView(
+                                  child: ListBody(
+                                    children: <Widget>[
+                                      Text('Vá para a tela de recibos para ver seu Comprovante deste mês', textAlign: TextAlign.center,),
+                                    ],
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      FlatButton(
+                                        child: Text('Voltar'),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Text(
+                          "Parcela 2 " + " - Paga",
+                          style: TextStyle(color: Colors.green, fontSize: 18), textAlign: TextAlign.center,
+                        ),
+                      ),
                   Text('Parcela 3' + " - Valor: " + _valor,
-                      style: TextStyle(color: Colors.orange)),
+                      style: TextStyle(color: Colors.orange), textAlign: TextAlign.center,),
                   Text('Parcela 4' + " - Valor: " + _valor,
-                      style: TextStyle(color: Colors.orange)),
+                      style: TextStyle(color: Colors.orange), textAlign: TextAlign.center,),
                   Text('Parcela 5' + " - Valor: " + _valor,
-                      style: TextStyle(color: Colors.orange)),
+                      style: TextStyle(color: Colors.orange), textAlign: TextAlign.center,),
                   Text('Parcela 6' + " - Valor: " + _valor,
-                      style: TextStyle(color: Colors.orange)),
+                      style: TextStyle(color: Colors.orange), textAlign: TextAlign.center,),
                   Text('Parcela 7' + " - Valor: " + _valor,
-                      style: TextStyle(color: Colors.orange)),
+                      style: TextStyle(color: Colors.orange), textAlign: TextAlign.center,),
                   Text('Parcela 8' + " - Valor: " + _valor,
-                      style: TextStyle(color: Colors.orange)),
+                      style: TextStyle(color: Colors.orange), textAlign: TextAlign.center,),
                   Text('Parcela 9' + " - Valor: " + _valor,
-                      style: TextStyle(color: Colors.orange)),
+                      style: TextStyle(color: Colors.orange), textAlign: TextAlign.center,),
                   Text('Parcela 10' + " - Valor: " + _valor,
-                      style: TextStyle(color: Colors.orange)),
+                      style: TextStyle(color: Colors.orange), textAlign: TextAlign.center,),
                   Text('Parcela 11' + " - Valor: " + _valor,
-                      style: TextStyle(color: Colors.orange)),
+                      style: TextStyle(color: Colors.orange), textAlign: TextAlign.center,),
                   Text('Parcela 12' + " - Valor: " + _valor,
-                      style: TextStyle(color: Colors.orange)),
+                      style: TextStyle(color: Colors.orange), textAlign: TextAlign.center,),
                 ],
               ),
             ),
@@ -463,7 +576,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
           return AlertDialog(
             contentPadding: EdgeInsets.all(10),
             title: Text(
-              'Informação ',
+              'Informação do Imóvel',
               textAlign: TextAlign.center,
             ),
             content: SingleChildScrollView(
@@ -478,42 +591,57 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                         _valor,
                     textAlign: TextAlign.center,
                   ),
+                  Divider(),
                   CircleAvatar(
-                    backgroundImage: NetworkImage(_url),
-                    radius: 30,
+                    radius: 110,
+                    child: Carousel(
+                      images: [
+                        NetworkImage(document['urlImagensImovelAlugado']),
+                        NetworkImage(document['urlImagensImovelAlugado2']),
+                        NetworkImage(document['urlImagensImovelAlugado3']),
+                        NetworkImage(document['urlImagensImovelAlugado4']),
+                        NetworkImage(document['urlImagensImovelAlugado5']),
+                      ],
+                      dotSize: 4,
+                      dotSpacing: 15,
+                      dotBgColor: Colors.blue.withOpacity(0.5),
+                      indicatorBgPadding: 4,
+                      borderRadius: true,
+                    ),
                   ),
+                  Divider(),
                   Text(
                     "Logadouro: " +
                         _log + ' - ' + _bairro +
                         "\nComplemento: ${_comp}" +
                         '\nDetalhes: ' +
                         _deta + '\nCEP: ${_cep}' + ' N°: ${_numero}'
-                        '\nData Inicial: ' +
+                        '\nData Inicial do contrato: ' +
                         _dataInicio,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    "Informação sobre o Dono",
-                    style: TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    'Nome: ' +
-                        _nomeDoDono +
-                        " Email: " +
-                        _emailDoDono +
-                        "\nCPF: " +
-                        _cpfDoDono +
-                        "\nTelefone: " +
-                        _telefoneDoDono,
-                    textAlign: TextAlign.center,
-                  ),
+//                  SizedBox(
+//                    height: 5,
+//                  ),
+//                  Text(
+//                    "Informação sobre o Dono",
+//                    style: TextStyle(fontSize: 18),
+//                    textAlign: TextAlign.center,
+//                  ),
+//                  SizedBox(
+//                    height: 5,
+//                  ),
+//                  Text(
+//                    'Nome: ' +
+//                        _nomeDoDono +
+//                        " Email: " +
+//                        _emailDoDono +
+//                        "\nCPF: " +
+//                        _cpfDoDono +
+//                        "\nTelefone: " +
+//                        _telefoneDoDono,
+//                    textAlign: TextAlign.center,
+//                  ),
                 ],
               ),
             ),

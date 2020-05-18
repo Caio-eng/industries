@@ -5,11 +5,11 @@ class Proposta {
   String _complemento;
   String _tipo;
   String _valor;
-  String _urlImagens;
+  String _urlImagens, _urlImagens2, _urlImagens3, _urlImagens4, _urlImagens5;
   String _detalhes;
   String _estado;
   String _idImovel;
-  String _nomeDaImagem;
+  String _nomeDaImagem, _nomeDaImagem2, _nomeDaImagem3, _nomeDaImagem4, _nomeDaImagem5;
   String _cidade;
   String _cep;
   String _bairro;
@@ -22,12 +22,14 @@ class Proposta {
   String _idCotra;
   String _url;
   String _url2;
+  String _finalizado;
   Proposta();
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
       "idPropostaUsuarioLogado" : this.idPropostaUsuarioLogado,
       "idCotra" : this.idCotra,
+      "finalizado" : this.finalizado,
       "idProposta" : this.idProposta,
       "id" : this.id,
       "logadouro" : this.logadouro,
@@ -36,8 +38,16 @@ class Proposta {
       "complemento" : this.complemento,
       "tipo" : this.tipo,
       "nomeDaImagem": this.nomeDaImagem,
+      "nomeDaImagem2" : this.nomeDaImagem2,
+      "nomeDaImagem3" : this.nomeDaImagem3,
+      "nomeDaImagem4" : this.nomeDaImagem5,
+      "nomeDaImagem5" : this.nomeDaImagem5,
       "valor" : this.valor,
       "urlImagens" : this.urlImagens,
+      "urlImagens2" : this.urlImagens2,
+      "urlImagens3" : this.urlImagens3,
+      "urlImagens4" : this.urlImagens4,
+      "urlImagens5" : this.urlImagens5,
       "detalhes" : this.detalhes,
       "estado" : this.estado,
       "idImovel" : this.idImovel,
@@ -52,6 +62,24 @@ class Proposta {
 
   }
 
+
+  get nomeDaImagem2 => _nomeDaImagem2;
+
+  set nomeDaImagem2(value) {
+    _nomeDaImagem2 = value;
+  }
+
+  get urlImagens2 => _urlImagens2;
+
+  set urlImagens2(value) {
+    _urlImagens2 = value;
+  }
+
+  String get finalizado => _finalizado;
+
+  set finalizado(String value) {
+    _finalizado = value;
+  }
 
   String get url2 => _url2;
 
@@ -183,6 +211,42 @@ class Proposta {
 
   set telefone(String value) {
     _telefone = value;
+  }
+
+  get urlImagens3 => _urlImagens3;
+
+  set urlImagens3(value) {
+    _urlImagens3 = value;
+  }
+
+  get urlImagens4 => _urlImagens4;
+
+  set urlImagens4(value) {
+    _urlImagens4 = value;
+  }
+
+  get urlImagens5 => _urlImagens5;
+
+  set urlImagens5(value) {
+    _urlImagens5 = value;
+  }
+
+  get nomeDaImagem3 => _nomeDaImagem3;
+
+  set nomeDaImagem3(value) {
+    _nomeDaImagem3 = value;
+  }
+
+  get nomeDaImagem4 => _nomeDaImagem4;
+
+  set nomeDaImagem4(value) {
+    _nomeDaImagem4 = value;
+  }
+
+  get nomeDaImagem5 => _nomeDaImagem5;
+
+  set nomeDaImagem5(value) {
+    _nomeDaImagem5 = value;
   }
 
 

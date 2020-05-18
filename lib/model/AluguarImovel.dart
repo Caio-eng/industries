@@ -8,13 +8,13 @@ class AlugarImovel {
   String _complementoImovelAlugado;
   String _tipoImovelImovelAlugado;
   String _valorImovelAlugado;
-  String _urlImagensImovelAlugado;
+  String _urlImagensImovelAlugado, _urlImagensImovelAlugado2, _urlImagensImovelAlugado3, _urlImagensImovelAlugado4, _urlImagensImovelAlugado5;
   String _detalhesImovelAlugado;
   String _dataInicio;
   String _dataFinal;
   String _estadoImovelAlugado;
   int _idEstadoImovelAlugado;
-  String _nomeDaImagemImovelAlugado;
+  String _nomeDaImagemImovelAlugado, _nomeDaImagemImovelAlugado2, _nomeDaImagemImovelAlugado3, _nomeDaImagemImovelAlugado4, _nomeDaImagemImovelAlugado5;
   String _urlImagemDoDono;
   String _idImovel;
   String _nomeDoDono;
@@ -24,11 +24,14 @@ class AlugarImovel {
   String _cepImovelAlugado;
   String _bairroImovelAlugado;
   String _numeroImovelAlugado;
+  String _urlDoContrato;
+
   AlugarImovel();
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
      "cpfDoDono" : this.cpfDoDono,
+      "urlDoContrato" : this.urlDoContrato,
       "telefoneDoDono" : this.telefoneDoDono,
       "idLocatario" : this.idLocatario,
       "idDono" : this.idDono,
@@ -42,10 +45,18 @@ class AlugarImovel {
       "detalhesImovelAlugado" : this.detalhesImovelAlugado,
       "valorImovelAlugado" : this.valorImovelAlugado,
       "urlImagensImovelAlugado" : this.urlImagensImovelAlugado,
+      "urlImagensImovelAlugado2" : this.urlImagensImovelAlugado2,
+      "urlImagensImovelAlugado3" : this.urlImagensImovelAlugado3,
+      "urlImagensImovelAlugado4" : this.urlImagensImovelAlugado4,
+      "urlImagensImovelAlugado5" : this.urlImagensImovelAlugado5,
       "estadoImovelAlugado": this.estadoImovelAlugado,
       "dataInicio" : this.dataInicio,
       "dataFinal" : this.dataFinal,
       "nomeDaImagemImovelAlugado" : this.nomeDaImagemImovelAlugado,
+      "nomeDaImagemImovelAlugado2" : this.nomeDaImagemImovelAlugado2,
+      "nomeDaImagemImovelAlugado3" : this.nomeDaImagemImovelAlugado3,
+      "nomeDaImagemImovelAlugado4" : this.nomeDaImagemImovelAlugado4,
+      "nomeDaImagemImovelAlugado5" : this.nomeDaImagemImovelAlugado5,
       "urlImagemDoDono" : this.urlImagemDoDono,
       "idImovel" : this.idImovel,
       "nomeDoDono" : this.nomeDoDono,
@@ -58,6 +69,18 @@ class AlugarImovel {
 
   }
 
+
+  get urlImagensImovelAlugado2 => _urlImagensImovelAlugado2;
+
+  set urlImagensImovelAlugado2(value) {
+    _urlImagensImovelAlugado2 = value;
+  }
+
+  String get urlDoContrato => _urlDoContrato;
+
+  set urlDoContrato(String value) {
+    _urlDoContrato = value;
+  }
 
   String get numeroImovelAlugado => _numeroImovelAlugado;
 
@@ -201,6 +224,48 @@ class AlugarImovel {
 
   set emailDoDono(String value) {
     _emailDoDono = value;
+  }
+
+  get urlImagensImovelAlugado3 => _urlImagensImovelAlugado3;
+
+  set urlImagensImovelAlugado3(value) {
+    _urlImagensImovelAlugado3 = value;
+  }
+
+  get urlImagensImovelAlugado4 => _urlImagensImovelAlugado4;
+
+  set urlImagensImovelAlugado4(value) {
+    _urlImagensImovelAlugado4 = value;
+  }
+
+  get urlImagensImovelAlugado5 => _urlImagensImovelAlugado5;
+
+  set urlImagensImovelAlugado5(value) {
+    _urlImagensImovelAlugado5 = value;
+  }
+
+  get nomeDaImagemImovelAlugado2 => _nomeDaImagemImovelAlugado2;
+
+  set nomeDaImagemImovelAlugado2(value) {
+    _nomeDaImagemImovelAlugado2 = value;
+  }
+
+  get nomeDaImagemImovelAlugado3 => _nomeDaImagemImovelAlugado3;
+
+  set nomeDaImagemImovelAlugado3(value) {
+    _nomeDaImagemImovelAlugado3 = value;
+  }
+
+  get nomeDaImagemImovelAlugado4 => _nomeDaImagemImovelAlugado4;
+
+  set nomeDaImagemImovelAlugado4(value) {
+    _nomeDaImagemImovelAlugado4 = value;
+  }
+
+  get nomeDaImagemImovelAlugado5 => _nomeDaImagemImovelAlugado5;
+
+  set nomeDaImagemImovelAlugado5(value) {
+    _nomeDaImagemImovelAlugado5 = value;
   }
 
 

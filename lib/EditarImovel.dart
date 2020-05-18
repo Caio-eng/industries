@@ -38,10 +38,14 @@ class _EditarImovelState extends State<EditarImovel> {
   //List<Estado> _estados = Estado.getEstados();
   //List<DropdownMenuItem<Estado>> _dropdownMenuItens;
   //Estado _selectedEstado;
-  File _imagem;
-  String _urlImagemRecuperada;
+  File _imagem, _imagem2, _imagem3, _imagem4, _imagem5;
+  String _urlImagemRecuperada, _url2, _url3, _url4, _url5;
   String _idUsuarioLogado;
   bool _subindoImagem = false;
+  bool _subindo2 = false;
+  bool _subindo3 = false;
+  bool _subindo4 = false;
+  bool _subindo5 = false;
   String _cpfUsuario = "";
   String _telefoneUsuario = "";
   String _mensagemErro = "";
@@ -64,7 +68,6 @@ class _EditarImovelState extends State<EditarImovel> {
       }
     });
   }
-
 
   Future _recuperarImagem(String origemImagem) async {
 
@@ -123,15 +126,284 @@ class _EditarImovelState extends State<EditarImovel> {
   Future _recuperarUrlImagem(StorageTaskSnapshot snapshot) async {
 
     String url = await snapshot.ref.getDownloadURL();
-    _atualizarUrlImagemFirestore( url );
+
 
     setState(() {
       _urlImagemRecuperada = url;
     });
+    _atualizarUrlImagemFirestore(  );
 
   }
 
-  _atualizarUrlImagemFirestore(String url){
+  // Foto 2
+  Future _recuperarImagem2(String origemImagem) async {
+
+    File imagemSelecionada;
+    switch ( origemImagem ) {
+      case "camera" :
+        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.camera);
+        break;
+      case "galeria" :
+        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
+        break;
+    }
+
+    setState(() {
+      _imagem2 = imagemSelecionada;
+      if( _imagem2 != null ) {
+        _subindo2 = true;
+        _uploadImagem2();
+      }
+    });
+  }
+
+  Future _uploadImagem2() async {
+
+    FirebaseStorage storage = FirebaseStorage.instance;
+    StorageReference pastaRaiz = storage.ref();
+    StorageReference arquivo = pastaRaiz
+        .child("imoveis")
+        .child(widget.uid)
+        .child( widget.document['nomeDaImagem2'] + ".jpg");
+
+    //Upload da imagem
+    StorageUploadTask task = arquivo.putFile(_imagem2);
+
+    //Controlar progresso do upload
+    task.events.listen((StorageTaskEvent storageEvent) {
+
+      if( storageEvent.type == StorageTaskEventType.progress ) {
+        setState(() {
+          _subindo2 = true;
+        });
+      } else if( storageEvent.type == StorageTaskEventType.success ) {
+        setState(() {
+          _subindo2 = false;
+        });
+      }
+
+    });
+
+    //Recuperar url da imagem
+    task.onComplete.then((StorageTaskSnapshot snapshot) {
+      _recuperarUrlImagem2(snapshot);
+    });
+  }
+
+  Future _recuperarUrlImagem2(StorageTaskSnapshot snapshot) async {
+
+    String url = await snapshot.ref.getDownloadURL();
+
+
+    setState(() {
+      _url2 = url;
+    });
+    _atualizarUrlImagemFirestore(  );
+
+  }
+
+  // Foto3
+  Future _recuperarImagem3(String origemImagem) async {
+
+    File imagemSelecionada;
+    switch ( origemImagem ) {
+      case "camera" :
+        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.camera);
+        break;
+      case "galeria" :
+        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
+        break;
+    }
+
+    setState(() {
+      _imagem3 = imagemSelecionada;
+      if( _imagem3 != null ) {
+        _subindo3 = true;
+        _uploadImagem3();
+      }
+    });
+  }
+
+  Future _uploadImagem3() async {
+
+    FirebaseStorage storage = FirebaseStorage.instance;
+    StorageReference pastaRaiz = storage.ref();
+    StorageReference arquivo = pastaRaiz
+        .child("imoveis")
+        .child(widget.uid)
+        .child( widget.document['nomeDaImagem3'] + ".jpg");
+
+    //Upload da imagem
+    StorageUploadTask task = arquivo.putFile(_imagem3);
+
+    //Controlar progresso do upload
+    task.events.listen((StorageTaskEvent storageEvent) {
+
+      if( storageEvent.type == StorageTaskEventType.progress ) {
+        setState(() {
+          _subindo3 = true;
+        });
+      } else if( storageEvent.type == StorageTaskEventType.success ) {
+        setState(() {
+          _subindo3 = false;
+        });
+      }
+
+    });
+
+    //Recuperar url da imagem
+    task.onComplete.then((StorageTaskSnapshot snapshot) {
+      _recuperarUrlImagem3(snapshot);
+    });
+  }
+
+  Future _recuperarUrlImagem3(StorageTaskSnapshot snapshot) async {
+
+    String url = await snapshot.ref.getDownloadURL();
+
+
+    setState(() {
+      _url3 = url;
+    });
+    _atualizarUrlImagemFirestore(  );
+
+  }
+
+  // Foto4
+  Future _recuperarImagem4(String origemImagem) async {
+
+    File imagemSelecionada;
+    switch ( origemImagem ) {
+      case "camera" :
+        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.camera);
+        break;
+      case "galeria" :
+        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
+        break;
+    }
+
+    setState(() {
+      _imagem4 = imagemSelecionada;
+      if( _imagem4 != null ) {
+        _subindo4 = true;
+        _uploadImagem4();
+      }
+    });
+  }
+
+  Future _uploadImagem4() async {
+
+    FirebaseStorage storage = FirebaseStorage.instance;
+    StorageReference pastaRaiz = storage.ref();
+    StorageReference arquivo = pastaRaiz
+        .child("imoveis")
+        .child(widget.uid)
+        .child( widget.document['nomeDaImagem4'] + ".jpg");
+
+    //Upload da imagem
+    StorageUploadTask task = arquivo.putFile(_imagem4);
+
+    //Controlar progresso do upload
+    task.events.listen((StorageTaskEvent storageEvent) {
+
+      if( storageEvent.type == StorageTaskEventType.progress ) {
+        setState(() {
+          _subindo4 = true;
+        });
+      } else if( storageEvent.type == StorageTaskEventType.success ) {
+        setState(() {
+          _subindo4 = false;
+        });
+      }
+
+    });
+
+    //Recuperar url da imagem
+    task.onComplete.then((StorageTaskSnapshot snapshot) {
+      _recuperarUrlImagem4(snapshot);
+    });
+  }
+
+  Future _recuperarUrlImagem4(StorageTaskSnapshot snapshot) async {
+
+    String url = await snapshot.ref.getDownloadURL();
+
+
+    setState(() {
+      _url4 = url;
+    });
+    _atualizarUrlImagemFirestore(  );
+
+  }
+
+  // Foto5
+  Future _recuperarImagem5(String origemImagem) async {
+
+    File imagemSelecionada;
+    switch ( origemImagem ) {
+      case "camera" :
+        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.camera);
+        break;
+      case "galeria" :
+        imagemSelecionada = await ImagePicker.pickImage(source: ImageSource.gallery);
+        break;
+    }
+
+    setState(() {
+      _imagem5 = imagemSelecionada;
+      if( _imagem5 != null ) {
+        _subindo5 = true;
+        _uploadImagem5();
+      }
+    });
+  }
+
+  Future _uploadImagem5() async {
+
+    FirebaseStorage storage = FirebaseStorage.instance;
+    StorageReference pastaRaiz = storage.ref();
+    StorageReference arquivo = pastaRaiz
+        .child("imoveis")
+        .child(widget.uid)
+        .child( widget.document['nomeDaImagem5'] + ".jpg");
+
+    //Upload da imagem
+    StorageUploadTask task = arquivo.putFile(_imagem5);
+
+    //Controlar progresso do upload
+    task.events.listen((StorageTaskEvent storageEvent) {
+
+      if( storageEvent.type == StorageTaskEventType.progress ) {
+        setState(() {
+          _subindo5 = true;
+        });
+      } else if( storageEvent.type == StorageTaskEventType.success ) {
+        setState(() {
+          _subindo5 = false;
+        });
+      }
+
+    });
+
+    //Recuperar url da imagem
+    task.onComplete.then((StorageTaskSnapshot snapshot) {
+      _recuperarUrlImagem5(snapshot);
+    });
+  }
+
+  Future _recuperarUrlImagem5(StorageTaskSnapshot snapshot) async {
+
+    String url = await snapshot.ref.getDownloadURL();
+
+
+    setState(() {
+      _url5 = url;
+    });
+    _atualizarUrlImagemFirestore(  );
+
+  }
+
+  _atualizarUrlImagemFirestore(){
 
     String log = _controllerLogadouro.text;
     String bairro = _controllerBairro.text;
@@ -152,7 +424,11 @@ class _EditarImovelState extends State<EditarImovel> {
               if (numero.isNotEmpty) {
                   if (cidade.isNotEmpty ) {
                       Map<String, dynamic> dadosAtualizar = {
-                        "urlImagens" : url,
+                        "urlImagens" : _urlImagemRecuperada,
+                        "url2" : _url2,
+                        "url3" : _url3,
+                        "url4" : _url4,
+                        "url5" : _url5,
                         "cidade" : cidade,
                         "logadouro" : log,
                         "complemento" : comp,
@@ -175,7 +451,11 @@ class _EditarImovelState extends State<EditarImovel> {
                       imovel.tipoImovel = tipoImovel;
                       imovel.valor = valor;
                       imovel.detalhes = deta;
-                      imovel.urlImagens = url;
+                      imovel.urlImagens = _urlImagemRecuperada;
+                      imovel.url2 = _url2;
+                      imovel.url3 = _url3;
+                      imovel.url4 = _url4;
+                      imovel.url5 = _url5;
                       imovel.telefoneUsuario = _telefoneUsuario;
                       imovel.cpfUsuario = _cpfUsuario;
                       imovel.siglaEstado = sgl;
@@ -183,12 +463,16 @@ class _EditarImovelState extends State<EditarImovel> {
                       imovel.cep = cep;
                       imovel.idUsuario = widget.document['idUsuario'];
                       imovel.nomeDaImagem = widget.document['nomeDaImagem'];
+                      imovel.nomeDaImagem2 = widget.document['nomeDaImagem2'];
+                      imovel.nomeDaImagem3 = widget.document['nomeDaImagem3'];
+                      imovel.nomeDaImagem4 = widget.document['nomeDaImagem4'];
+                      imovel.nomeDaImagem5 = widget.document['nomeDaImagem5'];
 
                       Firestore db = Firestore.instance;
                       db.collection("imoveis")
                           .document(widget.document.documentID)
                           .updateData(dadosAtualizar);
-                      Navigator.pop(context);
+
                   } else {
                     setState(() {
                       _mensagemErro = "O Campo Cidade é obrigátorio!";
@@ -250,6 +534,10 @@ class _EditarImovelState extends State<EditarImovel> {
 
     setState(() {
       _urlImagemRecuperada = widget.document["urlImagens"];
+      _url2 = widget.document['url2'];
+      _url3 = widget.document['url3'];
+      _url4 = widget.document['url4'];
+      _url5 = widget.document['url5'];
     });
   }
 /*
@@ -294,51 +582,194 @@ class _EditarImovelState extends State<EditarImovel> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.all(16),
-                  child: _subindoImagem
-                      ? CircularProgressIndicator()
-                      : Container(),
-                ),
-                CircleAvatar(
-                    radius: 80,
-                    backgroundColor: Colors.grey,
-                    /*child: Row(
-                      children: <Widget>[
-                        FlatButton(
-                          child: Icon(Icons.camera_alt),
-                          onPressed: () {
-                            _recuperarImagem("camera");
-                          },
-                        ),
-                        FlatButton(
-                          child: Icon(Icons.photo),
-                          onPressed: () {
-                            _recuperarImagem("galeria");
-                          },
-                        ),
-                      ],
-                    ),*/
-                    backgroundImage:
-                    _urlImagemRecuperada != null
-                        ? NetworkImage(_urlImagemRecuperada, )
-                        : null
-                ),
-
+                _subindoImagem ? CircularProgressIndicator() : Container(),
+                _subindo2 ? CircularProgressIndicator() : Container(),
+                _subindo3 ? CircularProgressIndicator() : Container(),
+                _subindo4 ? CircularProgressIndicator() : Container(),
+                _subindo5 ? CircularProgressIndicator() : Container(),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    FlatButton(
-                      child: Text("Câmera"),
-                      onPressed: (){
-                        _recuperarImagem("camera");
-                      },
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5, left: 5),
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: _urlImagemRecuperada != null
+                            ? NetworkImage(
+                          _urlImagemRecuperada,
+                        )
+                            : null,
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: GestureDetector(
+                                onTap: () {
+                                  _recuperarImagem("camera");
+                                },
+                                child: Icon(Icons.camera_alt, color: Colors.blueAccent, ),
+                              ),
+                            ),
+                            Divider(),
+                            GestureDetector(
+                              onTap: () {
+                                _recuperarImagem("galeria");
+                              },
+                              child: Icon(Icons.photo, color: Colors.blueAccent,),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      /*_imagem == null
+                          ? Container()
+                          :Image.file(_imagem),*/
+                      /*CarouselSlider(
+                        height: 150.0,
+                        items: listaTela.map((i) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                  decoration: BoxDecoration(
+                                      color: Colors.blue
+                                  ),
+                                  child: Image.file(_imagem),
+                                  //child: _imagem,
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),*/
                     ),
-                    FlatButton(
-                      child: Text("Galeria"),
-                      onPressed: (){
-                        _recuperarImagem("galeria");
-                      },
+                    Padding(
+                      padding: const EdgeInsets.only(right: 3),
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: _url2 != null
+                            ? NetworkImage(
+                          _url2,
+                        )
+                            : null,
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: GestureDetector(
+                                onTap: () {
+                                  _recuperarImagem2("camera");
+                                },
+                                child: Icon(Icons.camera_alt, color: Colors.blueAccent, ),
+                              ),
+                            ),
+                            Divider(),
+                            GestureDetector(
+                              onTap: () {
+                                _recuperarImagem2("galeria");
+                              },
+                              child: Icon(Icons.photo, color: Colors.blueAccent,),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 3),
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: _url3 != null
+                            ? NetworkImage(
+                          _url3,
+                        )
+                            : null,
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: GestureDetector(
+                                onTap: () {
+                                  _recuperarImagem3("camera");
+                                },
+                                child: Icon(Icons.camera_alt, color: Colors.blueAccent, ),
+                              ),
+                            ),
+                            Divider(),
+                            GestureDetector(
+                              onTap: () {
+                                _recuperarImagem3("galeria");
+                              },
+                              child: Icon(Icons.photo, color: Colors.blueAccent,),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 3),
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: _url4 != null
+                            ? NetworkImage(
+                          _url4,
+                        )
+                            : null,
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: GestureDetector(
+                                onTap: () {
+                                  _recuperarImagem4("camera");
+                                },
+                                child: Icon(Icons.camera_alt, color: Colors.blueAccent, ),
+                              ),
+                            ),
+                            Divider(),
+                            GestureDetector(
+                              onTap: () {
+                                _recuperarImagem4("galeria");
+                              },
+                              child: Icon(Icons.photo, color: Colors.blueAccent,),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 3),
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: _url5 != null
+                            ? NetworkImage(
+                          _url5,
+                        )
+                            : null,
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: GestureDetector(
+                                onTap: () {
+                                  _recuperarImagem5("camera");
+                                },
+                                child: Icon(Icons.camera_alt, color: Colors.blueAccent, ),
+                              ),
+                            ),
+                            Divider(),
+                            GestureDetector(
+                              onTap: () {
+                                _recuperarImagem5("galeria");
+                              },
+                              child: Icon(Icons.photo, color: Colors.blueAccent,),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -370,7 +801,7 @@ class _EditarImovelState extends State<EditarImovel> {
                   ),
                 ),*/
                 Padding(
-                  padding: EdgeInsets.only(bottom: 8),
+                  padding: EdgeInsets.only(bottom: 8, top: 8),
                   child: TextField(
                     controller: controllerCep,
                     onEditingComplete: () {
@@ -603,8 +1034,8 @@ class _EditarImovelState extends State<EditarImovel> {
                     ),
                     onPressed: () {
                          //_atualizarNomeFirestore();
-                         _atualizarUrlImagemFirestore(_urlImagemRecuperada);
-
+                         _atualizarUrlImagemFirestore();
+                         Navigator.pop(context);
                     },
                   ),
                 ),

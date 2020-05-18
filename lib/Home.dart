@@ -118,11 +118,11 @@ class _HomeState extends State<Home> {
                       builder: (context) => Detalhes(document, widget.user,
                           widget.photo, widget.emai, widget.uid))),
               title: Text(
-                document['logadouro'],
+                document['logadouro'] + '\n' + document['bairro'],
                 textAlign: TextAlign.center,
               ),
               subtitle: Text(
-                document['complemento'],
+                'Valor: ${document['valor']}',
                 textAlign: TextAlign.center,
               ),
               leading: CircleAvatar(
@@ -132,11 +132,11 @@ class _HomeState extends State<Home> {
             )
           : ListTile(
               title: Text(
-                document['logadouro'],
+                document['logadouro'] + '\n' + document['bairro'],
                 textAlign: TextAlign.center,
               ),
               subtitle: Text(
-                document['complemento'],
+                'Valor: ${document['valor']}' ,
                 textAlign: TextAlign.center,
               ),
               leading: Icon(Icons.home),
@@ -237,11 +237,12 @@ class _HomeState extends State<Home> {
   }
 
  */
+
   _pesquisar() async {
-    String pesquisa = editingController.text;
+    _pes = editingController.text;
     QuerySnapshot querySnapshot = await db.collection("imoveis")
-        .where("logadouro" , isGreaterThanOrEqualTo: pesquisa)
-        .where("logadouro" , isLessThanOrEqualTo: pesquisa + "\uf8ff"  )
+        .where("logadouro" , isGreaterThanOrEqualTo: _pes)
+        .where("logadouro" , isLessThanOrEqualTo: _pes + "\uf8ff"  )
         .getDocuments();
 
     setState(() {
@@ -251,12 +252,12 @@ class _HomeState extends State<Home> {
     for( DocumentSnapshot item in querySnapshot.documents ) {
       var dados = item.data;
       setState(() {
-        pesquisa = dados['logadouro'];
+        _pes = dados['logadouro'];
       });
 
-      print(pesquisa);
+      print(_pes);
     }
-    return pesquisa;
+    return _pes;
   }
 
   _recuperarDados() async {
@@ -797,13 +798,14 @@ class _HomeState extends State<Home> {
                   //print(this._pesquisar());
                   for (var d in docs) {
                     //print(d);
+                    print("D: " + d['logadouro']);
                     docs2.add(d);
                   }
                   docs = docs2;
                   //print("Quantidade: " + _pes.snapshot.data.lengh.toString());
 
                   return ListView.builder(
-                    itemExtent: 80.0,
+                    itemExtent: 80,
                     itemCount: docs.length,
                     itemBuilder: (_, index) {
                       return _buildList(

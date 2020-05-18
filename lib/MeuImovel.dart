@@ -1,3 +1,4 @@
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/model/AluguarImovel.dart';
@@ -53,7 +54,7 @@ class _MeuImovelState extends State<MeuImovel> {
           return AlertDialog(
             contentPadding: EdgeInsets.all(10),
             title: Text(
-              'Informação ',
+              'Informação do Imóvel',
               textAlign: TextAlign.center,
             ),
             content: SingleChildScrollView(
@@ -66,42 +67,55 @@ class _MeuImovelState extends State<MeuImovel> {
                       "\nValor Alugado: " + document['valorDonoDoImovel'],
                       textAlign: TextAlign.center,
                   ),
+                  Divider(),
                   CircleAvatar(
-                    backgroundImage: NetworkImage(document['urlImagensDonoDoImovel']),
-                    radius: 30,
+                    radius: 110,
+                    child: Carousel(
+                      images: [
+                        NetworkImage(document['urlImagensDonoDoImovel']),
+                        NetworkImage(document['urlImagensDonoDoImovel2']),
+                        NetworkImage(document['urlImagensDonoDoImovel3']),
+                        NetworkImage(document['urlImagensDonoDoImovel4']),
+                        NetworkImage(document['urlImagensDonoDoImovel5']),
+                      ],
+                      dotSize: 4,
+                      dotSpacing: 15,
+                      dotBgColor: Colors.blue.withOpacity(0.5),
+                      indicatorBgPadding: 4,
+                      borderRadius: true,
+                    ),
                   ),
+                  Divider(),
                   Text(
                     "Logadouro: " +
                         document['logadouroDonoDoImovel'] + " - " + document['bairroDonoDoImovel']+
                         "\nComplemento: " + document['complementoDonoDoImovel'] +
                         '\nDetalhes: ' + document['detalhesDonoDoImovel'] +
                         "\nCEP: " + document['cepDonoDoImovel'] + " N°: " + document['numeroDono'] +
-                        '\nData Inicial: ' +
+                        '\nData Inicial do contrato: ' +
                         document['dataInicio'],
                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    "Informação sobre o Locatário",
-                    style: TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    'Nome: ' +
-                        document['nomeDoLocatario'] +
-                        " Email: " +
-                        document['emailDoLocatario'] +
-                        "\nCPF: " +
-                        document['cpfUsuario'] +
-                        "\nTelefone: " +
-                        document['telefoneUsuario'],
-                    textAlign: TextAlign.center,
-                  ),
+//                  Divider(),
+//                  Text(
+//                    "Informação sobre o Locatário",
+//                    style: TextStyle(fontSize: 18),
+//                    textAlign: TextAlign.center,
+//                  ),
+//                  SizedBox(
+//                    height: 5,
+//                  ),
+//                  Text(
+//                    'Nome: ' +
+//                        document['nomeDoLocatario'] +
+//                        " Email: " +
+//                        document['emailDoLocatario'] +
+//                        "\nCPF: " +
+//                        document['cpfUsuario'] +
+//                        "\nTelefone: " +
+//                        document['telefoneUsuario'],
+//                    textAlign: TextAlign.center,
+//                  ),
                 ],
               ),
             ),
@@ -168,7 +182,7 @@ class _MeuImovelState extends State<MeuImovel> {
           return AlertDialog(
             contentPadding: EdgeInsets.all(10),
             title: Text(
-              'Informação ',
+              'Informação do Recibo',
               textAlign: TextAlign.center,
             ),
             content: SingleChildScrollView(
@@ -180,21 +194,99 @@ class _MeuImovelState extends State<MeuImovel> {
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.red),
                         )
-                      : Text(
+                      : GestureDetector(
+                        onTap: () {
+                          return showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                contentPadding: EdgeInsets.all(10),
+                                title: Text(
+                                  'Informação do Imóvel',
+                                  textAlign: TextAlign.center,
+                                ),
+                                content: SingleChildScrollView(
+                                  child: ListBody(
+                                    children: <Widget>[
+                                      Text(
+                                        "Para informações do Recibo vá na tela de recibos",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      FlatButton(
+                                        child: Text('Voltar'),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Text(
                           'Recibo 1: OK\nData do Rec: ${dados3['dataDoPagamento']}',
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.green),
                         ),
+                      ),
                   dados4 == null || dados4['idDoPagador'] == null
                       ? Text(
                     ' Recibo 2',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.orange),
                   )
-                      : Text(
-                    'Recibo 2: OK ',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.green),
+                      : GestureDetector(
+                        onTap: () {
+                          return showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                contentPadding: EdgeInsets.all(10),
+                                title: Text(
+                                  'Informação do Imóvel',
+                                  textAlign: TextAlign.center,
+                                ),
+                                content: SingleChildScrollView(
+                                  child: ListBody(
+                                    children: <Widget>[
+                                      Text(
+                                        "Para informações do Recibo vá na tela de recibos",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      FlatButton(
+                                        child: Text('Voltar'),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Text(
+                          'Recibo 2: OK\nData do Rec: ${dados3['dataDoPagamento']} ',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.green),
+                        ),
                   ),
                   Text(
                     'Recibo 3',
@@ -308,13 +400,20 @@ class _MeuImovelState extends State<MeuImovel> {
                             imovel.tipoImovel = document['tipoDonoDoImovel'];
                             imovel.valor = document['valorDonoDoImovel'];
                             imovel.urlImagens = document['urlImagensDonoDoImovel'];
+                            imovel.url2 = document['urlImagensDonoDoImovel2'];
+                            imovel.url3 = document['urlImagensDonoDoImovel3'];
+                            imovel.url4 = document['urlImagensDonoDoImovel4'];
+                            imovel.url5 = document['urlImagensDonoDoImovel5'];
                             imovel.siglaEstado = document['estadoDoImovel'];
                             imovel.cidade = document['cidadeDonoDoImovel'];
                             imovel.cep = document['cepDonoDoImovel'];
                             imovel.bairro = document['bairroDonoDoImovel'];
                             imovel.numero = document['numeroDono'];
-                            imovel.nomeDaImagem =
-                                document['nomeDaImagemImovel'];
+                            imovel.nomeDaImagem = document['nomeDaImagemImovel'];
+                            imovel.nomeDaImagem2 = document['nomeDaImagemImovel2'];
+                            imovel.nomeDaImagem3 = document['nomeDaImagemImovel3'];
+                            imovel.nomeDaImagem4 = document['nomeDaImagemImovel4'];
+                            imovel.nomeDaImagem5 = document['nomeDaImagemImovel5'];
                             imovel.cpfUsuario = _cpf;
                             imovel.telefoneUsuario = _telefone;
                             db
@@ -324,6 +423,13 @@ class _MeuImovelState extends State<MeuImovel> {
                             db
                                 .collection("meuImovel")
                                 .document(document.documentID)
+                                .delete();
+
+                            db.collection("propostas")
+                                .document(widget.uid)
+                                .delete();
+                            db.collection("propostas")
+                                .document(document['idLocatario'])
                                 .delete();
 
                             db
@@ -389,7 +495,7 @@ class _MeuImovelState extends State<MeuImovel> {
           color: Colors.red,
           child: ListTile(
             title: Text(
-              document['logadouroDonoDoImovel'],
+              document['logadouroDonoDoImovel'] + ' - ' + document['bairroDonoDoImovel'],
               textAlign: TextAlign.center,
             ),
             subtitle: Text(

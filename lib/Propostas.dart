@@ -931,7 +931,7 @@ class _PropostasState extends State<Propostas> {
 
             Expanded(
               child: StreamBuilder(
-                stream: Firestore.instance.collection('propostas').where('id', isEqualTo: widget.uid).snapshots(),
+                stream: Firestore.instance.collection('propostas').where('idPropostaUsuarioLogado', isEqualTo: widget.uid).snapshots(),
                 //print an integer every 2secs, 10 times
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {

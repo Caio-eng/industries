@@ -49,28 +49,33 @@ class _ReciboImovelState extends State<ReciboImovel> {
     _logado = widget.uid;
     print(_logado);
     Firestore db = Firestore.instance;
-    QuerySnapshot querySnapshot = await db.collection("idEnvios").where('idUsuarioLogado', isEqualTo: _idEnvioLogado).getDocuments();
+//    QuerySnapshot querySnapshot = await db.collection("idEnvios").where('idUsuarioLogado', isEqualTo: _logado).getDocuments();
+//
+//    for (DocumentSnapshot item in querySnapshot.documents) {
+//      var dados = item.data;
+//
+//      setState(() {
+//        _idEnvioLogado = dados['idUsuarioLogado'];
+//        _idEnvioDeslo = dados['idUsuarioDeslogado'];
+//        _idEnvioImovel = dados['idDoImovel'];
+//
+//        print("1: " + _idEnvioLogado);
+//        print("2: " + _idEnvioDeslo);
+//      });
 
-    for (DocumentSnapshot item in querySnapshot.documents) {
-      var dados = item.data;
+    DocumentSnapshot snapshot3 = await db.collection("usuarios").document(widget.uid).get();
+    Map<String, dynamic> dados3 = snapshot3.data;
 
-      setState(() {
-        _idEnvioLogado = dados['idUsuarioLogado'];
-        _idEnvioDeslo = dados['idUsuarioDeslogado'];
-        _idEnvioImovel = dados['idDoImovel'];
-
-        print("1: " + _idEnvioLogado);
-        print("2: " + _idEnvioDeslo);
-      });
-
+    setState(() {
+      _idEnvioImovel = dados3['idImovel'];
+      _idEnvioDeslo = dados3['idPg1'];
+      _idEnvioLogado = widget.uid;
+    });
       DocumentSnapshot snapshot =
       await db.collection("meuImovel").document(_idEnvioImovel).get();
       Map<String, dynamic> dados2 = snapshot.data;
       print('Logadouro: ' + dados2['logadouroDonoDoImovel']);
 
-
-
-    }
 
 
   }
@@ -96,7 +101,7 @@ class _ReciboImovelState extends State<ReciboImovel> {
               child: StreamBuilder(
                 stream: Firestore.instance
                     .collection('pagarImoveis')
-                    .document(_idEnvioLogado)
+                    .document(widget.uid)
                     .collection(_idEnvioImovel)
                     .snapshots(),
                 //print an integer every 2secs, 10 times

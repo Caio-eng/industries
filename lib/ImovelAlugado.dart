@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:industries/Home.dart';
 import 'package:industries/model/IdEnviar.dart';
 import 'package:industries/model/PagarImovel.dart';
+import 'package:industries/model/Usuario.dart';
 
 import 'model/Imovel.dart';
 
@@ -272,14 +273,54 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                       pagarImovel.idUsuarioDoCartao = _idUsuarioDoCartao;
                                       pagarImovel.nomeUsuarioDoCartao = _nomeUsuarioDoCartao;
                                       pagarImovel.cpfUsuarioDoCartao = _cpfUsuarioDoCartao;
-                                      IdEnviar idEnviar = IdEnviar();
-                                      idEnviar.idUsuarioLogado = widget.uid;
-                                      idEnviar.idUsuarioDeslogado = _idDono;
-                                      idEnviar.idDoImovel = document['idImovel'];
-                                      db.collection("idEnvios").document(widget.uid).setData(idEnviar.toMap());
-                                      db.collection('idEnvios').document(_idDono).setData(idEnviar.toMap());
+//                                      IdEnviar idEnviar = IdEnviar();
+//                                      idEnviar.idUsuarioLogado = widget.uid;
+//                                      idEnviar.idUsuarioDeslogado = _idDono;
+//                                      idEnviar.idDoImovel = document['idImovel'];
+//                                      db.collection("idEnvios").document(widget.uid).setData(idEnviar.toMap());
+//                                      db.collection('idEnvios').document(_idDono).setData(idEnviar.toMap());
                                       //db.collection("idEnvios").document(_log).setData(idEnviar.toMap());
+                                      PagarImovel pagarImovels = PagarImovel();
+                                      pagarImovels.idDoPagador = _idDono;
+                                      pagarImovels.idDoRecebedor = widget.uid;
+                                      pagarImovels.tipoDoPagamento = _tipoDoPagamento;
+                                      pagarImovels.dataDoPagamento = formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
+                                      pagarImovels.valorDoPagamento = _valor;
+                                      pagarImovels.juroDeAtraso = "0";
+                                      pagarImovels.valorTotal = _valor;
+                                      pagarImovels.idDoImovel = document['idImovel'];
+                                      pagarImovels.logadouro = _log;
+                                      pagarImovels.comp = _comp;
+                                      pagarImovels.cidade = _cidade;
+                                      pagarImovels.cep = _cep;
+                                      pagarImovels.bairro = _bairro;
+                                      pagarImovels.numero = _numero;
+                                      pagarImovels.cpfDoDono = _cpfDoDono;
+                                      pagarImovels.nomeDoDono = _nomeDoDono;
+                                      pagarImovels.nome = nome;
+                                      pagarImovels.cpf = cpf;
+                                      pagarImovels.tipo = _tipo;
+                                      pagarImovels.estado = _estado;
+                                      pagarImovels.detalhes = _detalhes;
+                                      pagarImovels.idUsuarioDoCartao = _idUsuarioDoCartao;
+                                      pagarImovels.nomeUsuarioDoCartao = _nomeUsuarioDoCartao;
+                                      pagarImovels.cpfUsuarioDoCartao = _cpfUsuarioDoCartao;
+                                      Map<String, dynamic> dadosAtualizar = {
+                                        "idPg1" : widget.uid,
+                                        "idImovel" : document['idImovel']
+                                      };
+                                      db.collection("usuarios")
+                                      .document(_idDono)
+                                      .updateData(dadosAtualizar);
+                                      Map<String, dynamic> dadosAtualizar2 = {
+                                        "idPg1" : _idDono,
+                                        "idImovel" : document['idImovel']
+                                      };
+                                      db.collection("usuarios")
+                                      .document(widget.uid)
+                                      .updateData(dadosAtualizar2);
                                       db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela1').setData(pagarImovel.toMap());
+                                      db.collection("pagarImoveis").document(_idDono).collection(document['idImovel']).document('parcela1').setData(pagarImovels.toMap());
                                       Navigator.pop(context);
                                       Navigator.pop(context);
                                       print("Pago");
@@ -445,16 +486,55 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                         pagarImovel.nomeUsuarioDoCartao = _nomeUsuarioDoCartao;
                                         pagarImovel.cpfUsuarioDoCartao = _cpfUsuarioDoCartao;
                                         IdEnviar idEnviar = IdEnviar();
-                                        idEnviar.idUsuarioLogado = widget.uid;
-                                        idEnviar.idUsuarioDeslogado = _idDono;
-                                        idEnviar.idDoImovel = document['idImovel'];
-                                        db.collection("idEnvios").document(widget.uid).setData(idEnviar.toMap());
-                                        db.collection('idEnvios').document(_idDono).setData(idEnviar.toMap());
+//                                      idEnviar.idUsuarioLogado = widget.uid;
+//                                      idEnviar.idUsuarioDeslogado = _idDono;
+//                                      idEnviar.idDoImovel = document['idImovel'];
+//                                      db.collection("idEnvios").document(widget.uid).setData(idEnviar.toMap());
+//                                      db.collection('idEnvios').document(_idDono).setData(idEnviar.toMap());
                                         //db.collection("idEnvios").document(_log).setData(idEnviar.toMap());
+                                        PagarImovel pagarImovels = PagarImovel();
+                                        pagarImovels.idDoPagador = _idDono;
+                                        pagarImovels.idDoRecebedor = widget.uid;
+                                        pagarImovels.tipoDoPagamento = _tipoDoPagamento;
+                                        pagarImovels.dataDoPagamento = formatDate(_date, [dd, '/', mm, '/', yyyy]).toString();
+                                        pagarImovels.valorDoPagamento = _valor;
+                                        pagarImovels.juroDeAtraso = "0";
+                                        pagarImovels.valorTotal = _valor;
+                                        pagarImovels.idDoImovel = document['idImovel'];
+                                        pagarImovels.logadouro = _log;
+                                        pagarImovels.comp = _comp;
+                                        pagarImovels.cidade = _cidade;
+                                        pagarImovels.cep = _cep;
+                                        pagarImovels.bairro = _bairro;
+                                        pagarImovels.numero = _numero;
+                                        pagarImovels.cpfDoDono = _cpfDoDono;
+                                        pagarImovels.nomeDoDono = _nomeDoDono;
+                                        pagarImovels.nome = nome;
+                                        pagarImovels.cpf = cpf;
+                                        pagarImovels.tipo = _tipo;
+                                        pagarImovels.estado = _estado;
+                                        pagarImovels.detalhes = _detalhes;
+                                        pagarImovels.idUsuarioDoCartao = _idUsuarioDoCartao;
+                                        pagarImovels.nomeUsuarioDoCartao = _nomeUsuarioDoCartao;
+                                        pagarImovels.cpfUsuarioDoCartao = _cpfUsuarioDoCartao;
+                                        Map<String, dynamic> dadosAtualizar = {
+                                          "idPg2" : widget.uid,
+                                          "idImovel" : document['idImovel']
+                                        };
+                                        db.collection("usuarios")
+                                            .document(_idDono)
+                                            .updateData(dadosAtualizar);
+                                        Map<String, dynamic> dadosAtualizar2 = {
+                                          "idPg2" : _idDono,
+                                          "idImovel" : document['idImovel']
+                                        };
+                                        db.collection("usuarios")
+                                            .document(widget.uid)
+                                            .updateData(dadosAtualizar2);
                                         db.collection("pagarImoveis").document(widget.uid).collection(document['idImovel']).document('parcela2').setData(pagarImovel.toMap());
+                                        db.collection("pagarImoveis").document(_idDono).collection(document['idImovel']).document('parcela2').setData(pagarImovels.toMap());
                                         Navigator.pop(context);
                                         Navigator.pop(context);
-                                        print("Pago");
                                       },
                                     ),
                                   ],

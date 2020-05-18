@@ -385,7 +385,7 @@ class _MeuImovelState extends State<MeuImovel> {
                       Navigator.pop(context);
                     },
                   ),
-                  _idReceptor == widget.uid
+                  _idPagador == widget.uid
                       ? Text('Fatura Paga este mês')
                       : FlatButton(
                           child: Text('Cancelar'),
@@ -463,7 +463,7 @@ class _MeuImovelState extends State<MeuImovel> {
       }
     }
 
-    if (_idReceptor == widget.uid) {
+    if (_idPagador == widget.uid) {
       return Card(
           child: ListTile(
         title: Text(
@@ -532,17 +532,17 @@ class _MeuImovelState extends State<MeuImovel> {
     _telefone = dados['telefone'];
 
     DocumentSnapshot snapshot2 =
-        await db.collection("idEnvios").document(widget.uid).get();
+        await db.collection("usuarios").document(widget.uid).get();
     Map<String, dynamic> dados2 = snapshot2.data;
 
     setState(() {
-      _idEnvioLogado = dados2['idUsuarioLogado'];
-      _idEnvioDeslo = dados2['idUsuarioDeslogado'];
-      _idEnvioImovel = dados2['idDoImovel'];
+      _idEnvioLogado = widget.uid;
+      _idEnvioDeslo = dados2['idPg1'];
+      _idEnvioImovel = dados2['idImovel'];
     });
     DocumentSnapshot snapshot3 = await db
         .collection("pagarImoveis")
-        .document(_idEnvioLogado)
+        .document(widget.uid)
         .collection(_idEnvioImovel)
         .document('parcela1')
         .get();

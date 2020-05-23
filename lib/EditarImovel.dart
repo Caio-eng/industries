@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +7,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:industries/model/Imovel.dart';
 import 'package:industries/service/via_cep_service.dart';
-import 'package:validadores/Validador.dart';
 
-import 'CadastroImoveis.dart';
 
 class EditarImovel extends StatefulWidget {
   final String user;
@@ -35,9 +32,6 @@ class _EditarImovelState extends State<EditarImovel> {
   var controllerCep = new MaskedTextController(mask: '00000-000');
   String estad;
 
-  //List<Estado> _estados = Estado.getEstados();
-  //List<DropdownMenuItem<Estado>> _dropdownMenuItens;
-  //Estado _selectedEstado;
   File _imagem, _imagem2, _imagem3, _imagem4, _imagem5;
   String _urlImagemRecuperada, _url2, _url3, _url4, _url5;
   String _idUsuarioLogado;
@@ -540,30 +534,8 @@ class _EditarImovelState extends State<EditarImovel> {
       _url5 = widget.document['url5'];
     });
   }
-/*
-  List<DropdownMenuItem<Estado>> buildDropdownMenuItens(List estados) {
-    List<DropdownMenuItem<Estado>> items = List();
-    for (Estado estado in estados) {
-      items.add(
-        DropdownMenuItem(
-          value: estado,
-          child: Text(estado.nome),
-        ),
-      );
-    }
-    return items;
-  }
-
-  onCgangeDropdownItem(Estado selectedEstado) {
-    setState(() {
-      _selectedEstado = selectedEstado;
-    });
-  }
-*/
   @override
   void initState() {
-    //_dropdownMenuItens = buildDropdownMenuItens(_estados);
-    //_selectedEstado = _dropdownMenuItens[widget.document['idEstado']].value;
     super.initState();
     _recuperarDadosUsuario();
   }

@@ -32,19 +32,14 @@ class Industries extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return MaterialApp(
-      title: 'IndustriesKC',
-      home: Main(title: 'IndustriesKC',),
+      title: 'SIMOB',
+      home: Main(title: 'SIMOB',),
       //SideBarLayout(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColorDark: Colors.blue,
         accentColor: Colors.blue,
         textTheme: TextTheme(
-          /*
-          headline: TextStyle(fontSize: 72, fontWeight: FontWeight.bold),
-          title: TextStyle(fontSize: 24, fontStyle: FontStyle.italic, color: Colors.blue),
-          body1: TextStyle(fontSize: 14),
-          */
         )
       ),
     );
@@ -103,63 +98,6 @@ class _MainState extends State<Main>  {
 
     _googleSignIn.signInSilently();
   }
-/*
-  Future<void> logarPorFacebbok () async {
-    var login = FacebookLogin();
-    var result = await login.logInWithReadPermissions(['email']);
-
-
-    switch(result.status) {
-      case FacebookLoginStatus.error:
-        print("Surgiu um erro");
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        print("Cancelado pelo usuário");
-        break;
-      case FacebookLoginStatus.loggedIn:
-        _getUserInfo(result);
-        _onLoginStatusChange(true);
-
-        break;
-    }
-  }
-
-  _onLoginStatusChange(bool isLoggedIn) {
-    setState(() {
-      this._isLoggedIn=isLoggedIn;
-    });
-  }
-
-  _getUserInfo(FacebookLoginResult result) async {
-    var token = result.accessToken.token;
-    var graphResponse = await http.get(
-        'https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=${token}');
-    var profile = json.decode(graphResponse.body);
-
-
-    setState(() {
-      this.user = profile['name'];
-      this.emai = profile['email'];
-      this.photo = profile['picture']['data']['url'];
-      this.uid = profile['id'];
-
-    });
-
-    //print('Nome: $user');
-    //print('Email: $emai');
-    //print('ID: $uid');
-    //print('Photo: $photo');
-    //print(profile.toString());
-  }
-
-
-    Future<void> logout() {
-    //facebookLogin.logOut();
-    setState(() {
-      _isLoggedIn = false;
-    });
-  }
-*/
   Future<void> googleSignIn() async {
     try {
 
@@ -188,25 +126,6 @@ class _MainState extends State<Main>  {
       uid = 'id';
     });
   }
-/*
-  void signOutFB() {
-    setState(() {
-      user = null;
-      emai = null;
-      photo = null;
-      uid = null;
-    });
-  }
-
-  void signInFB() {
-    setState(() {
-      user = 'name';
-      emai = 'email';
-      photo = 'picture';
-      uid = 'id';
-    });
-  }
-*/
   @override
   Widget build(BuildContext context) {
     return _isLoggedIn || account != null

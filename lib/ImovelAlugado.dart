@@ -4,13 +4,11 @@ import 'dart:io';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:industries/Home.dart';
 import 'package:industries/model/IdEnviar.dart';
 import 'package:industries/model/PagarImovel.dart';
-import 'package:industries/model/Usuario.dart';
+
 
 import 'model/Imovel.dart';
 

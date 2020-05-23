@@ -4,13 +4,9 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:industries/model/Conversa.dart';
 import 'package:industries/model/PropostaDoLocador.dart';
 import 'package:industries/model/PropostaDoLocatario.dart';
-import 'package:industries/telas/Mensagens.dart';
 
-import 'Home.dart';
-import 'model/Usuario.dart';
 
 class Detalhes extends StatefulWidget {
   final String user;
@@ -282,10 +278,6 @@ class _DetalhesState extends State<Detalhes>  {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(32)),
                 onPressed: () {
-//                      Navigator.push(
-//                        context,
-//                        MaterialPageRoute(builder: (context) => AluguelImovel(widget.document, widget.user, widget.photo, widget.emai, widget.uid))
-//                      );
                   if (_id == widget.uid) {
                     _mandarProposta();
                   } else {

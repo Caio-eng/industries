@@ -25,47 +25,7 @@ class CadastroImoveis extends StatefulWidget {
   @override
   _CadastroImoveisState createState() => _CadastroImoveisState();
 }
-/*
-class Estado {
-  int id;
-  String nome;
-  String sigla;
 
-  Estado(this.id, this.nome, this.sigla);
-
-  static List<Estado> getEstados() {
-    return <Estado>[
-      Estado(1, 'Acre', 'AC'),
-      Estado(2, 'Alagoas', 'AL'),
-      Estado(3, 'Amapá', 'AP'),
-      Estado(4, 'Amazonas', 'AM'),
-      Estado(5, 'Bahia', 'BA'),
-      Estado(6, 'Ceará', 'CE'),
-      Estado(7, 'Distrito Federal', 'DF'),
-      Estado(8, 'Espírito Santo', 'ES'),
-      Estado(9, 'Goiás', 'GO'),
-      Estado(10, 'Maranhão', 'MA'),
-      Estado(11, 'Mato Grosso', 'MT'),
-      Estado(12, 'Mato Grosso do Sul', 'MS'),
-      Estado(13, 'Minas Gerais', 'MG'),
-      Estado(14, 'Pará', 'PA'),
-      Estado(15, 'Paraíba', 'PB'),
-      Estado(16, 'Paraná', 'PR'),
-      Estado(17, 'Pernambuco', 'PE'),
-      Estado(18, 'Piauí', 'PI'),
-      Estado(19, 'Rio de Janeiro', 'RJ'),
-      Estado(20, 'Rio Grande do Norte', 'RN'),
-      Estado(21, 'Rio Grande do Sul', 'RS'),
-      Estado(22, 'Rondônia', 'RO'),
-      Estado(23, 'Roraima', 'RR'),
-      Estado(24, 'Santa Catarina', 'SC'),
-      Estado(25, 'São Paulo', 'SP'),
-      Estado(26, 'Sergipe', 'SE'),
-      Estado(27, 'Tocantins', 'TO'),
-    ];
-  }
-}
-*/
 class _CadastroImoveisState extends State<CadastroImoveis> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _controllerLogadouro = TextEditingController();
@@ -104,9 +64,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   Firestore db = Firestore.instance;
 
   CarouselSlider instance;
-  //List<Estado> _estados = Estado.getEstados();
-  //List<DropdownMenuItem<Estado>> _dropdownMenuItens;
-  //Estado _selectedEstado;
 
   String _radioValue;
   String choice;
@@ -527,13 +484,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   }
   _atualizarUrlImagemFirestore(String url) {
     Map<String, dynamic> dadosAtualizar = {"urlImagens": url};
-
-
-    //Usuario usuario = Usuario();
-    //usuario.nome = widget.user;
-    //usuario.email = widget.emai;
-    //usuario.photo = widget.photo;
-    //this.account = profile;
     Firestore db = Firestore.instance;
     db.collection("imoveis").document().updateData(dadosAtualizar);
   }
@@ -567,11 +517,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   @override
   void initState() {
     _recuperarDadosCartao();
-    //_dropdownMenuItens = buildDropdownMenuItens(_estados);
-    //_selectedEstado = _dropdownMenuItens[8].value;
     super.initState();
     _recuperarDadosUsuario();
-    //listaTela.add(_imagem);
   }
 
   @override
@@ -581,26 +528,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     _localidadeController.clear();
     _controllerSigla.clear();
   }
-/*
-  List<DropdownMenuItem<Estado>> buildDropdownMenuItens(List estados) {
-    List<DropdownMenuItem<Estado>> items = List();
-    for (Estado estado in estados) {
-      items.add(
-        DropdownMenuItem(
-          value: estado,
-          child: Text(estado.nome),
-        ),
-      );
-    }
-    return items;
-  }
 
-  onCgangeDropdownItem(Estado selectedEstado) {
-    setState(() {
-      _selectedEstado = selectedEstado;
-    });
-  }
-*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -660,28 +588,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                             ],
                           ),
                         ),
-
-                        /*_imagem == null
-                          ? Container()
-                          :Image.file(_imagem),*/
-                        /*CarouselSlider(
-                        height: 150.0,
-                        items: listaTela.map((i) {
-                          return Builder(
-                            builder: (BuildContext context) {
-                              return Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                  decoration: BoxDecoration(
-                                      color: Colors.blue
-                                  ),
-                                  child: Image.file(_imagem),
-                                  //child: _imagem,
-                              );
-                            },
-                          );
-                        }).toList(),
-                      ),*/
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 3),
@@ -813,60 +719,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       ),
                     ],
                   ),
-//                  Row(
-//                    mainAxisAlignment: MainAxisAlignment.center,
-//                    children: <Widget>[
-//                      FlatButton(
-//
-//                        child: Icon(Icons.camera_alt),
-//                        onPressed: () {
-//                          _recuperarImagem("camera");
-//                        },
-//                      ),
-//                      FlatButton(
-//                        padding: EdgeInsets.only(right: 216),
-//                        child: Icon(Icons.photo),
-//                        onPressed: () {
-//                          _recuperarImagem("galeria");
-//                        },
-//                      ),
-//                    ],
-//                  ),
-                  /*
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 8, left: 10),
-                    child: Row(
-                      //crossAxisAlignment: CrossAxisAlignment.center,
-                      //mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Estado de: ',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          width: 30,
-                        ),
-                        DropdownButton(
-                          icon: Icon(
-                            Icons.arrow_downward,
-                            color: Colors.blue,
-                          ),
-                          value: _selectedEstado,
-                          items: _dropdownMenuItens,
-                          onChanged: onCgangeDropdownItem,
-                          underline: Container(
-                            height: 2,
-                            color: Colors.blue,
-                          ),
-                        ),
-                        /*
-                      SizedBox(height: 20,),
-                      Text('Selecione: ${_selectedEstado.nome}'),
-                        */
-                      ],
-                    ),
-                  ),*/
                   Padding(
                     padding: EdgeInsets.only(bottom: 8, top: 8),
                     child: TextField(
@@ -1092,54 +944,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                               borderRadius: BorderRadius.circular(32))),
                     ),
                   ),
-                  /*
-                Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Row(
-                    children: <Widget>[
-                      RaisedButton(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              "Galeria",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            //Icon(Icons.file_upload, color: Colors.white, size: 30,),
-                          ],
-                        ),
-                        onPressed: () {
-                          _recuperarImagem("galeria");
-                        },
-                        color: Colors.blue,
-                        padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: RaisedButton(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                "Camera",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              //Icon(Icons.file_upload, color: Colors.white, size: 30,),
-                            ],
-                          ),
-                          onPressed: () {
-                            _recuperarImagem("camera");
-                          },
-                          color: Colors.blue,
-                          padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),*/
-
                   Padding(
                     padding: EdgeInsets.only(top: 10, bottom: 10),
                     child: RaisedButton(

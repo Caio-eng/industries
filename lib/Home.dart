@@ -156,91 +156,9 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
-    /*
-    return Column(
-      children: <Widget>[
-        SizedBox(
-          height: 8,
-        ),
-        document['idUsuario'] != _idUsuarioLogado
-            ? ListTile(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Detalhes(document, widget.user,
-                            widget.photo, widget.emai, widget.uid))),
-                title: Text(
-                  document['logadouro'],
-                  textAlign: TextAlign.center,
-                ),
-                subtitle: Text(
-                  document['complemento'],
-                  textAlign: TextAlign.center,
-                ),
-                leading: CircleAvatar(
-                  radius: 25,
-                  backgroundImage: NetworkImage(document['urlImagens']),
-                ),
-              )
-            : ListTile(
-                title: Text(
-                  document['logadouro'],
-                  textAlign: TextAlign.center,
-                ),
-                subtitle: Text(
-                  document['complemento'],
-                  textAlign: TextAlign.center,
-                ),
-                leading: Icon(Icons.home),
-                trailing: PopupMenuButton<String>(
-                  onSelected: _escolhaMenuItem,
-                  itemBuilder: (context) {
-                    return itensMenu.map((String item) {
-                      return PopupMenuItem<String>(
-                        value: item,
-                        child: Text(item),
-                      );
-                    }).toList();
-                  },
-                ),
-                /*
-                leading:CircleAvatar(
-                  radius: 25,
-                  backgroundImage: NetworkImage(document['urlImagens']),
-                ),*/
-              ),
-      ],
-    );*/
   }
 
-/*
-  Future<List<Imovel>> _recuperarImoveis() async {
-    QuerySnapshot querySnapshot = await db.collection("imoveis").getDocuments();
-    List<Imovel> listaImoveis = List();
-    for (DocumentSnapshot item in querySnapshot.documents) {
-      var dados = item.data;
 
-      Imovel imovel = Imovel();
-      imovel.estado = dados['estado'];
-      imovel.logadouro = dados['logadouro'];
-      imovel.complemento = dados['complemento'];
-      imovel.tipoImovel = dados['tipoImovel'];
-      imovel.valor = dados['valor'];
-      imovel.idUsuario = dados['idUsuario'];
-      imovel.urlImagens = dados['urlImagens'];
-      imovel.detalhes = dados['detalhes'];
-      imovel.idEstado = dados['idEstado'];
-      imovel.nomeDaImagem = dados['nomeDaImagem'];
-      imovel.telefoneUsuario = dados['telefoneUsuario'];
-      imovel.cpfUsuario = dados['cpfUsuario'];
-      print(dados['estado']);
-
-      listaImoveis.add(imovel);
-    }
-    return listaImoveis;
-  }
-
- */
 
   _pesquisar() async {
     _pes = editingController.text;
@@ -313,22 +231,8 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text("IndustriesKC"),
-//          child: TextField(
-//            style: TextStyle(color: Colors.white),
-//            textAlign: TextAlign.center,
-//            decoration: InputDecoration(
-//              labelText: "Pesquisar Imóvel",
-//
-//              fillColor: Colors.white,
-//              focusColor: Colors.white,
-//              suffixIcon: Icon(Icons.search, color: Colors.white,),
-//              labelStyle:TextStyle(color: Colors.white,),
-//              hintStyle: TextStyle(color: Colors.blue),
-//
-//            ),
-//            controller: controller,
-//          ),
+          child: Text("SIMOB"),
+
         ),
         actions: <Widget>[
           Row(
@@ -371,14 +275,6 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             _idUsuarioLogado == _id
                 ? UserAccountsDrawerHeader(
-              /*
-                    onDetailsPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Configuracoes(widget.user,
-                                  widget.photo, widget.emai, widget.uid)));
-                    },*/
               accountName: Text('${_nome}'),
               accountEmail: Text("${widget.emai}"),
               currentAccountPicture: CircleAvatar(
@@ -387,14 +283,6 @@ class _HomeState extends State<Home> {
                       : NetworkImage('${widget.photo}')),
             )
                 : UserAccountsDrawerHeader(
-              /*
-                    onDetailsPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Configuracoes(widget.user,
-                                  widget.photo, widget.emai, widget.uid)));
-                    },*/
               accountName: Text('${widget.user}'),
               accountEmail: Text("${widget.emai}"),
               currentAccountPicture: CircleAvatar(
@@ -786,13 +674,6 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-            //CustomListTitle(Icons.person, 'Perfil', () => {}),
-            //CustomListTitle(Icons.notifications, 'Notificações', () => {}),
-            //CustomListTitle(Icons.send, 'Mensagens', () => {}/*_cadastrarImoveis()*/),
-            //Divider(),
-            // CustomListTitle(Icons.settings, 'Configurações', () => {}),
-            //CustomListTitle(Icons.help, 'Sobre', ()=>{}),
-            //CustomListTitle(Icons.exit_to_app,  'Sair', () => {signOut(), signOutFB()} ),
           ],
         ),
       ),
@@ -858,52 +739,3 @@ class _HomeState extends State<Home> {
     );
   }
 }
-
-/*
-class CustomListTitle extends StatelessWidget {
-
-  IconData icon;
-  String text;
-  Function onTap;
-
-
-  CustomListTitle(this.icon, this.text, this.onTap);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.grey.shade400))
-        ),
-        child: InkWell(
-          splashColor: Colors.blue,
-          onTap: onTap,
-          child: Container(
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Icon(icon),
-
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(text, style: TextStyle(
-                        fontSize: 16.0,
-                      ),),
-                    ),
-                  ],
-                ),
-                Icon(Icons.arrow_right)
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-*/

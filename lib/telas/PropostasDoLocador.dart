@@ -35,7 +35,7 @@ class _PropostasDoLocadorState extends State<PropostasDoLocador> {
     for (DocumentSnapshot item in querySnapshot.documents) {
       var dados = item.data;
       if (dados['idLocador'] != widget.uid) continue;
-      
+
       PropostaDoLocador propostaDoLocador = PropostaDoLocador();
       propostaDoLocador.idLocatario = dados['idLocatario'];
       propostaDoLocador.idLocador = dados['idLocador'];

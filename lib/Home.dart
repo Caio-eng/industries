@@ -8,7 +8,6 @@ import 'package:industries/Chat.dart';
 import 'package:industries/EditarImovel.dart';
 import 'package:industries/ImovelAlugado.dart';
 import 'package:industries/MeuImovel.dart';
-import 'package:industries/Propostas.dart';
 import 'package:industries/ReciboImovel.dart';
 import 'package:industries/telas/PropostasDoLocador.dart';
 import 'package:industries/telas/PropostasDoLocatario.dart';

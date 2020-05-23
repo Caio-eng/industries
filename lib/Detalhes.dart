@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:industries/AluguelImovel.dart';
 import 'package:industries/model/Conversa.dart';
 import 'package:industries/model/Proposta.dart';
+import 'package:industries/model/PropostaDoLocador.dart';
+import 'package:industries/model/PropostaDoLocatario.dart';
 import 'package:industries/telas/Mensagens.dart';
 
 import 'Home.dart';
@@ -45,68 +47,62 @@ class _DetalhesState extends State<Detalhes>  {
 
 
   _mandarProposta() async {
-    //Proposta para o Dono
-    Proposta propostaD = Proposta();
-    propostaD.idProposta = _idImovel;
-    propostaD.idCotra = widget.uid;
-    propostaD.idImovel = widget.document.documentID;
-    propostaD.idPropostaUsuarioLogado = widget.uid;
-    propostaD.id = _idImovel;
-    propostaD.numero = _nume;
-    propostaD.bairro = _bairro;
-    propostaD.cep = _cep;
-    propostaD.cidade = _locali;
-    propostaD.estado = _sig;
-    propostaD.detalhes = _deta;
-    propostaD.urlImagens = _url;
-    propostaD.urlImagens2 = _url2;
-    propostaD.urlImagens3 = _url3;
-    propostaD.urlImagens4 = _url4;
-    propostaD.urlImagens5 = _url5;
-    propostaD.valor = _valor;
-    propostaD.tipo = _tipo;
-    propostaD.complemento = _comp;
-    propostaD.logadouro = _log;
-    propostaD.nomeDaImagem = widget.document['nomeDaImagem'];
-    propostaD.nomeDaImagem2 = widget.document['nomeDaImagem2'];
-    propostaD.nomeDaImagem3 = widget.document['nomeDaImagem3'];
-    propostaD.nomeDaImagem4 = widget.document['nomeDaImagem4'];
-    propostaD.nomeDaImagem5 = widget.document['nomeDaImagem5'];
-    propostaD.telefone = widget.document['telefoneUsuario'];
-    propostaD.cpf = widget.document['cpfUsuario'];
-    propostaD.proposta = 'Prop. enviada pelo locatário';
-    db.collection("propostas").document(_idImovel).setData(propostaD.toMap());
+    //Classe do Locatário
+    PropostaDoLocatario propostaDoLocatario = PropostaDoLocatario();
+    propostaDoLocatario.idLocador = _idImovel;
+    propostaDoLocatario.idLocatario = widget.uid;
+    propostaDoLocatario.idImovel = widget.document.documentID;
+    propostaDoLocatario.numero = _nume;
+    propostaDoLocatario.bairro = _bairro;
+    propostaDoLocatario.cep = _cep;
+    propostaDoLocatario.cidade = _locali;
+    propostaDoLocatario.estado = _sig;
+    propostaDoLocatario.detalhes = _deta;
+    propostaDoLocatario.urlImagens = _url;
+    propostaDoLocatario.urlImagens2 = _url2;
+    propostaDoLocatario.urlImagens3 = _url3;
+    propostaDoLocatario.urlImagens4 = _url4;
+    propostaDoLocatario.urlImagens5 = _url5;
+    propostaDoLocatario.valor = _valor;
+    propostaDoLocatario.tipo = _tipo;
+    propostaDoLocatario.complemento = _comp;
+    propostaDoLocatario.logadouro = _log;
+    propostaDoLocatario.nomeDaImagem = widget.document['nomeDaImagem'];
+    propostaDoLocatario.nomeDaImagem2 = widget.document['nomeDaImagem2'];
+    propostaDoLocatario.nomeDaImagem3 = widget.document['nomeDaImagem3'];
+    propostaDoLocatario.nomeDaImagem4 = widget.document['nomeDaImagem4'];
+    propostaDoLocatario.nomeDaImagem5 = widget.document['nomeDaImagem5'];
+    propostaDoLocatario.telefone = widget.document['telefoneUsuario'];
+    propostaDoLocatario.cpf = widget.document['cpfUsuario'];
+    db.collection("propostasDoLocatario").document(widget.uid).setData(propostaDoLocatario.toMap());
 
-    Proposta proposta = Proposta();
-    proposta.idImovel = widget.document.documentID;
-    proposta.idProposta = _idImovel;
-    proposta.idCotra = widget.uid;
-    proposta.idPropostaUsuarioLogado = _idImovel;
-    proposta.id = widget.uid;
-    proposta.numero = _nume;
-    proposta.bairro = _bairro;
-    proposta.cep = _cep;
-    proposta.cidade = _locali;
-    proposta.estado = _sig;
-    proposta.detalhes = _deta;
-    proposta.urlImagens = _url;
-    proposta.urlImagens2 = _url2;
-    proposta.urlImagens3 = _url3;
-    proposta.urlImagens4 = _url4;
-    proposta.urlImagens5 = _url5;
-    proposta.valor = _valor;
-    proposta.tipo = _tipo;
-    proposta.complemento = _comp;
-    proposta.logadouro = _log;
-    proposta.nomeDaImagem = widget.document['nomeDaImagem'];
-    proposta.nomeDaImagem2 = widget.document['nomeDaImagem2'];
-    proposta.nomeDaImagem3 = widget.document['nomeDaImagem3'];
-    proposta.nomeDaImagem4 = widget.document['nomeDaImagem4'];
-    proposta.nomeDaImagem5 = widget.document['nomeDaImagem5'];
-    proposta.telefone = _telefoneUser;
-    proposta.cpf = _cpfUser;
-    proposta.proposta = 'Aguardando Envio do Contrato';
-    db.collection("propostas").document(widget.uid).setData(proposta.toMap());
+    PropostaDoLocador propostaDoLocador = PropostaDoLocador();
+    propostaDoLocador.idLocador = _idImovel;
+    propostaDoLocador.idLocatario = widget.uid;
+    propostaDoLocador.idImovel = widget.document.documentID;
+    propostaDoLocador.numero = _nume;
+    propostaDoLocador.bairro = _bairro;
+    propostaDoLocador.cep = _cep;
+    propostaDoLocador.cidade = _locali;
+    propostaDoLocador.estado = _sig;
+    propostaDoLocador.detalhes = _deta;
+    propostaDoLocador.urlImagens = _url;
+    propostaDoLocador.urlImagens2 = _url2;
+    propostaDoLocador.urlImagens3 = _url3;
+    propostaDoLocador.urlImagens4 = _url4;
+    propostaDoLocador.urlImagens5 = _url5;
+    propostaDoLocador.valor = _valor;
+    propostaDoLocador.tipo = _tipo;
+    propostaDoLocador.complemento = _comp;
+    propostaDoLocador.logadouro = _log;
+    propostaDoLocador.nomeDaImagem = widget.document['nomeDaImagem'];
+    propostaDoLocador.nomeDaImagem2 = widget.document['nomeDaImagem2'];
+    propostaDoLocador.nomeDaImagem3 = widget.document['nomeDaImagem3'];
+    propostaDoLocador.nomeDaImagem4 = widget.document['nomeDaImagem4'];
+    propostaDoLocador.nomeDaImagem5 = widget.document['nomeDaImagem5'];
+    propostaDoLocador.telefone = _telefoneUser;
+    propostaDoLocador.cpf = _cpfUser;
+    db.collection("propostasDoLocador").document(_idImovel).setData(propostaDoLocador.toMap());
     db.collection('imoveis').document(widget.document.documentID).delete();
     Navigator.pop(context);
   }
@@ -142,7 +138,7 @@ class _DetalhesState extends State<Detalhes>  {
     _sig = widget.document['siglaEstado'];
     _locali = widget.document['cidade'];
     DocumentSnapshot snapshot =
-        await db.collection("usuarios").document(_idImovel).get();
+        await db.collection("usuarios").document(widget.uid).get();
 
     Map<String, dynamic> dados = snapshot.data;
     print(dados['nome']);
@@ -183,11 +179,21 @@ class _DetalhesState extends State<Detalhes>  {
                     radius: 110,
                     child: Carousel(
                       images: [
-                        NetworkImage(_url),
-                        NetworkImage(_url2),
-                        NetworkImage(_url3),
-                        NetworkImage(_url4),
-                        NetworkImage(_url5),
+                        _url != null
+                        ? NetworkImage(_url)
+                        : NetworkImage(''),
+                        _url2 != null
+                        ? NetworkImage(_url2)
+                        : NetworkImage(''),
+                        _url3 != null
+                        ? NetworkImage(_url3)
+                        : NetworkImage(''),
+                        _url4 != null
+                        ? NetworkImage(_url4)
+                        : NetworkImage(''),
+                        _url5 != null
+                        ? NetworkImage(_url5)
+                        : NetworkImage(''),
                       ],
                       dotSize: 4,
                       dotSpacing: 15,

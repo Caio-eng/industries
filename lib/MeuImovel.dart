@@ -425,10 +425,10 @@ class _MeuImovelState extends State<MeuImovel> {
                                 .document(document.documentID)
                                 .delete();
 
-                            db.collection("propostas")
+                            db.collection("propostasDoLocador")
                                 .document(widget.uid)
                                 .delete();
-                            db.collection("propostas")
+                            db.collection("propostasDoLocatario")
                                 .document(document['idLocatario'])
                                 .delete();
 

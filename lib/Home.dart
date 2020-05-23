@@ -10,6 +10,8 @@ import 'package:industries/ImovelAlugado.dart';
 import 'package:industries/MeuImovel.dart';
 import 'package:industries/Propostas.dart';
 import 'package:industries/ReciboImovel.dart';
+import 'package:industries/telas/PropostasDoLocador.dart';
+import 'package:industries/telas/PropostasDoLocatario.dart';
 import 'CadastroImoveis.dart';
 
 class Home extends StatefulWidget {
@@ -28,7 +30,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   Firestore db = Firestore.instance;
-  
+
   TextEditingController controller = TextEditingController();
 
 
@@ -36,7 +38,7 @@ class _HomeState extends State<Home> {
   bool isLoggedIn = false;
   String _idUsuarioLogado = "";
   String _id = "";
-  String _nome;
+  String _nome, _idLocatario, _idLocador;
   String _photo;
   String _cpf;
   var _pes;
@@ -97,8 +99,9 @@ class _HomeState extends State<Home> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => EditarImovel(document, widget.user,
-                      widget.photo, widget.emai, widget.uid)));
+                  builder: (context) =>
+                      EditarImovel(document, widget.user,
+                          widget.photo, widget.emai, widget.uid)));
           break;
         case "Deletar":
           print("Deletar");
@@ -108,50 +111,51 @@ class _HomeState extends State<Home> {
     }
 
 
-
     return Card(
       child: document['idUsuario'] != _idUsuarioLogado
           ? ListTile(
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Detalhes(document, widget.user,
-                          widget.photo, widget.emai, widget.uid))),
-              title: Text(
-                document['logadouro'] + '\n' + document['bairro'],
-                textAlign: TextAlign.center,
-              ),
-              subtitle: Text(
-                'Valor: ${document['valor']}',
-                textAlign: TextAlign.center,
-              ),
-              leading: CircleAvatar(
-                radius: 25,
-                backgroundImage: NetworkImage(document['urlImagens']),
-              ),
-            )
+        onTap: () =>
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Detalhes(document, widget.user,
+                            widget.photo, widget.emai, widget.uid))),
+        title: Text(
+          document['logadouro'] + '\n' + document['bairro'],
+          textAlign: TextAlign.center,
+        ),
+        subtitle: Text(
+          'Valor: ${document['valor']}',
+          textAlign: TextAlign.center,
+        ),
+        leading: CircleAvatar(
+          radius: 25,
+          backgroundImage: NetworkImage(document['urlImagens']),
+        ),
+      )
           : ListTile(
-              title: Text(
-                document['logadouro'] + '\n' + document['bairro'],
-                textAlign: TextAlign.center,
-              ),
-              subtitle: Text(
-                'Valor: ${document['valor']}' ,
-                textAlign: TextAlign.center,
-              ),
-              leading: Icon(Icons.home),
-              trailing: PopupMenuButton<String>(
-                onSelected: _escolhaMenuItem,
-                itemBuilder: (context) {
-                  return itensMenu.map((String item) {
-                    return PopupMenuItem<String>(
-                      value: item,
-                      child: Text(item),
-                    );
-                  }).toList();
-                },
-              ),
-            ),
+        title: Text(
+          document['logadouro'] + '\n' + document['bairro'],
+          textAlign: TextAlign.center,
+        ),
+        subtitle: Text(
+          'Valor: ${document['valor']}',
+          textAlign: TextAlign.center,
+        ),
+        leading: Icon(Icons.home),
+        trailing: PopupMenuButton<String>(
+          onSelected: _escolhaMenuItem,
+          itemBuilder: (context) {
+            return itensMenu.map((String item) {
+              return PopupMenuItem<String>(
+                value: item,
+                child: Text(item),
+              );
+            }).toList();
+          },
+        ),
+      ),
     );
     /*
     return Column(
@@ -209,6 +213,7 @@ class _HomeState extends State<Home> {
       ],
     );*/
   }
+
 /*
   Future<List<Imovel>> _recuperarImoveis() async {
     QuerySnapshot querySnapshot = await db.collection("imoveis").getDocuments();
@@ -241,15 +246,15 @@ class _HomeState extends State<Home> {
   _pesquisar() async {
     _pes = editingController.text;
     QuerySnapshot querySnapshot = await db.collection("imoveis")
-        .where("logadouro" , isGreaterThanOrEqualTo: _pes)
-        .where("logadouro" , isLessThanOrEqualTo: _pes + "\uf8ff"  )
+        .where("logadouro", isGreaterThanOrEqualTo: _pes)
+        .where("logadouro", isLessThanOrEqualTo: _pes + "\uf8ff")
         .getDocuments();
 
     setState(() {
       _pes = querySnapshot.documents;
     });
 
-    for( DocumentSnapshot item in querySnapshot.documents ) {
+    for (DocumentSnapshot item in querySnapshot.documents) {
       var dados = item.data;
       setState(() {
         _pes = dados['logadouro'];
@@ -265,7 +270,7 @@ class _HomeState extends State<Home> {
 
     Firestore db = Firestore.instance;
     DocumentSnapshot snapshot =
-        await db.collection("usuarios").document(widget.uid).get();
+    await db.collection("usuarios").document(widget.uid).get();
     Map<String, dynamic> dados = snapshot.data;
     setState(() {
       _id = dados['idUsuario'];
@@ -273,6 +278,14 @@ class _HomeState extends State<Home> {
       _photo = dados['urlImagem'];
       _cpf = dados['cpf'];
       print("_id: " + _id);
+    });
+
+    DocumentSnapshot snapshot2 = await db.collection('propostasDoLocatario').document(widget.uid).get();
+    Map<String, dynamic> dados2 = snapshot2.data;
+    setState(() {
+      _idLocatario = dados2['idLocatario'];
+      _idLocador = dados2['idLocador'];
+      print("Aqui" + _idLocatario);
     });
   }
 
@@ -326,8 +339,9 @@ class _HomeState extends State<Home> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => Configuracoes(widget.user,
-                              widget.photo, widget.emai, widget.uid)));
+                          builder: (context) =>
+                              Configuracoes(widget.user,
+                                  widget.photo, widget.emai, widget.uid)));
                 },
                 child: Icon(Icons.person),
               ),
@@ -339,8 +353,10 @@ class _HomeState extends State<Home> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => CadastroImoveis(
-                              widget.user, widget.photo, widget.emai, widget.uid)));
+                          builder: (context) =>
+                              CadastroImoveis(
+                                  widget.user, widget.photo, widget.emai,
+                                  widget.uid)));
                 },
                 child: Icon(Icons.add),
               ),
@@ -356,7 +372,7 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             _idUsuarioLogado == _id
                 ? UserAccountsDrawerHeader(
-                  /*
+              /*
                     onDetailsPressed: () {
                       Navigator.push(
                           context,
@@ -364,13 +380,13 @@ class _HomeState extends State<Home> {
                               builder: (context) => Configuracoes(widget.user,
                                   widget.photo, widget.emai, widget.uid)));
                     },*/
-                    accountName: Text('${_nome}'),
-                    accountEmail: Text("${widget.emai}"),
-                    currentAccountPicture: CircleAvatar(
-                        backgroundImage: _photo != null
-                            ? NetworkImage('${_photo}')
-                            : NetworkImage('${widget.photo}')),
-                  )
+              accountName: Text('${_nome}'),
+              accountEmail: Text("${widget.emai}"),
+              currentAccountPicture: CircleAvatar(
+                  backgroundImage: _photo != null
+                      ? NetworkImage('${_photo}')
+                      : NetworkImage('${widget.photo}')),
+            )
                 : UserAccountsDrawerHeader(
               /*
                     onDetailsPressed: () {
@@ -380,14 +396,14 @@ class _HomeState extends State<Home> {
                               builder: (context) => Configuracoes(widget.user,
                                   widget.photo, widget.emai, widget.uid)));
                     },*/
-                    accountName: Text('${widget.user}'),
-                    accountEmail: Text("${widget.emai}"),
-                    currentAccountPicture: CircleAvatar(
-                      backgroundImage: _photo != null
-                          ? NetworkImage('${_photo}')
-                          : NetworkImage('${widget.photo}'),
-                    ),
-                  ),
+              accountName: Text('${widget.user}'),
+              accountEmail: Text("${widget.emai}"),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: _photo != null
+                    ? NetworkImage('${_photo}')
+                    : NetworkImage('${widget.photo}'),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
               child: Container(
@@ -396,12 +412,14 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {
+                  onTap: () =>
+                  {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ImovelAlugado(widget.user,
-                                widget.photo, widget.emai, widget.uid)))
+                            builder: (context) =>
+                                ImovelAlugado(widget.user,
+                                    widget.photo, widget.emai, widget.uid)))
                   },
                   child: Container(
                     height: 40,
@@ -443,12 +461,14 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {
+                  onTap: () =>
+                  {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MeuImovel(widget.user,
-                                widget.photo, widget.emai, widget.uid)))
+                            builder: (context) =>
+                                MeuImovel(widget.user,
+                                    widget.photo, widget.emai, widget.uid)))
                   },
                   child: Container(
                     height: 50,
@@ -490,12 +510,14 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {
+                  onTap: () =>
+                  {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MensagemUsuario(widget.user,
-                                widget.photo, widget.emai, widget.uid))),
+                            builder: (context) =>
+                                MensagemUsuario(widget.user,
+                                    widget.photo, widget.emai, widget.uid))),
                   },
                   child: Container(
                     height: 50,
@@ -537,10 +559,12 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {
+                  onTap: () =>
+                  {
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ReciboImovel(widget.uid))
+                        MaterialPageRoute(
+                            builder: (context) => ReciboImovel(widget.uid))
                     )
                   },
                   child: Container(
@@ -583,12 +607,23 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Propostas(widget.user,
-                            widget.photo, widget.emai, widget.uid))
-                    )
+                  onTap: () =>
+                  {
+                    if (_idLocatario != null) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PropostasDoLocatario(widget.user,
+                                widget.photo, widget.emai, widget.uid)
+                          ))
+                    } else  {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PropostasDoLocador(widget.user,
+                                  widget.photo, widget.emai, widget.uid)
+                          ))
+                    }
                   },
                   child: Container(
                     height: 50,
@@ -630,9 +665,12 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => MeuCartao(widget.user,
-                        widget.photo, widget.emai, widget.uid)))
+                  onTap: () =>
+                  {
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (context) =>
+                        MeuCartao(widget.user,
+                            widget.photo, widget.emai, widget.uid)))
                   },
                   child: Container(
                     height: 50,
@@ -776,7 +814,7 @@ class _HomeState extends State<Home> {
                   hintText: "Informe o endereço",
                   prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(32))
+                      borderRadius: BorderRadius.all(Radius.circular(32))
                   ),
                 ),
 
@@ -821,6 +859,7 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
 /*
 class CustomListTitle extends StatelessWidget {
 

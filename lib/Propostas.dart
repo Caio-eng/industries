@@ -444,7 +444,7 @@ class _PropostasState extends State<Propostas> {
             onTap: () async {
               Firestore db = Firestore.instance;
               DocumentSnapshot snapshot =
-              await db.collection("usuarios").document(document['idPropostaUsuarioLogado']).get();
+              await db.collection("usuarios").document(document['idCotra']).get();
               Map<String, dynamic> dados = snapshot.data;
               String _nome, _email, _photo;
               setState(() {
@@ -454,7 +454,7 @@ class _PropostasState extends State<Propostas> {
               });
               String _numero, _nomeDoCartao, _cpfDoCartao;
               DocumentSnapshot snapshot2 =
-              await db.collection("cartao").document(document['idPropostaUsuarioLogado']).get();
+              await db.collection("cartao").document(document['idCotra']).get();
               Map<String, dynamic> dados2 = snapshot2.data;
               setState(() {
                 _numero = dados2['numeroDoCartao'];

@@ -115,10 +115,10 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                           .document()
                           .setData(imovel.toMap());
 
-                      db.collection("propostas")
+                      db.collection("propostasDoLocatario")
                           .document(widget.uid)
                           .delete();
-                      db.collection("propostas")
+                      db.collection("propostasDoLocador")
                         .document(document['idDono'])
                         .delete();
                       db

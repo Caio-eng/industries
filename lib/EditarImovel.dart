@@ -14,8 +14,7 @@ class EditarImovel extends StatefulWidget {
   final String photo;
   final String emai;
   final String uid;
-  final DocumentSnapshot document;
-  EditarImovel(this.document, this.user, this.photo, this.emai, this.uid);
+  EditarImovel(this.user, this.photo, this.emai, this.uid);
   @override
   _EditarImovelState createState() => _EditarImovelState();
 }
@@ -40,10 +39,14 @@ class _EditarImovelState extends State<EditarImovel> {
   bool _subindo3 = false;
   bool _subindo4 = false;
   bool _subindo5 = false;
+  String _logadouro, _numero, _complemento, _tipoImovel, _cidade, _estado, _cep;
+  String _bairro, _detalhes, _valor, _idUsuario, _urlImagens, _idImovel;
+  String _nomeDaImagem, _nomeDaImagem2, _nomeDaImagem3, _nomeDaImagem4, _nomeDaImagem5;
   String _cpfUsuario = "";
   String _telefoneUsuario = "";
   String _mensagemErro = "";
   String _radioValue;
+  String _id;
   String choice;
 
   void radioButtonChanges(String value) {
@@ -61,6 +64,43 @@ class _EditarImovelState extends State<EditarImovel> {
           break;
       }
     });
+  }
+
+  Future<List<Imovel>> _recuperarImoveis() async {
+    Firestore db = Firestore.instance;
+    QuerySnapshot querySnapshot =
+        await db.collection('imoveis').getDocuments();
+    List<Imovel> listaImoveis = List();
+    for (DocumentSnapshot item in querySnapshot.documents) {
+      var dados = item.data;
+      if (dados['idUsuario'] != widget.uid) continue;
+
+      setState(() {
+        _idImovel = item.documentID;
+        _idUsuario = dados['idUsuario'];
+        _controllerLogadouro.text = dados['logadouro'];
+        _controllerComplemento.text = dados['complemento'];
+        _controllerBairro.text = dados['bairro'];
+        _controllerDetalhes.text = dados['detalhes'];
+        controllerNumero.text = dados['numero'];
+        _controller.text = dados['valor'];
+        _radioValue = dados['tipoImovel'];
+        controllerCep.text = dados['cep'];
+        _controllerSigla.text = dados['siglaEstado'];
+        _localidadeController.text = dados['cidade'];
+        _urlImagemRecuperada = dados['urlImagens'];
+        _url2 = dados['url2'];
+        _url3 = dados['url3'];
+        _url4 = dados['url4'];
+        _url5 = dados['url5'];
+        _nomeDaImagem = dados['nomeDaImagem'];
+        _nomeDaImagem2 = dados['nomeDaImagem2'];
+        _nomeDaImagem3 = dados['nomeDaImagem3'];
+        _nomeDaImagem4 = dados['nomeDaImagem3'];
+        _nomeDaImagem5 = dados['nomeDaImagem5'];
+      });
+    }
+    return listaImoveis;
   }
 
   Future _recuperarImagem(String origemImagem) async {
@@ -91,7 +131,7 @@ class _EditarImovelState extends State<EditarImovel> {
     StorageReference arquivo = pastaRaiz
         .child("imoveis")
         .child(widget.uid)
-        .child( widget.document['nomeDaImagem'] + ".jpg");
+        .child( _nomeDaImagem + ".jpg");
 
     //Upload da imagem
     StorageUploadTask task = arquivo.putFile(_imagem);
@@ -158,7 +198,7 @@ class _EditarImovelState extends State<EditarImovel> {
     StorageReference arquivo = pastaRaiz
         .child("imoveis")
         .child(widget.uid)
-        .child( widget.document['nomeDaImagem2'] + ".jpg");
+        .child( _nomeDaImagem2 + ".jpg");
 
     //Upload da imagem
     StorageUploadTask task = arquivo.putFile(_imagem2);
@@ -225,7 +265,7 @@ class _EditarImovelState extends State<EditarImovel> {
     StorageReference arquivo = pastaRaiz
         .child("imoveis")
         .child(widget.uid)
-        .child( widget.document['nomeDaImagem3'] + ".jpg");
+        .child( _nomeDaImagem3 + ".jpg");
 
     //Upload da imagem
     StorageUploadTask task = arquivo.putFile(_imagem3);
@@ -292,7 +332,7 @@ class _EditarImovelState extends State<EditarImovel> {
     StorageReference arquivo = pastaRaiz
         .child("imoveis")
         .child(widget.uid)
-        .child( widget.document['nomeDaImagem4'] + ".jpg");
+        .child( _nomeDaImagem4 + ".jpg");
 
     //Upload da imagem
     StorageUploadTask task = arquivo.putFile(_imagem4);
@@ -359,7 +399,7 @@ class _EditarImovelState extends State<EditarImovel> {
     StorageReference arquivo = pastaRaiz
         .child("imoveis")
         .child(widget.uid)
-        .child( widget.document['nomeDaImagem5'] + ".jpg");
+        .child( _nomeDaImagem5 + ".jpg");
 
     //Upload da imagem
     StorageUploadTask task = arquivo.putFile(_imagem5);
@@ -455,16 +495,16 @@ class _EditarImovelState extends State<EditarImovel> {
                       imovel.siglaEstado = sgl;
                       imovel.numero = numero;
                       imovel.cep = cep;
-                      imovel.idUsuario = widget.document['idUsuario'];
-                      imovel.nomeDaImagem = widget.document['nomeDaImagem'];
-                      imovel.nomeDaImagem2 = widget.document['nomeDaImagem2'];
-                      imovel.nomeDaImagem3 = widget.document['nomeDaImagem3'];
-                      imovel.nomeDaImagem4 = widget.document['nomeDaImagem4'];
-                      imovel.nomeDaImagem5 = widget.document['nomeDaImagem5'];
+                      imovel.idUsuario = _idUsuario;
+                      imovel.nomeDaImagem = _nomeDaImagem;
+                      imovel.nomeDaImagem2 = _nomeDaImagem2;
+                      imovel.nomeDaImagem3 = _nomeDaImagem3;
+                      imovel.nomeDaImagem4 = _nomeDaImagem4;
+                      imovel.nomeDaImagem5 = _nomeDaImagem5;
 
                       Firestore db = Firestore.instance;
                       db.collection("imoveis")
-                          .document(widget.document.documentID)
+                          .document(_idImovel)
                           .updateData(dadosAtualizar);
 
                   } else {
@@ -514,29 +554,12 @@ class _EditarImovelState extends State<EditarImovel> {
     Map<String, dynamic> dados = snapshot.data;
     _cpfUsuario = dados['cpf'];
     _telefoneUsuario = dados['telefone'];
-    _controllerLogadouro.text = widget.document['logadouro'];
-    _controllerComplemento.text = widget.document['complemento'];
-    _controllerBairro.text = widget.document['bairro'];
-    _controllerDetalhes.text = widget.document['detalhes'];
-    controllerNumero.text = widget.document['numero'];
-    _controller.text = widget.document['valor'];
-    _radioValue = widget.document['tipoImovel'];
-    controllerCep.text = widget.document['cep'];
-    _controllerSigla.text = widget.document['siglaEstado'];
-    _localidadeController.text = widget.document['cidade'];
 
-
-    setState(() {
-      _urlImagemRecuperada = widget.document["urlImagens"];
-      _url2 = widget.document['url2'];
-      _url3 = widget.document['url3'];
-      _url4 = widget.document['url4'];
-      _url5 = widget.document['url5'];
-    });
   }
   @override
   void initState() {
     super.initState();
+    _recuperarImoveis();
     _recuperarDadosUsuario();
   }
 

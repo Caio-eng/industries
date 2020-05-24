@@ -86,6 +86,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                     onPressed: () {
                       Imovel imovel = Imovel();
                       imovel.logadouro = document['logadouroImovelAlugado'];
+                      imovel.idImovel = document['idImovel'];
                       imovel.complemento = document['complementoImovelAlugado'];
                       imovel.detalhes = document['detalhesImovelAlugado'];
                       imovel.idUsuario = document['idDono'];
@@ -110,7 +111,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                       imovel.telefoneUsuario = document['telefoneDoDono'];
                       db
                           .collection("imoveis")
-                          .document()
+                          .document(document['idImovel'])
                           .setData(imovel.toMap());
 
                       db.collection("propostasDoLocatario")

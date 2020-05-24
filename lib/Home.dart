@@ -11,6 +11,7 @@ import 'package:industries/MeuImovel.dart';
 import 'package:industries/ReciboImovel.dart';
 import 'package:industries/telas/PropostasDoLocador.dart';
 import 'package:industries/telas/PropostasDoLocatario.dart';
+import 'package:industries/telas/splash.dart';
 import 'CadastroImoveis.dart';
 
 class Home extends StatefulWidget {
@@ -82,8 +83,9 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                       db
                           .collection("imoveis")
-                          .document(document.documentID)
+                          .document(document['idImovel'])
                           .delete();
+
                       Navigator.pop(context);
                     },
                   ),
@@ -103,7 +105,7 @@ class _HomeState extends State<Home> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => EditarImovel(widget.user,
+                  builder: (context) => EditarImovel(document, widget.user,
                       widget.photo, widget.emai, widget.uid)));
           break;
         case "Deletar":
@@ -133,7 +135,9 @@ class _HomeState extends State<Home> {
         ),
         leading: CircleAvatar(
           radius: 25,
-          backgroundImage: NetworkImage(document['urlImagens']),
+          backgroundImage: document['urlImagens'] != null
+            ? NetworkImage(document['urlImagens'])
+            : NetworkImage(''),
         ),
       )
           : ListTile(
@@ -246,7 +250,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text("IndustriesKC"),
+          child: Text("SIMOB"),
         ),
         actions: <Widget>[
           Row(

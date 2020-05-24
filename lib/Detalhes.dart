@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/model/PropostaDoLocador.dart';
 import 'package:industries/model/PropostaDoLocatario.dart';
+
+import 'model/Imovel.dart';
 
 
 class Detalhes extends StatefulWidget {
@@ -13,7 +16,7 @@ class Detalhes extends StatefulWidget {
   final String photo;
   final String emai;
   final String uid;
-  final DocumentSnapshot document;
+  var document;
   Detalhes(this.document, this.user, this.photo, this.emai, this.uid);
   @override
   _DetalhesState createState() => _DetalhesState();
@@ -36,8 +39,9 @@ class _DetalhesState extends State<Detalhes>  {
   String _cep = "";
   String _bairro = "";
   String _sig;
-  String _locali, _cpfUser, _telefoneUser;
+  String _locali, _cpfUser, _telefoneUser, _idAq;
   Firestore db = Firestore.instance;
+
 
 
   _mandarProposta() async {
@@ -45,7 +49,7 @@ class _DetalhesState extends State<Detalhes>  {
     PropostaDoLocatario propostaDoLocatario = PropostaDoLocatario();
     propostaDoLocatario.idLocador = _idImovel;
     propostaDoLocatario.idLocatario = widget.uid;
-    propostaDoLocatario.idImovel = widget.document.documentID;
+    propostaDoLocatario.idImovel = _idAq;
     propostaDoLocatario.numero = _nume;
     propostaDoLocatario.bairro = _bairro;
     propostaDoLocatario.cep = _cep;
@@ -73,7 +77,7 @@ class _DetalhesState extends State<Detalhes>  {
     PropostaDoLocador propostaDoLocador = PropostaDoLocador();
     propostaDoLocador.idLocador = _idImovel;
     propostaDoLocador.idLocatario = widget.uid;
-    propostaDoLocador.idImovel = widget.document.documentID;
+    propostaDoLocador.idImovel = _idAq;
     propostaDoLocador.numero = _nume;
     propostaDoLocador.bairro = _bairro;
     propostaDoLocador.cep = _cep;
@@ -97,7 +101,7 @@ class _DetalhesState extends State<Detalhes>  {
     propostaDoLocador.telefone = _telefoneUser;
     propostaDoLocador.cpf = _cpfUser;
     db.collection("propostasDoLocador").document(_idImovel).setData(propostaDoLocador.toMap());
-    db.collection('imoveis').document(widget.document.documentID).delete();
+    db.collection('imoveis').document(widget.document['idImovel']).delete();
     Navigator.pop(context);
   }
 
@@ -131,15 +135,8 @@ class _DetalhesState extends State<Detalhes>  {
     _bairro = widget.document['bairro'];
     _sig = widget.document['siglaEstado'];
     _locali = widget.document['cidade'];
-    DocumentSnapshot snapshot =
-        await db.collection("usuarios").document(widget.uid).get();
-
-    Map<String, dynamic> dados = snapshot.data;
-    print(dados['nome']);
-    _nomeUsuario = dados['nome'];
-    _cpfUser = dados['cpf'];
-    _telefoneUser = dados['telefone'];
-
+    _idAq = widget.document['idImovel'];
+    print("Mostre: " + _idAq);
     //Cartao
     DocumentSnapshot snapshot3 =
     await db.collection("cartao").document(widget.uid).get();
@@ -148,6 +145,16 @@ class _DetalhesState extends State<Detalhes>  {
       _id = dados3['idUsuario'];
       print("Aqui: " + _id);
     });
+    DocumentSnapshot snapshot =
+    await db.collection("usuarios").document(widget.uid).get();
+
+    Map<String, dynamic> dados = snapshot.data;
+    print(dados['nome']);
+    _nomeUsuario = dados['nome'];
+    _cpfUser = dados['cpf'];
+    _telefoneUser = dados['telefone'];
+
+
 
 
 
@@ -174,20 +181,20 @@ class _DetalhesState extends State<Detalhes>  {
                     child: Carousel(
                       images: [
                         _url != null
-                        ? NetworkImage(_url)
-                        : NetworkImage(''),
+                            ? NetworkImage(_url)
+                            : NetworkImage(''),
                         _url2 != null
-                        ? NetworkImage(_url2)
-                        : NetworkImage(''),
+                            ? NetworkImage(_url2)
+                            : NetworkImage(''),
                         _url3 != null
-                        ? NetworkImage(_url3)
-                        : NetworkImage(''),
+                            ? NetworkImage(_url3)
+                            : NetworkImage(''),
                         _url4 != null
-                        ? NetworkImage(_url4)
-                        : NetworkImage(''),
+                            ? NetworkImage(_url4)
+                            : NetworkImage(''),
                         _url5 != null
-                        ? NetworkImage(_url5)
-                        : NetworkImage(''),
+                            ? NetworkImage(_url5)
+                            : NetworkImage(''),
                       ],
                       dotSize: 4,
                       dotSpacing: 15,
@@ -278,7 +285,7 @@ class _DetalhesState extends State<Detalhes>  {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(32)),
                 onPressed: () {
-                  if (_id == widget.uid) {
+                  if (_id != null) {
                     _mandarProposta();
                   } else {
                     setState(() {

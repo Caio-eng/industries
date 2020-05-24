@@ -435,7 +435,7 @@ class _PropostasDoLocadorState extends State<PropostasDoLocador> {
                                               imovel.nomeDaImagem5 = propostaDoLocador.nomeDaImagem5;
                                               imovel.cpfUsuario = propostaDoLocador.cpf;
                                               imovel.telefoneUsuario = propostaDoLocador.telefone;
-                                              db.collection("imoveis").document().setData(imovel.toMap());
+                                              db.collection("imoveis").document(propostaDoLocador.idImovel).setData(imovel.toMap());
                                               db
                                                   .collection("propostasDoLocatario")
                                                   .document(propostaDoLocador.idLocatario)

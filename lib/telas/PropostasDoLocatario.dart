@@ -32,7 +32,6 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
     for (DocumentSnapshot item in querySnapshot.documents) {
       var dados = item.data;
       if (dados['idLocatario'] != widget.uid) continue;
-
       PropostaDoLocatario propostaDoLocatario = PropostaDoLocatario();
       propostaDoLocatario.idLocatario = dados['idLocatario'];
       propostaDoLocatario.idLocador = dados['idLocador'];
@@ -208,6 +207,7 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
                                               imovel.logadouro = propostaDoLocatario.logadouro;
                                               imovel.complemento = propostaDoLocatario.complemento;
                                               imovel.valor = propostaDoLocatario.valor;
+                                              imovel.idImovel = propostaDoLocatario.idImovel;
                                               imovel.urlImagens = propostaDoLocatario.urlImagens;
                                               imovel.url2 = propostaDoLocatario.urlImagens2;
                                               imovel.url3 = propostaDoLocatario.urlImagens3;
@@ -228,7 +228,7 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
                                               imovel.nomeDaImagem5 = propostaDoLocatario.nomeDaImagem5;
                                               imovel.cpfUsuario = propostaDoLocatario.cpf;
                                               imovel.telefoneUsuario = propostaDoLocatario.telefone;
-                                              db.collection("imoveis").document().setData(imovel.toMap());
+                                              db.collection("imoveis").document(propostaDoLocatario.idImovel).setData(imovel.toMap());
                                               db
                                                   .collection("propostasDoLocatario")
                                                   .document(widget.uid)

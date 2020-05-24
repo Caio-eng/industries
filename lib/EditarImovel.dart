@@ -14,7 +14,8 @@ class EditarImovel extends StatefulWidget {
   final String photo;
   final String emai;
   final String uid;
-  EditarImovel(this.user, this.photo, this.emai, this.uid);
+  var document;
+  EditarImovel(this.document, this.user, this.photo, this.emai, this.uid);
   @override
   _EditarImovelState createState() => _EditarImovelState();
 }
@@ -76,28 +77,7 @@ class _EditarImovelState extends State<EditarImovel> {
       if (dados['idUsuario'] != widget.uid) continue;
 
       setState(() {
-        _idImovel = item.documentID;
-        _idUsuario = dados['idUsuario'];
-        _controllerLogadouro.text = dados['logadouro'];
-        _controllerComplemento.text = dados['complemento'];
-        _controllerBairro.text = dados['bairro'];
-        _controllerDetalhes.text = dados['detalhes'];
-        controllerNumero.text = dados['numero'];
-        _controller.text = dados['valor'];
-        _radioValue = dados['tipoImovel'];
-        controllerCep.text = dados['cep'];
-        _controllerSigla.text = dados['siglaEstado'];
-        _localidadeController.text = dados['cidade'];
-        _urlImagemRecuperada = dados['urlImagens'];
-        _url2 = dados['url2'];
-        _url3 = dados['url3'];
-        _url4 = dados['url4'];
-        _url5 = dados['url5'];
-        _nomeDaImagem = dados['nomeDaImagem'];
-        _nomeDaImagem2 = dados['nomeDaImagem2'];
-        _nomeDaImagem3 = dados['nomeDaImagem3'];
-        _nomeDaImagem4 = dados['nomeDaImagem3'];
-        _nomeDaImagem5 = dados['nomeDaImagem5'];
+
       });
     }
     return listaImoveis;
@@ -552,8 +532,34 @@ class _EditarImovelState extends State<EditarImovel> {
     DocumentSnapshot snapshot =
     await db.collection("usuarios").document(widget.uid).get();
     Map<String, dynamic> dados = snapshot.data;
-    _cpfUsuario = dados['cpf'];
-    _telefoneUsuario = dados['telefone'];
+    setState(() {
+      _cpfUsuario = dados['cpf'];
+      _telefoneUsuario = dados['telefone'];
+
+      _idImovel = widget.document['idImovel'];
+      _idUsuario = widget.document['idUsuario'];
+      _controllerLogadouro.text = widget.document['logadouro'];
+      _controllerComplemento.text = widget.document['complemento'];
+      _controllerBairro.text = widget.document['bairro'];
+      _controllerDetalhes.text = widget.document['detalhes'];
+      controllerNumero.text = widget.document['numero'];
+      _controller.text = widget.document['valor'];
+      _radioValue = widget.document['tipoImovel'];
+      controllerCep.text = widget.document['cep'];
+      _controllerSigla.text = widget.document['siglaEstado'];
+      _localidadeController.text = widget.document['cidade'];
+      _urlImagemRecuperada = widget.document['urlImagens'];
+      _url2 = widget.document['url2'];
+      _url3 = widget.document['url3'];
+      _url4 = widget.document['url4'];
+      _url5 = widget.document['url5'];
+      _nomeDaImagem = widget.document['nomeDaImagem'];
+      _nomeDaImagem2 = widget.document['nomeDaImagem2'];
+      _nomeDaImagem3 = widget.document['nomeDaImagem3'];
+      _nomeDaImagem4 = widget.document['nomeDaImagem3'];
+      _nomeDaImagem5 = widget.document['nomeDaImagem5'];
+    });
+
 
   }
   @override
@@ -615,28 +621,6 @@ class _EditarImovelState extends State<EditarImovel> {
                           ],
                         ),
                       ),
-
-                      /*_imagem == null
-                          ? Container()
-                          :Image.file(_imagem),*/
-                      /*CarouselSlider(
-                        height: 150.0,
-                        items: listaTela.map((i) {
-                          return Builder(
-                            builder: (BuildContext context) {
-                              return Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                  decoration: BoxDecoration(
-                                      color: Colors.blue
-                                  ),
-                                  child: Image.file(_imagem),
-                                  //child: _imagem,
-                              );
-                            },
-                          );
-                        }).toList(),
-                      ),*/
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 3),

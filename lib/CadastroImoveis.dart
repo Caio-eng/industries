@@ -52,7 +52,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   File _imagem;
   int _id;
   String _nome, _idCar;
-  String _sigla;
+  String _sigla, _idImovel;
   String _telefoneUsuario;
   String _cpfUsuario;
 
@@ -102,9 +102,14 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
             if (tipoImovel.isNotEmpty) {
               if (numero.isNotEmpty) {
                   if (cidade.isNotEmpty ) {
+                    String _id = DateTime.now().millisecondsSinceEpoch.toString();
+                    setState(() {
+                      _idImovel = _id;
+                    });
                     Imovel imovel = Imovel();
                     imovel.logadouro = logadouro;
                     imovel.bairro = bairro;
+                    imovel.idImovel = _idImovel;
                     imovel.cidade = cidade;
                     imovel.complemento = complemento;
                     imovel.tipoImovel = tipoImovel;
@@ -167,9 +172,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   }
 
   _cadastrarImoveis(Imovel imovel) {
+
     Firestore db = Firestore.instance;
     db.collection("imoveis")
-        .document()
+        .document(_idImovel)
         .setData(imovel.toMap());
     Navigator.pop(context);
   }

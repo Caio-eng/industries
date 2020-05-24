@@ -10,7 +10,7 @@ class Imovel {
   String _estado;
   String _cep;
   String _bairro;
-  String _detalhes;
+  String _detalhes, _idImovel;
   String _idUsuario;
   String _urlImagens;
   String _url2;
@@ -34,6 +34,7 @@ class Imovel {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
+      "idImovel" : this.idImovel,
       "cep" : this.cep,
       "url2" : this.url2,
       "url3" : this.url3,
@@ -63,6 +64,12 @@ class Imovel {
 
   }
 
+
+  get idImovel => _idImovel;
+
+  set idImovel(value) {
+    _idImovel = value;
+  }
 
   String get nomeDaImagem2 => _nomeDaImagem2;
 

@@ -78,7 +78,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
         case 'Casa':
           choice = value;
           break;
-        case 'KitNet':
+        case 'Quitinete':
           choice = value;
           break;
       }
@@ -738,7 +738,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        hintText: 'Digite seu CEP',
+                        hintText: 'Digite o CEP',
                         labelText: 'CEP',
                         filled: true,
                         enabled: _enableField,
@@ -756,7 +756,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       ),
                     ),
                   ),
-                  Padding(
+                  _result != null
+                  ? Padding(
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
                       controller: _controllerSigla,
@@ -772,8 +773,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                             borderRadius: BorderRadius.circular(32)),
                       ),
                     ),
-                  ),
-                  Padding(
+                  )
+                  : Container(),
+                  _result != null
+                  ? Padding(
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
                       controller: _localidadeController,
@@ -789,7 +792,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                             borderRadius: BorderRadius.circular(32)),
                       ),
                     ),
-                  ),
+                  )
+                  : Container(),
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
@@ -886,7 +890,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                 'Apartamento',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: 14,
                                 ),
                               ),
                               Radio(
@@ -898,19 +902,19 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                 'Casa',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: 14,
                                 ),
                               ),
                               Radio(
-                                value: 'KitNet',
+                                value: 'Quitinete',
                                 groupValue: _radioValue,
                                 onChanged: radioButtonChanges,
                               ),
                               Text(
-                                'KitNet',
+                                'Quitinete',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: 14,
                                 ),
                               ),
                             ],

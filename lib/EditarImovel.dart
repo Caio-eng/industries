@@ -60,7 +60,7 @@ class _EditarImovelState extends State<EditarImovel> {
         case 'Casa':
           choice = value;
           break;
-        case 'KitNet':
+        case 'Quitinete':
           choice = value;
           break;
       }
@@ -803,7 +803,8 @@ class _EditarImovelState extends State<EditarImovel> {
                     ),
                   ),
                 ),
-                Padding(
+                _controllerSigla != null
+                ? Padding(
                   padding: EdgeInsets.only(bottom: 8),
                   child: TextField(
                     controller: _controllerSigla,
@@ -819,8 +820,10 @@ class _EditarImovelState extends State<EditarImovel> {
                           borderRadius: BorderRadius.circular(32)),
                     ),
                   ),
-                ),
-                Padding(
+                )
+                : Container(),
+                _localidadeController != null
+                ? Padding(
                   padding: EdgeInsets.only(bottom: 8),
                   child: TextField(
                     controller: _localidadeController,
@@ -836,7 +839,8 @@ class _EditarImovelState extends State<EditarImovel> {
                           borderRadius: BorderRadius.circular(32)),
                     ),
                   ),
-                ),
+                )
+                : Container(),
                 Padding(
                   padding: EdgeInsets.only(bottom: 8),
                   child: TextField(
@@ -935,7 +939,7 @@ class _EditarImovelState extends State<EditarImovel> {
                               'Apartamento',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: 14,
                               ),
                             ),
                             Radio(
@@ -947,19 +951,19 @@ class _EditarImovelState extends State<EditarImovel> {
                               'Casa',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: 14,
                               ),
                             ),
                             Radio(
-                              value: 'KitNet',
+                              value: 'Quitinete',
                               groupValue: _radioValue,
                               onChanged: radioButtonChanges,
                             ),
                             Text(
-                              'KitNet',
+                              'Quitinete',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: 14,
                               ),
                             ),
                           ],

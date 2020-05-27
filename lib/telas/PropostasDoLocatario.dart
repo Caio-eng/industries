@@ -84,6 +84,7 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
         child: Column(
           children: <Widget>[
             Divider(),
+
             Expanded(
               child: FutureBuilder<List<PropostaDoLocatario>>(
                 future: _recuperarPropostas(),
@@ -91,12 +92,14 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
                   switch (snapshot.connectionState) {
                     case ConnectionState.none:
                     case ConnectionState.waiting:
-                      return Center(
-                        child: Column(
-                          children: <Widget>[
-                            Text("Carregando proposta"),
-                            CircularProgressIndicator()
-                          ],
+                      return Card(
+                        child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              Text("Carregando proposta"),
+                              CircularProgressIndicator()
+                            ],
+                          ),
                         ),
                       );
                       break;
@@ -385,15 +388,6 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
                                                    Navigator.pop(context);
                                                  },
                                                ),
-//                          document['url'] != null && document['url2'] == null
-//                          ? FlatButton(
-//                            child: Text('Enviar Contrato Assinado'),
-//                            onPressed: () {
-//
-//                              _atualizarUrlImagemFirestore(_urlImagemRecuperada);
-//                            },
-//                          )
-//                          : Container(),
                                              ],
                                            ),
                                          ],

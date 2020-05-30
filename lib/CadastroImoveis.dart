@@ -1,9 +1,10 @@
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:brasil_fields/formatter/real_input_formatter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:industries/model/Estado.dart' as prefix0;
 import 'package:industries/model/Imovel.dart';
@@ -11,9 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:industries/service/via_cep_service.dart';
-
-
-
+import 'package:validadores/Validador.dart';
 
 class CadastroImoveis extends StatefulWidget {
   final String user;
@@ -33,7 +32,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   TextEditingController _controllerComplemento = TextEditingController();
   var _localidadeController = TextEditingController();
   var _controllerSigla = TextEditingController();
-
 
   TextEditingController _controllerDetalhes = TextEditingController();
   var controllerTelefone = new MaskedTextController(mask: '(00) 00000 - 0000');
@@ -60,10 +58,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
   String _mensagemErro = "";
 
-
   Firestore db = Firestore.instance;
-
-  CarouselSlider instance;
 
   String _radioValue;
   String choice;
@@ -82,6 +77,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
           choice = value;
           break;
       }
+
     });
   }
 
@@ -95,88 +91,62 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     String bairro = _controllerBairro.text;
     String numero = controllerNumero.text;
     String cidade = _localidadeController.text;
-    if (logadouro.isNotEmpty && logadouro.length >= 4) {
-      if (bairro.isNotEmpty && bairro.length >= 4) {
-        if (valor.isNotEmpty && valor.length >= 9) {
-          if (sigl.isNotEmpty && sigl.length == 2) {
-            if (tipoImovel.isNotEmpty) {
-              if (numero.isNotEmpty) {
-                  if (cidade.isNotEmpty ) {
-                    String _id = DateTime.now().millisecondsSinceEpoch.toString();
-                    setState(() {
-                      _idImovel = _id;
-                    });
-                    Imovel imovel = Imovel();
-                    imovel.logadouro = logadouro;
-                    imovel.bairro = bairro;
-                    imovel.idImovel = _idImovel;
-                    imovel.cidade = cidade;
-                    imovel.complemento = complemento;
-                    imovel.tipoImovel = tipoImovel;
-                    imovel.valor = valor;
-                    imovel.detalhes = detalhes;
-                    imovel.urlImagens = _urlImagemRecuperada;
-                    imovel.url2 = _url2;
-                    imovel.url3 = _url3;
-                    imovel.url4 = _url4;
-                    imovel.url5 = _url5;
-                    imovel.telefoneUsuario = _telefoneUsuario;
-                    imovel.cpfUsuario = _cpfUsuario;
-                    imovel.siglaEstado = sigl;
-                    imovel.numero = numero;
-                    imovel.cep = _cep;
-                    imovel.idUsuario = widget.uid;
-                    imovel.nomeDaImagem = _nomeDaFoto;
-                    imovel.nomeDaImagem2 = _nomeDaFoto2;
-                    imovel.nomeDaImagem3 = _nomeDaFoto3;
-                    imovel.nomeDaImagem4 = _nomeDaFoto4;
-                    imovel.nomeDaImagem5 = _nomeDaFoto5;
-                    _cadastrarImoveis(imovel);
-
-
-                  } else {
-                    setState(() {
-                      _mensagemErro = "O Campo Cidade é obrigátorio!";
-                    });
-                  }
-              } else {
-                setState(() {
-                  _mensagemErro = "Digite um número";
-                });
-              }
-            } else {
-              setState(() {
-                _mensagemErro = 'Selecione uma opção';
-              });
-            }
-          } else {
-            setState(() {
-              _mensagemErro = "UF só possui 2 letras";
-            });
-          }
-        } else {
-          setState(() {
-            _mensagemErro = "Digite um valor maior ou igual que R\$ 100";
-          });
-        }
+    if (_urlImagemRecuperada != null && _url2 != null && _url3 != null && _url4 != null && _url5 !=null) {
+      if(valor.isNotEmpty && valor.length >= 9) {
+       if(tipoImovel.isNotEmpty) {
+         String _id = DateTime
+             .now()
+             .millisecondsSinceEpoch
+             .toString();
+         setState(() {
+           _idImovel = _id;
+         });
+         Imovel imovel = Imovel();
+         imovel.logadouro = logadouro;
+         imovel.bairro = bairro;
+         imovel.idImovel = _idImovel;
+         imovel.cidade = cidade;
+         imovel.complemento = complemento;
+         imovel.tipoImovel = tipoImovel;
+         imovel.valor = valor;
+         imovel.detalhes = detalhes;
+         imovel.urlImagens = _urlImagemRecuperada;
+         imovel.url2 = _url2;
+         imovel.url3 = _url3;
+         imovel.url4 = _url4;
+         imovel.url5 = _url5;
+         imovel.telefoneUsuario = _telefoneUsuario;
+         imovel.cpfUsuario = _cpfUsuario;
+         imovel.siglaEstado = sigl;
+         imovel.numero = numero;
+         imovel.cep = _cep;
+         imovel.idUsuario = widget.uid;
+         imovel.nomeDaImagem = _nomeDaFoto;
+         imovel.nomeDaImagem2 = _nomeDaFoto2;
+         imovel.nomeDaImagem3 = _nomeDaFoto3;
+         imovel.nomeDaImagem4 = _nomeDaFoto4;
+         imovel.nomeDaImagem5 = _nomeDaFoto5;
+         _cadastrarImoveis(imovel);
+       }else{
+         setState(() {
+           _mensagemErro = "Selecione o tipo de imóvel";
+         });
+       }
       } else {
         setState(() {
-          _mensagemErro = 'Bairro tem que ser maior que 4 letras';
+          _mensagemErro = "Digite um valor maior ou igual que R\$ 100";
         });
       }
-    } else{
+    } else {
       setState(() {
-        _mensagemErro = "Logradouro tem que ser maior que 4  letras";
+        _mensagemErro = "Selecione todas imagens";
       });
     }
   }
 
   _cadastrarImoveis(Imovel imovel) {
-
     Firestore db = Firestore.instance;
-    db.collection("imoveis")
-        .document(_idImovel)
-        .setData(imovel.toMap());
+    db.collection("imoveis").document(_idImovel).setData(imovel.toMap());
     Navigator.pop(context);
   }
 
@@ -247,11 +217,11 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     switch (origemImagem) {
       case "camera":
         imagemSelecionada =
-        await ImagePicker.pickImage(source: ImageSource.camera);
+            await ImagePicker.pickImage(source: ImageSource.camera);
         break;
       case "galeria":
         imagemSelecionada =
-        await ImagePicker.pickImage(source: ImageSource.gallery);
+            await ImagePicker.pickImage(source: ImageSource.gallery);
         break;
     }
 
@@ -309,11 +279,11 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     switch (origemImagem) {
       case "camera":
         imagemSelecionada =
-        await ImagePicker.pickImage(source: ImageSource.camera);
+            await ImagePicker.pickImage(source: ImageSource.camera);
         break;
       case "galeria":
         imagemSelecionada =
-        await ImagePicker.pickImage(source: ImageSource.gallery);
+            await ImagePicker.pickImage(source: ImageSource.gallery);
         break;
     }
 
@@ -371,11 +341,11 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     switch (origemImagem) {
       case "camera":
         imagemSelecionada =
-        await ImagePicker.pickImage(source: ImageSource.camera);
+            await ImagePicker.pickImage(source: ImageSource.camera);
         break;
       case "galeria":
         imagemSelecionada =
-        await ImagePicker.pickImage(source: ImageSource.gallery);
+            await ImagePicker.pickImage(source: ImageSource.gallery);
         break;
     }
 
@@ -433,11 +403,11 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     switch (origemImagem) {
       case "camera":
         imagemSelecionada =
-        await ImagePicker.pickImage(source: ImageSource.camera);
+            await ImagePicker.pickImage(source: ImageSource.camera);
         break;
       case "galeria":
         imagemSelecionada =
-        await ImagePicker.pickImage(source: ImageSource.gallery);
+            await ImagePicker.pickImage(source: ImageSource.gallery);
         break;
     }
 
@@ -488,6 +458,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
       _url5 = url;
     });
   }
+
   _atualizarUrlImagemFirestore(String url) {
     Map<String, dynamic> dadosAtualizar = {"urlImagens": url};
     Firestore db = Firestore.instance;
@@ -497,9 +468,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   _recuperarDadosUsuario() async {
     Firestore db = Firestore.instance;
 
-
     DocumentSnapshot snapshot =
-    await db.collection("usuarios").document(widget.uid).get();
+        await db.collection("usuarios").document(widget.uid).get();
     Map<String, dynamic> dados = snapshot.data;
     _cpfUsuario = dados['cpf'];
     _telefoneUsuario = dados['telefone'];
@@ -511,7 +481,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     Firestore db2 = Firestore.instance;
 
     DocumentSnapshot snapshot2 =
-    await db2.collection("cartao").document(widget.uid).get();
+        await db2.collection("cartao").document(widget.uid).get();
     Map<String, dynamic> dados2 = snapshot2.data;
 
     setState(() {
@@ -566,13 +536,13 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       Padding(
                         padding: const EdgeInsets.only(right: 5, left: 5),
                         child: CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Colors.grey,
-                            backgroundImage: _urlImagemRecuperada != null
-                                ? NetworkImage(
-                                    _urlImagemRecuperada,
-                                  )
-                                : null,
+                          radius: 30,
+                          backgroundColor: Colors.grey,
+                          backgroundImage: _urlImagemRecuperada != null
+                              ? NetworkImage(
+                                  _urlImagemRecuperada,
+                                )
+                              : null,
                           child: Row(
                             children: <Widget>[
                               Padding(
@@ -581,7 +551,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                   onTap: () {
                                     _recuperarImagem("camera");
                                   },
-                                  child: Icon(Icons.camera_alt, color: Colors.blueAccent, ),
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.blueAccent,
+                                  ),
                                 ),
                               ),
                               Divider(),
@@ -589,7 +562,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                 onTap: () {
                                   _recuperarImagem("galeria");
                                 },
-                                child: Icon(Icons.photo, color: Colors.blueAccent,),
+                                child: Icon(
+                                  Icons.photo,
+                                  color: Colors.blueAccent,
+                                ),
                               ),
                             ],
                           ),
@@ -602,8 +578,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                           backgroundColor: Colors.grey,
                           backgroundImage: _url2 != null
                               ? NetworkImage(
-                            _url2,
-                          )
+                                  _url2,
+                                )
                               : null,
                           child: Row(
                             children: <Widget>[
@@ -613,7 +589,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                   onTap: () {
                                     _recuperarImagem2("camera");
                                   },
-                                  child: Icon(Icons.camera_alt, color: Colors.blueAccent, ),
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.blueAccent,
+                                  ),
                                 ),
                               ),
                               Divider(),
@@ -621,7 +600,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                 onTap: () {
                                   _recuperarImagem2("galeria");
                                 },
-                                child: Icon(Icons.photo, color: Colors.blueAccent,),
+                                child: Icon(
+                                  Icons.photo,
+                                  color: Colors.blueAccent,
+                                ),
                               ),
                             ],
                           ),
@@ -634,8 +616,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                           backgroundColor: Colors.grey,
                           backgroundImage: _url3 != null
                               ? NetworkImage(
-                            _url3,
-                          )
+                                  _url3,
+                                )
                               : null,
                           child: Row(
                             children: <Widget>[
@@ -645,7 +627,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                   onTap: () {
                                     _recuperarImagem3("camera");
                                   },
-                                  child: Icon(Icons.camera_alt, color: Colors.blueAccent, ),
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.blueAccent,
+                                  ),
                                 ),
                               ),
                               Divider(),
@@ -653,7 +638,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                 onTap: () {
                                   _recuperarImagem3("galeria");
                                 },
-                                child: Icon(Icons.photo, color: Colors.blueAccent,),
+                                child: Icon(
+                                  Icons.photo,
+                                  color: Colors.blueAccent,
+                                ),
                               ),
                             ],
                           ),
@@ -666,8 +654,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                           backgroundColor: Colors.grey,
                           backgroundImage: _url4 != null
                               ? NetworkImage(
-                            _url4,
-                          )
+                                  _url4,
+                                )
                               : null,
                           child: Row(
                             children: <Widget>[
@@ -677,7 +665,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                   onTap: () {
                                     _recuperarImagem4("camera");
                                   },
-                                  child: Icon(Icons.camera_alt, color: Colors.blueAccent, ),
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.blueAccent,
+                                  ),
                                 ),
                               ),
                               Divider(),
@@ -685,7 +676,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                 onTap: () {
                                   _recuperarImagem4("galeria");
                                 },
-                                child: Icon(Icons.photo, color: Colors.blueAccent,),
+                                child: Icon(
+                                  Icons.photo,
+                                  color: Colors.blueAccent,
+                                ),
                               ),
                             ],
                           ),
@@ -698,8 +692,8 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                           backgroundColor: Colors.grey,
                           backgroundImage: _url5 != null
                               ? NetworkImage(
-                            _url5,
-                          )
+                                  _url5,
+                                )
                               : null,
                           child: Row(
                             children: <Widget>[
@@ -709,7 +703,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                   onTap: () {
                                     _recuperarImagem5("camera");
                                   },
-                                  child: Icon(Icons.camera_alt, color: Colors.blueAccent, ),
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.blueAccent,
+                                  ),
                                 ),
                               ),
                               Divider(),
@@ -717,7 +714,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                 onTap: () {
                                   _recuperarImagem5("galeria");
                                 },
-                                child: Icon(Icons.photo, color: Colors.blueAccent,),
+                                child: Icon(
+                                  Icons.photo,
+                                  color: Colors.blueAccent,
+                                ),
                               ),
                             ],
                           ),
@@ -727,10 +727,14 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 8, top: 8),
-                    child: TextField(
+                    child: TextFormField(
                       controller: controllerCep,
-                      onEditingComplete: () {
-                        _searchCep();
+                      validator: (valor) {
+                        return Validador()
+                            .add(Validar.OBRIGATORIO, msg: "Campo obrigatório")
+                            .maxLength(9, msg: "CEP, possui 8 digitos")
+                            .maxLength(9, msg: "CEP, possui 8 digitos")
+                            .valido(valor);
                       },
                       //autofocus: true,
                       keyboardType: TextInputType.number,
@@ -749,7 +753,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                           autofocus: true,
                           icon: Icon(Icons.search),
                         ),
-
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(32)),
@@ -757,48 +760,119 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     ),
                   ),
                   _result != null
-                  ? Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: TextField(
-                      controller: _controllerSigla,
-                      //autofocus: true,
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(fontSize: 20),
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        labelText: 'Estado',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(32)),
-                      ),
-                    ),
-                  )
-                  : Container(),
+                      ? Padding(
+                          padding: EdgeInsets.only(bottom: 8),
+                          child: TextFormField(
+                            validator: (valor) {
+                              return Validador()
+                                  .add(Validar.OBRIGATORIO,
+                                      msg: "Campo obrogatório")
+                                  .valido(valor);
+                            },
+                            controller: _controllerSigla,
+                            //autofocus: true,
+                            keyboardType: TextInputType.text,
+                            style: TextStyle(fontSize: 20),
+                            decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(32, 16, 32, 16),
+                              hintText: "Necessita digitar o CEP",
+                              labelText: 'Estado',
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(32)),
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(bottom: 8),
+                          child: TextFormField(
+                            validator: (valor) {
+                              return Validador()
+                                  .add(Validar.OBRIGATORIO,
+                                      msg: "Campo obrogatório")
+                                  .valido(valor);
+                            },
+                            controller: _controllerSigla,
+                            //autofocus: true,
+                            keyboardType: TextInputType.text,
+                            style: TextStyle(fontSize: 20),
+                            enabled: false,
+                            decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(32, 16, 32, 16),
+                              hintText: "Necessita digitar o CEP",
+                              labelText: 'Campo Estado é obrigatorio',
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(32)),
+                            ),
+                          ),
+                        ),
                   _result != null
-                  ? Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: TextField(
-                      controller: _localidadeController,
-                      //autofocus: true,
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(fontSize: 20),
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                        labelText: 'Cidade',
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(32)),
-                      ),
-                    ),
-                  )
-                  : Container(),
+                      ? Padding(
+                          padding: EdgeInsets.only(bottom: 8),
+                          child: TextFormField(
+                            controller: _localidadeController,
+                            validator: (valor) {
+                              return Validador()
+                                  .add(Validar.OBRIGATORIO,
+                                      msg: "Campo obrogatório")
+                                  .valido(valor);
+                            },
+                            //autofocus: true,
+                            keyboardType: TextInputType.text,
+                            style: TextStyle(fontSize: 20),
+                            decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(32, 16, 32, 16),
+                              hintText: "Necessita digitar o CEP",
+                              labelText: 'Cidade',
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(32)),
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(bottom: 8),
+                          child: TextFormField(
+                            controller: _localidadeController,
+                            validator: (valor) {
+                              return Validador()
+                                  .add(Validar.OBRIGATORIO,
+                                      msg: "Campo obrogatório")
+                                  .valido(valor);
+                            },
+                            //autofocus: true,
+                            keyboardType: TextInputType.text,
+                            style: TextStyle(fontSize: 20),
+                            enabled: false,
+                            decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(32, 16, 32, 16),
+                              hintText: "Necessita digitar o CEP",
+                              labelText: 'Campo Cidade é obrigatorio',
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(32)),
+                            ),
+                          ),
+                        ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
-                    child: TextField(
+                    child: TextFormField(
                       controller: _controllerLogadouro,
                       //autofocus: true,
+                      validator: (valor) {
+                        return Validador()
+                            .add(Validar.OBRIGATORIO, msg: "Campo obrogatório")
+                            .valido(valor);
+                      },
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
@@ -814,9 +888,14 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
-                    child: TextField(
+                    child: TextFormField(
                       controller: _controllerBairro,
                       //autofocus: true,
+                      validator: (valor) {
+                        return Validador()
+                            .add(Validar.OBRIGATORIO, msg: "Campo obrogatório")
+                            .valido(valor);
+                      },
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
@@ -832,8 +911,13 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
-                    child: TextField(
+                    child: TextFormField(
                       controller: controllerNumero,
+                      validator: (valor) {
+                        return Validador()
+                            .add(Validar.OBRIGATORIO, msg: "Campo obrogatório")
+                            .valido(valor);
+                      },
                       keyboardType: TextInputType.number,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
@@ -843,21 +927,25 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(32)
-                        ),
+                            borderRadius: BorderRadius.circular(32)),
                       ),
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
-                    child: TextField(
+                    child: TextFormField(
                       controller: _controllerComplemento,
+                      validator: (valor) {
+                        return Validador()
+                            .add(Validar.OBRIGATORIO, msg: "Campo obrogatório")
+                            .valido(valor);
+                      },
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
                           hintText: "Digite um ponto de Referencia",
-                          labelText: "Complemento (opcional)",
+                          labelText: "Complemento",
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
@@ -929,6 +1017,10 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       controller: controller,
                       keyboardType: TextInputType.number,
                       style: TextStyle(fontSize: 20),
+                      inputFormatters: [
+                        WhitelistingTextInputFormatter.digitsOnly,
+                        RealInputFormatter(centavos: true)
+                      ],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
                           labelText: "Valor do aluguel",
@@ -940,9 +1032,16 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 8),
-                    child: TextField(
+                    child: TextFormField(
                       controller: _controllerDetalhes,
                       keyboardType: TextInputType.text,
+                      maxLines: null,
+                      validator: (valor) {
+                        return Validador()
+                            .add(Validar.OBRIGATORIO, msg: "Campo obrogatório")
+                            .maxLength(200, msg: "Máximo de 200 caracteres")
+                            .valido(valor);
+                      },
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
@@ -966,13 +1065,16 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(32)),
                       onPressed: () {
-                        if (_idCar == null ) {
+                        if (_idCar == null) {
                           setState(() {
-                            _mensagemErro = 'Cadastre o seu Cartão para poder usufluir do aplicativo!';
+                            _mensagemErro =
+                                'Cadastre o seu Cartão para poder usufluir do aplicativo!';
                           });
-                        } else if (_idCar == widget.uid) {
-                          print("entrou aqui");
-                          _validarCampos();
+                        } else if (_idCar == widget.uid ) {
+                          if (_formKey.currentState.validate()) {
+                            print("entrou aqui");
+                            _validarCampos();
+                          }
                         }
                       },
                     ),
@@ -1009,7 +1111,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
     final cep = controllerCep.text;
 
-
     final resultCep = await ViaCepService.fetchCep(cep: cep);
     controllerCep.text = resultCep.cep;
     _localidadeController.text = resultCep.localidade;
@@ -1017,7 +1118,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     _controllerLogadouro.text = resultCep.logradouro;
     _controllerBairro.text = resultCep.bairro;
     print(resultCep.localidade);
-    print(resultCep.uf);// Exibindo somente a localidade no terminal
+    print(resultCep.uf); // Exibindo somente a localidade no terminal
 
     setState(() {
       _result = resultCep.toJson();

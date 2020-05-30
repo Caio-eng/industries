@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/MeuCartao.dart';
@@ -46,6 +47,7 @@ class _HomeState extends State<Home> {
   var _pes;
   String filter;
   var profile;
+
   var imoveis;
   var imoveisList;
 
@@ -114,55 +116,160 @@ class _HomeState extends State<Home> {
           break;
       }
     }
-
-
-
-    return Card(
-      child: document['idUsuario'] != _idUsuarioLogado
-          ? ListTile(
+    if (document['idUsuario'] != _idUsuarioLogado) {
+      return GestureDetector(
         onTap: () => Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => Detalhes(document, widget.user,
                     widget.photo, widget.emai, widget.uid))),
-        title: Text(
-          document['logadouro'] + '\n' + document['bairro'],
-          textAlign: TextAlign.center,
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(1),
+            child: Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Image.network(document['urlImagens'], fit: BoxFit.cover,),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(document['logadouro'], style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(document['valor']),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-        subtitle: Text(
-          'Valor: ${document['valor']}',
-          textAlign: TextAlign.center,
+      );
+    } else {
+      return GestureDetector(
+        onTap: (){},
+        child:  Card(
+          child: Padding(
+            padding: EdgeInsets.all(1),
+            child: Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Image.network(
+                    document['urlImagens'],
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          document['logadouro'],
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(document['valor']),
+
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      PopupMenuButton<String>(
+                        onSelected: _escolhaMenuItem,
+                        itemBuilder: (context) {
+                          return itensMenu.map((String item) {
+                            return PopupMenuItem<String>(
+                              value: item,
+                              child: Text(item),
+                           );
+                         }).toList();
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-        leading: CircleAvatar(
-          radius: 25,
-          backgroundImage: document['urlImagens'] != null
-            ? NetworkImage(document['urlImagens'])
-            : NetworkImage(''),
-        ),
-      )
-          : ListTile(
-        title: Text(
-          document['logadouro'] + '\n' + document['bairro'],
-          textAlign: TextAlign.center,
-        ),
-        subtitle: Text(
-          'Valor: ${document['valor']}' ,
-          textAlign: TextAlign.center,
-        ),
-        leading: Icon(Icons.home),
-        trailing: PopupMenuButton<String>(
-          onSelected: _escolhaMenuItem,
-          itemBuilder: (context) {
-            return itensMenu.map((String item) {
-              return PopupMenuItem<String>(
-                value: item,
-                child: Text(item),
-              );
-            }).toList();
-          },
-        ),
-      ),
-    );
+      );
+    }
+
+
+//    return Card(
+//      child: document['idUsuario'] != _idUsuarioLogado
+//          ? ListTile(
+//        onTap: () => Navigator.push(
+//            context,
+//            MaterialPageRoute(
+//                builder: (context) => Detalhes(document, widget.user,
+//                    widget.photo, widget.emai, widget.uid))),
+//        title: Text(
+//          document['logadouro'] + '\n' + document['bairro'],
+//          textAlign: TextAlign.center,
+//        ),
+//        subtitle: Text(
+//          'Valor: ${document['valor']}',
+//          textAlign: TextAlign.center,
+//        ),
+//        leading: CircleAvatar(
+//          radius: 25,
+//          backgroundImage: document['urlImagens'] != null
+//            ? NetworkImage(document['urlImagens'])
+//            : NetworkImage(''),
+//        ),
+//      )
+//          : ListTile(
+//        title: Text(
+//          document['logadouro'] + '\n' + document['bairro'],
+//          textAlign: TextAlign.center,
+//        ),
+//        subtitle: Text(
+//          'Valor: ${document['valor']}' ,
+//          textAlign: TextAlign.center,
+//        ),
+//        leading: Icon(Icons.home),
+//        trailing: PopupMenuButton<String>(
+//          onSelected: _escolhaMenuItem,
+//          itemBuilder: (context) {
+//            return itensMenu.map((String item) {
+//              return PopupMenuItem<String>(
+//                value: item,
+//                child: Text(item),
+//              );
+//            }).toList();
+//          },
+//        ),
+//      ),
+//    );
   }
 
   _pesquisar() async {
@@ -186,8 +293,10 @@ class _HomeState extends State<Home> {
     }
     return _pes;
   }
-
+  FirebaseAuth _auth = FirebaseAuth.instance;
   _recuperarDados() async {
+    FirebaseUser usuarioLogado = await _auth.currentUser();
+    print("id: " + usuarioLogado.uid);
     _idUsuarioLogado = widget.uid;
 
     Firestore db = Firestore.instance;

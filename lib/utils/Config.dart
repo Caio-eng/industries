@@ -65,4 +65,25 @@ class Config {
 
   }
 
+  static List<DropdownMenuItem<String>> getMeusImoveis() {
+
+    List<DropdownMenuItem<String>> itensDropMeus = [];
+
+    itensDropMeus.add(
+        DropdownMenuItem(child: Text(
+          'Selecione', style: TextStyle(
+          color: Colors.blue,
+        ),
+        ), value: null,
+        ));
+
+    itensDropMeus.add(DropdownMenuItem(
+      child: Text('Meus Imóveis'),
+      value: 'Meus Imóveis',
+    ));
+
+    return itensDropMeus;
+
+  }
+
 }

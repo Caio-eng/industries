@@ -146,8 +146,19 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
 
   _cadastrarImoveis(Imovel imovel) {
     Firestore db = Firestore.instance;
-    db.collection("imoveis").document(_idImovel).setData(imovel.toMap());
-    Navigator.pop(context);
+    db.collection("imoveis").document(_idImovel)
+        .setData(imovel.toMap()).then((_){
+          db.collection("meus_imoveis")
+              .document(widget.uid)
+              .collection("imoveis")
+              .document(_idImovel)
+              .setData(imovel.toMap());
+
+          Navigator.pop(context);
+
+    });
+
+
   }
 
   Future _recuperarImagem(String origemImagem) async {

@@ -17,6 +17,7 @@ import 'package:industries/telas/PropostasDoLocatario.dart';
 import 'package:industries/telas/splash.dart';
 import 'package:industries/utils/Config.dart';
 import 'CadastroImoveis.dart';
+import 'ImoveisAnunciado.dart';
 
 class Home extends StatefulWidget {
   final Function signOut;
@@ -49,10 +50,14 @@ class _HomeState extends State<Home> {
   String _cpf;
   var _pes;
   String filter;
+
   var profile;
   List<String> itensMenu = [];
   List<DropdownMenuItem<String>> _listaItensDropTipos;
   List<DropdownMenuItem<String>> _listaItensDropEstados;
+  List<DropdownMenuItem<String>> _listaMeusImoveis;
+  List<String> escolha = ['Perfil', 'Meus Imóveis'];
+
   var imoveis;
   var imoveisList;
 
@@ -61,24 +66,26 @@ class _HomeState extends State<Home> {
   String _itemSelecionadoEstado;
   String _itemLogradouro;
   String _itemSelecionadoTipos;
+  String _itemSelecionadoMeus;
 
 
   Widget _buildList(BuildContext context, var document) {
-    _deletarImovel() async {
+    _informacao() async {
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Deletar Imóvel',
+              'Informação',
               textAlign: TextAlign.center,
             ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
                   Text(
-                      'Você deseja deletar este imóvel se sim, você clicara em Excluir se não clicara em cancelar!'),
+                      'Este é seu imóvel, vá em meus imoveis para ter acesso!',
+                    textAlign: TextAlign.center,),
                 ],
               ),
             ),
@@ -86,19 +93,8 @@ class _HomeState extends State<Home> {
               Row(
                 children: <Widget>[
                   FlatButton(
-                    child: Text('Cancelar'),
+                    child: Text('Voltar'),
                     onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  FlatButton(
-                    child: Text('Excluir'),
-                    onPressed: () {
-                      db
-                          .collection("imoveis")
-                          .document(document['idImovel'])
-                          .delete();
-
                       Navigator.pop(context);
                     },
                   ),
@@ -110,19 +106,6 @@ class _HomeState extends State<Home> {
       );
     }
 
-    List<String> itensMenu = ["Editar", "Deletar"];
-    _escolhaMenuItem(String itemEscolhido) {
-      switch (itemEscolhido) {
-        case "Editar":
-          print("Editar");
-
-          break;
-        case "Deletar":
-          print("Deletar");
-          _deletarImovel();
-          break;
-      }
-    }
     if (document['idUsuario'] != _idUsuarioLogado) {
       return GestureDetector(
         onTap: () => Navigator.push(
@@ -166,7 +149,9 @@ class _HomeState extends State<Home> {
       );
     } else {
       return GestureDetector(
-        onTap: (){},
+        onTap: (){
+          _informacao();
+        },
         child:  Card(
           child: Padding(
             padding: EdgeInsets.all(12),
@@ -203,37 +188,6 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      FlatButton(
-                        padding: EdgeInsets.all(10),
-                        color: Colors.blue,
-                        onPressed: (){
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditarImovel(document, widget.user,
-                                      widget.photo, widget.emai, widget.uid)));
-                        },
-                        child: Icon(Icons.edit, color: Colors.white,),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      FlatButton(
-                        padding: EdgeInsets.all(10),
-                        color: Colors.red,
-                        onPressed: () {
-                          _deletarImovel();
-                        },
-                        child: Icon(Icons.delete, color: Colors.white,),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
@@ -251,6 +205,8 @@ class _HomeState extends State<Home> {
 
     //Tipos
     _listaItensDropTipos = Config.getTipos();
+
+
   }
 
   Future<Stream<QuerySnapshot>> _adicionarListenerImoveis() async {
@@ -277,6 +233,10 @@ class _HomeState extends State<Home> {
     if (_itemSelecionadoTipos != null) {
       query = query.where("tipoImovel", isEqualTo: _itemSelecionadoTipos);
     }
+    
+    if (_itemSelecionadoMeus != null) {
+      query = query.where('idUsuario', isEqualTo: widget.uid);
+    }
 
 
     Stream<QuerySnapshot> stream = query.snapshots();
@@ -286,27 +246,43 @@ class _HomeState extends State<Home> {
     });
   }
 
+  _escolhaMenuItem(String itemEscolhido){
+
+    switch( itemEscolhido ) {
+      case "Perfil":
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Configuracoes(widget.user,
+                    widget.photo, widget.emai, widget.uid)));
+        break;
+      case "Meus Imóveis":
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ImoveisAnunciado(widget.user,
+                  widget.photo, widget.emai, widget.uid)
+            ));
+        break;
+    }
+
+  }
+
 
     _pesquisar() async {
-    _pes = editingController.text;
-    QuerySnapshot querySnapshot = await db.collection("imoveis")
-        .where("logadouro" , isGreaterThanOrEqualTo: _pes)
-        .where("logadouro" , isLessThanOrEqualTo: _pes + "\uf8ff"  )
-        .getDocuments();
+      Firestore db = Firestore.instance;
+      Query query = db.collection("imoveis");
 
-    setState(() {
-      _pes = querySnapshot.documents;
-    });
+       if (_pes != null) {
+         query = query .where("logadouro" , isGreaterThanOrEqualTo: editingController.text)
+             .where("logadouro" , isLessThanOrEqualTo: editingController.text + "\uf8ff"  );
+       }
 
-    for( DocumentSnapshot item in querySnapshot.documents ) {
-      var dados = item.data;
-      setState(() {
-        _pes = dados['logadouro'];
-      });
+       Stream<QuerySnapshot> stream = query.snapshots();
 
-      print(_pes);
-    }
-    return _pes;
+       stream.listen((dados){
+         _controller.add(dados);
+       });
   }
   FirebaseAuth _auth = FirebaseAuth.instance;
   _recuperarDados() async {
@@ -339,9 +315,9 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    _adicionarListenerImoveis();
     _carregarItensDropdown();
     _recuperarDados();
-    _adicionarListenerImoveis();
     _pesquisar();
   }
 
@@ -363,37 +339,21 @@ class _HomeState extends State<Home> {
           child: Text("SIMOB"),
         ),
         actions: <Widget>[
-          Row(
-            children: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Configuracoes(widget.user,
-                              widget.photo, widget.emai, widget.uid)));
-                },
-                child: Icon(Icons.person_pin),
-              ),
-            ],
+          PopupMenuButton<String>(
+            onSelected: _escolhaMenuItem,
+            itemBuilder: (context) {
+              return escolha.map((String item) {
+                return PopupMenuItem<String>(
+                  value: item,
+                  child: Text(item),
+                );
+              }).toList();
+            },
           ),
           Padding(
             padding: EdgeInsets.only(right: 18),
           ),
         ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-          foregroundColor: Colors.white,
-          icon: Icon(Icons.add),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CadastroImoveis(
-                        widget.user, widget.photo, widget.emai, widget.uid)));
-          },
-          label: Text("Cadastrar", style: TextStyle(fontSize: 18),),
       ),
       drawer: Drawer(
         child: ListView(
@@ -492,7 +452,7 @@ class _HomeState extends State<Home> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Meu Imóvel',
+                                'Meus Imóveis Locado',
                                 style: TextStyle(
                                   fontSize: 16.0,
                                 ),
@@ -845,6 +805,32 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ],
+            ),
+            Divider(),
+
+            Padding(
+              padding: EdgeInsets.only(left: 8, right: 8),
+              child: TextField(
+                controller: editingController,
+                onChanged: (valor) {
+                  _pes = valor;
+                  _pesquisar();
+                },
+                keyboardType: TextInputType.text,
+                style: TextStyle(fontSize: 20),
+                decoration: InputDecoration(
+                  contentPadding:
+                  EdgeInsets.fromLTRB(32, 16, 32, 16),
+                  hintText: "Digite seu endereço",
+                  labelText: 'Pesquisar',
+                  filled: true,
+                  suffixIcon: Icon(Icons.search),
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(32)),
+                ),
+
+              ),
             ),
             Divider(),
             StreamBuilder(

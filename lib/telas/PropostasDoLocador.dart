@@ -431,6 +431,7 @@ class _PropostasDoLocadorState extends State<PropostasDoLocador> {
                                               imovel.urlImagens = propostaDoLocador.urlImagens;
                                               imovel.url2 = propostaDoLocador.urlImagens2;
                                               imovel.url3 = propostaDoLocador.urlImagens3;
+                                              imovel.idImovel = propostaDoLocador.idImovel;
                                               imovel.url4 = propostaDoLocador.urlImagens4;
                                               imovel.url5 = propostaDoLocador.urlImagens5;
                                               imovel.detalhes = propostaDoLocador.detalhes;
@@ -449,6 +450,7 @@ class _PropostasDoLocadorState extends State<PropostasDoLocador> {
                                               imovel.cpfUsuario = propostaDoLocador.cpf;
                                               imovel.telefoneUsuario = propostaDoLocador.telefone;
                                               db.collection("imoveis").document(propostaDoLocador.idImovel).setData(imovel.toMap());
+                                              db.collection("meus_imoveis").document(widget.uid).collection("imoveis").document(propostaDoLocador.idImovel).setData(imovel.toMap());
                                               db
                                                   .collection("propostasDoLocatario")
                                                   .document(propostaDoLocador.idLocatario)

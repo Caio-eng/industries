@@ -132,6 +132,10 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                 .collection("imoveis")
                                 .document(document['idImovel'])
                                 .setData(imovel.toMap());
+                            db.collection("meus_imoveis")
+                              .document(document['idDono'])
+                              .collection("imoveis")
+                                .document(document['idImovel']).setData(imovel.toMap());
 
                             db
                                 .collection("propostasDoLocatario")

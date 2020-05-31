@@ -104,6 +104,7 @@ class _DetalhesState extends State<Detalhes>  {
     propostaDoLocador.cpf = _cpfUser;
     db.collection("propostasDoLocador").document(_idImovel).setData(propostaDoLocador.toMap());
     db.collection('imoveis').document(widget.document['idImovel']).delete();
+    db.collection('meus_imoveis').document(widget.document['idUsuario']).collection("imoveis").document(widget.document['idImovel']).delete();
     Navigator.of(context).pop();
   }
 
@@ -143,7 +144,9 @@ class _DetalhesState extends State<Detalhes>  {
   }
   _recuperarDados() async {
     _idUsuarioLogado = widget.uid;
-    _idImovel = widget.document['idUsuario'];
+    setState(() {
+      _idImovel = widget.document['idUsuario'];
+    });
     _url = widget.document['urlImagens'];
     _url2 = widget.document['url2'];
     _url3 = widget.document['url3'];
@@ -164,7 +167,7 @@ class _DetalhesState extends State<Detalhes>  {
     print("Mostre: " + _idAq);
     //Cartao
     DocumentSnapshot snapshot3 =
-    await db.collection("cartao").document(widget.uid).get();
+    await db.collection("cartao").document(_idImovel).get();
     Map<String, dynamic> dados3 = snapshot3.data;
     setState(() {
       _id = dados3['idUsuario'];

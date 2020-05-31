@@ -986,6 +986,12 @@ class _MeuImovelState extends State<MeuImovel> {
                                 .document(document['idImovelAlugado'])
                                 .setData(imovel.toMap());
                             db
+                              .collection("meus_imoveis")
+                              .document(document['idDono'])
+                              .collection("imoveis")
+                              .document(document['idImovelAlugado'])
+                              .setData(imovel.toMap());
+                            db
                                 .collection("meuImovel")
                                 .document(document.documentID)
                                 .delete();

@@ -457,6 +457,7 @@ class _EditarImovelState extends State<EditarImovel> {
 
           Firestore db = Firestore.instance;
           db.collection("imoveis").document(_idImovel).updateData(dadosAtualizar);
+          db.collection("meus_imoveis").document(widget.uid).collection("imoveis").document(_idImovel).updateData(dadosAtualizar);
         } else {
           setState(() {
             _mensagemErro = "Digite um número";
@@ -1101,6 +1102,7 @@ class _EditarImovelState extends State<EditarImovel> {
                           //_atualizarNomeFirestore();
                           _atualizarUrlImagemFirestore();
                           Navigator.pop(context);
+
                         }
                       },
                     ),

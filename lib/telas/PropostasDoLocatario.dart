@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_format/date_format.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:industries/model/PropostaDoLocatario.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../model/Imovel.dart';
 
@@ -23,6 +26,7 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
   String _urlImagemRecuperada;
   File _imagem;
   bool _subindoImagem = false;
+
 
   Future<List<PropostaDoLocatario>> _recuperarPropostas() async {
     Firestore db = Firestore.instance;
@@ -106,8 +110,19 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
                     case ConnectionState.active:
                     case ConnectionState.done:
 
-                      return ListView.builder(
-                          itemCount: snapshot.data.length,
+                    var docs = snapshot.data;
+                    if( docs.length == 0 ){
+                      return Container(
+                        padding: EdgeInsets.all(25),
+                        child: Text("Nenhuma proposta! :( ",style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold
+                        ),),
+                      );
+                    }
+
+                    return ListView.builder(
+                          itemCount: docs.length,
                           itemBuilder: (_, indice) {
                             List<PropostaDoLocatario> listaItens = snapshot.data;
                             PropostaDoLocatario propostaDoLocatario = listaItens[indice];
@@ -267,148 +282,182 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
 
                                 contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                                 leading: Icon(Icons.business_center),
-                               title: GestureDetector(
-                                 onTap: () async {
-                                   Firestore db = Firestore.instance;
-                                   DocumentSnapshot snapshot =
-                                   await db.collection("usuarios").document(propostaDoLocatario.idLocador).get();
-                                   Map<String, dynamic> dados = snapshot.data;
-                                   String _nome, _email, _photo;
-                                   setState(() {
-                                     _nome = dados['nome'];
-                                     _email = dados['email'];
-                                     _photo = dados['photo'];
-                                   });
-                                   String _numero, _nomeDoCartao, _cpfDoCartao;
-                                   DocumentSnapshot snapshot2 =
-                                   await db.collection("cartao").document(propostaDoLocatario.idLocador).get();
-                                   Map<String, dynamic> dados2 = snapshot2.data;
-                                   setState(() {
-                                     _numero = dados2['numeroDoCartao'];
-                                     _nomeDoCartao = dados2['nomeDoTitularDoCartao'];
-                                     _cpfDoCartao = dados2['cpfDoTitularDoCartao'];
-                                   });
-                                   return showDialog<void>(
-                                     context: context,
-                                     barrierDismissible: false, // user must tap button!
-                                     builder: (BuildContext context) {
-                                       return AlertDialog(
-                                         title: Text(
-                                           propostaDoLocatario.finalizado != null
-                                               ? 'Informações do Locador'
-                                               : 'Proposta do Locador',
-                                           textAlign: TextAlign.center,
-                                         ),
-                                         content: SingleChildScrollView(
-                                           child: ListBody(
-                                             children: <Widget>[
-                                               CircleAvatar(
-                                                 radius: 90,
-                                                 backgroundImage: NetworkImage(_photo),
-                                               ),
-                                               Divider(),
-                                               Text(
-                                                 "Nome: " + _nome +
-                                                     ' - Email: ' + _email +
-                                                     '\nTelefone: ' + propostaDoLocatario.telefone +
-                                                     '\nCPF: ' + propostaDoLocatario.cpf,
-                                                 textAlign: TextAlign.center,
-                                               ),
-                                               Divider(),
-                                               Text(
-                                                 "Possui Cartão Cadastrado" +
-                                                     "\nNumero: " + _numero +
-                                                     "\nNome do Cartão: " + _nomeDoCartao +
-                                                     "\nCPF do Cartão: " + _cpfDoCartao,
-                                                 textAlign: TextAlign.center,
-                                               ),
-                                               Divider(),
-                                               propostaDoLocatario.url != null && propostaDoLocatario.url2 == null
-                                                   ? Text('Contrato do Locador disponivel abaixo!', textAlign: TextAlign.center,)
-                                                   : propostaDoLocatario.url2 != null
-                                                   ? Container()
-                                                   : Text('O Contrato estará disponivel aqui, aguardando a resposta!', textAlign: TextAlign.center,),
-                                               SizedBox(
-                                                 height: 5,
-                                               ),
-                                               Divider(),
-                                               _subindoImagem
-                                                   ? CircularProgressIndicator()
-                                                   : Container(),
+                                title: GestureDetector(
+                                  onTap: () async {
+                                    Firestore db = Firestore.instance;
+                                    DocumentSnapshot snapshot =
+                                    await db.collection("usuarios").document(propostaDoLocatario.idLocador).get();
+                                    Map<String, dynamic> dados = snapshot.data;
+                                    String _nome, _email, _photo;
+                                    setState(() {
+                                      _nome = dados['nome'];
+                                      _email = dados['email'];
+                                      _photo = dados['photo'];
+                                    });
+                                    String _numero, _nomeDoCartao, _cpfDoCartao;
+                                    DocumentSnapshot snapshot2 =
+                                    await db.collection("cartao").document(propostaDoLocatario.idLocador).get();
+                                    Map<String, dynamic> dados2 = snapshot2.data;
+                                    setState(() {
+                                      _numero = dados2['numeroDoCartao'];
+                                      _nomeDoCartao = dados2['nomeDoTitularDoCartao'];
+                                      _cpfDoCartao = dados2['cpfDoTitularDoCartao'];
+                                    });
+                                    verContrato(String link) async {
+                                      //telefone = _imovel.fotos[0];
 
-                                               propostaDoLocatario.url != null && propostaDoLocatario.url2 == null
-                                                   ? Image.network(
-                                                 propostaDoLocatario.url,)
-                                                   : propostaDoLocatario.url2 != null
-                                                   ? Image.network(propostaDoLocatario.url2)
-                                                   : Container(),
+                                      //Abre link passado
+                                      if( await canLaunch(link) ){
+                                          await launch(link);
+                                      }else{
+                                          print("não pode fazer a ligação");
+                                        }
 
-                                               Divider(),
+                                    }
+                                    return showDialog<void>(
+                                      context: context,
+                                      barrierDismissible: false, // user must tap button!
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text(
+                                            propostaDoLocatario.finalizado != null
+                                                ? 'Informações do Locador'
+                                                : 'Proposta do Locador',
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          content: SingleChildScrollView(
+                                            child: ListBody(
+                                              children: <Widget>[
+                                                CircleAvatar(
+                                                  radius: 90,
+                                                  backgroundImage: NetworkImage(_photo),
+                                                ),
+                                                Divider(),
+                                                Text(
+                                                  "Nome: " + _nome +
+                                                      ' - Email: ' + _email +
+                                                      '\nTelefone: ' + propostaDoLocatario.telefone +
+                                                      '\nCPF: ' + propostaDoLocatario.cpf,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                Divider(),
+                                                Text(
+                                                  "Possui Cartão Cadastrado" +
+                                                      "\nNumero: " + _numero +
+                                                      "\nNome do Cartão: " + _nomeDoCartao +
+                                                      "\nCPF do Cartão: " + _cpfDoCartao,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                Divider(),
+                                                propostaDoLocatario.url != null && propostaDoLocatario.url2 == null
+                                                    ? GestureDetector(
+                                                        onTap: (){
+                                                          verContrato(propostaDoLocatario.url);
+                                                        },
+                                                        child: Text('Clique aqui para acessar o Contrato abaixo', textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 20),),
+                                                      )
+                                                    : propostaDoLocatario.url2 != null
+                                                    ? Container()
+                                                    : Text('O Contrato estará disponivel aqui, aguardando a resposta!', textAlign: TextAlign.center,),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Divider(),
+                                                _subindoImagem
+                                                    ? CircularProgressIndicator()
+                                                    : Container(),
 
-                                               propostaDoLocatario.url != null && propostaDoLocatario.url2 == null
-                                                   ? Center(
-                                                 child: RaisedButton(
-                                                   child: Row(
-                                                     crossAxisAlignment: CrossAxisAlignment.center,
-                                                     children: <Widget>[
-                                                       Icon(Icons.photo, color: Colors.white,),
-                                                       SizedBox(
-                                                         width: 20,
-                                                       ),
-                                                       Text('Enviar Contrato', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 16),),
-                                                     ],
-                                                   ),
-                                                   color: Colors.blue,
-                                                   padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                                                   shape: RoundedRectangleBorder(
-                                                       borderRadius: BorderRadius.circular(32)),
-                                                   onPressed: () {
-                                                     _recuperarImagem("galeria");
-                                                   },
-                                                 ),
-                                               )
-                                                   :Container(),
-                                               Divider(),
-                                               propostaDoLocatario.url != null && propostaDoLocatario.url2 == null
-                                                   ? Text('Clique em Enviar Contrato e anexe o contrato assinado, ao selecionar o contrato será enviado automáticamente ao Locatário!', textAlign: TextAlign.center,)
-                                                   : propostaDoLocatario.url2 != null && propostaDoLocatario.finalizado == null
-                                                   ? Text('Contrato Anexado!', textAlign: TextAlign.center,)
-                                                   : propostaDoLocatario.finalizado != null
-                                                   ? Text('Você possui um contrato ativo com o Locador ' + _nome + "\nPara mais informações va na página Imóvel Alugado")
-                                                   : Container(),
-                                             ],
-                                           ),
-                                         ),
-                                         actions: <Widget>[
-                                           Row(
-                                             children: <Widget>[
-                                               FlatButton(
-                                                 child: Text('Voltar'),
-                                                 onPressed: () {
-                                                   Navigator.pop(context);
-                                                 },
-                                               ),
-                                             ],
-                                           ),
-                                         ],
-                                       );
-                                     },
-                                   );
-                                 },
-                                 child: propostaDoLocatario.url != null && propostaDoLocatario.url2 == null
-                                 ? Text(
-                                   'Contrato disp. para assinar',
-                                   textAlign: TextAlign.center,
-                                 )
-                                 : propostaDoLocatario.url2 != null && propostaDoLocatario.finalizado == null
-                                 ? Text(
-                                   'Aguardando o Locador aceitar o contrato!',
-                                   textAlign: TextAlign.center,
-                                 )
-                                 : propostaDoLocatario.finalizado != null
-                                 ? Text('Imóvel Alugado', textAlign: TextAlign.center,)
-                                 : Text('Solicitação enviada para o Locador', textAlign: TextAlign.center,),
-                               ),
+                                                propostaDoLocatario.url != null && propostaDoLocatario.url2 == null
+                                                    ? Image.network(
+                                                        propostaDoLocatario.url,)
+                                                    : propostaDoLocatario.url2 != null
+                                                    ? Image.network(propostaDoLocatario.url2)
+                                                    : Container(),
+
+                                                Divider(),
+
+                                                propostaDoLocatario.url != null && propostaDoLocatario.url2 == null
+                                                    ? Center(
+                                                  child: RaisedButton(
+                                                    child: Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: <Widget>[
+                                                        Icon(Icons.photo, color: Colors.white,),
+                                                        SizedBox(
+                                                          width: 20,
+                                                        ),
+                                                        Text('Enviar Contrato', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 16),),
+
+                                                      ],
+                                                    ),
+                                                    color: Colors.blue,
+                                                    padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(32)),
+                                                    onPressed: () {
+                                                      _recuperarImagem("galeria");
+                                                    },
+                                                  ),
+                                                )
+                                                    :Container(),
+                                                Divider(),
+                                                propostaDoLocatario.url != null && propostaDoLocatario.url2 == null
+                                                    ? Text('Clique em Enviar Contrato e anexe o contrato assinado, ao selecionar o contrato será enviado automáticamente ao Locatário!', textAlign: TextAlign.center,)
+                                                    : propostaDoLocatario.url2 != null && propostaDoLocatario.finalizado == null
+                                                    ? GestureDetector(
+                                                      onTap: (){
+                                                        verContrato(propostaDoLocatario.url2);
+                                                      },
+                                                      child: Text('Contrato Anexado!, Clique para acessa-lo', textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontSize: 20, fontWeight: FontWeight.bold),),
+                                                    )
+                                                    : propostaDoLocatario.finalizado != null
+                                                    ? GestureDetector(
+                                                      onTap: (){
+                                                        verContrato(propostaDoLocatario.url2);
+                                                      },
+                                                      child: Text(
+                                                          'Você possui um contrato ativo com o Locador ' + _nome + "\nClique aqui para acessa-lo",
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(
+                                                          color: Colors.blue,
+                                                          fontWeight: FontWeight.bold
+                                                        ),
+                                                      ),
+                                                    )
+                                                    : Container(),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            Row(
+                                              children: <Widget>[
+                                                FlatButton(
+                                                  child: Text('Voltar'),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: propostaDoLocatario.url != null && propostaDoLocatario.url2 == null
+                                      ? Text(
+                                    'Contrato disp. para assinar',
+                                    textAlign: TextAlign.center,
+                                  )
+                                      : propostaDoLocatario.url2 != null && propostaDoLocatario.finalizado == null
+                                      ? Text(
+                                    'Aguardando o Locador aceitar o contrato!',
+                                    textAlign: TextAlign.center,
+                                  )
+                                      : propostaDoLocatario.finalizado != null
+                                      ? Text('Imóvel Alugado', textAlign: TextAlign.center,)
+                                      : Text('Solicitação enviada para o Locador', textAlign: TextAlign.center,),
+                                ),
                                 trailing: propostaDoLocatario.finalizado != null
                                     ? Icon(Icons.verified_user, color: Colors.blue,)
                                     : PopupMenuButton<String>(
@@ -427,6 +476,7 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
                           });
                       break;
                   }
+                  return Container();
                 },
               ),
             )

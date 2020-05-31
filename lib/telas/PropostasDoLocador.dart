@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:industries/model/PropostaDoLocador.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../model/AluguarImovel.dart';
 import '../model/DonoDoImovel.dart';
@@ -107,8 +108,20 @@ class _PropostasDoLocadorState extends State<PropostasDoLocador> {
                       break;
                     case ConnectionState.active:
                     case ConnectionState.done:
+
+                      var docs = snapshot.data;
+                      if( docs.length == 0 ){
+                        return Container(
+                          padding: EdgeInsets.all(25),
+                          child: Text("Nenhuma proposta! :( ",style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold
+                          ),),
+                        );
+                      }
+
                       return ListView.builder(
-                          itemCount: snapshot.data.length,
+                          itemCount: docs.length,
                           itemBuilder: (_, indice) {
                             List<PropostaDoLocador> listaItens = snapshot.data;
                             PropostaDoLocador propostaDoLocador =
@@ -495,6 +508,19 @@ class _PropostasDoLocadorState extends State<PropostasDoLocador> {
                                         _nomeDoCartao = dados2['nomeDoTitularDoCartao'];
                                         _cpfDoCartao = dados2['cpfDoTitularDoCartao'];
                                       });
+
+                                      verContrato(String link) async {
+                                        //telefone = _imovel.fotos[0];
+
+                                        //Abre link passado
+                                        if( await canLaunch(link) ){
+                                          await launch(link);
+                                        }else{
+                                          print("não pode fazer a ligação");
+                                        }
+
+                                      }
+
                                       return showDialog<void>(
                                         context: context,
                                         barrierDismissible: false, // user must tap button!
@@ -531,11 +557,46 @@ class _PropostasDoLocadorState extends State<PropostasDoLocador> {
                                                   ),
                                                   Divider(),
                                                   propostaDoLocador.url != null && propostaDoLocador.url2 == null
-                                                      ? Text("Imagem Anexada!", textAlign: TextAlign.center,)
+                                                      ? GestureDetector(
+                                                        onTap: (){
+                                                          verContrato(propostaDoLocador.url);
+                                                        },
+                                                        child: Text("Contrato Anexado!, clique aqui para acessa-lo",
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: Colors.blue,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      )
                                                       : propostaDoLocador.url2 != null && propostaDoLocador.finalizado == null
-                                                      ? Text('Contrato assinado pelo Locatário!', textAlign: TextAlign.center,)
+                                                      ? GestureDetector(
+                                                        onTap: () {
+                                                          verContrato(propostaDoLocador.url2);
+                                                        },
+                                                        child: Text(
+                                                          'Contrato assinado pelo Locatário!, clique aqui para acessa-lo',
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                            color: Colors.blue,
+                                                            fontWeight: FontWeight.bold
+                                                          ),
+                                                        ),
+                                                      )
                                                       : propostaDoLocador.finalizado != null
-                                                      ? Text('Você possui um contrato ativo com o Locatário ' + _nome + '\nPara mais informações va na pagina Meu Imóvel')
+                                                      ? GestureDetector(
+                                                       onTap: (){
+                                                         verContrato(propostaDoLocador.url2);
+                                                       },
+                                                       child: Text(
+                                                           'Você possui um contrato ativo com o Locatário ' + _nome + '\nClique aqui para acessa-lo',
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              color: Colors.blue,
+                                                              fontWeight: FontWeight.bold
+                                                            ),
+                                                       ),
+                                                      )
                                                       : Text("Clique para anexar o contrato!", textAlign: TextAlign.center,),
                                                   SizedBox(
                                                     height: 5,
@@ -617,6 +678,7 @@ class _PropostasDoLocadorState extends State<PropostasDoLocador> {
                           });
                       break;
                   }
+                  return Container();
                 },
               ),
             )

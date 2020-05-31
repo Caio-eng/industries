@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/model/PropostaDoLocador.dart';
 import 'package:industries/model/PropostaDoLocatario.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'model/Imovel.dart';
 
@@ -41,6 +42,7 @@ class _DetalhesState extends State<Detalhes>  {
   String _sig;
   String _locali, _cpfUser, _telefoneUser, _idAq;
   Firestore db = Firestore.instance;
+
 
 
 
@@ -102,12 +104,35 @@ class _DetalhesState extends State<Detalhes>  {
     propostaDoLocador.cpf = _cpfUser;
     db.collection("propostasDoLocador").document(_idImovel).setData(propostaDoLocador.toMap());
     db.collection('imoveis').document(widget.document['idImovel']).delete();
-    Navigator.pop(context);
+    Navigator.of(context).pop();
   }
 
 
 
   String _mensagem = '';
+
+  _ligarTelefone(String telefone) async {
+    //telefone = _imovel.fotos[0];
+
+    //Abre link passado
+//    if( await canLaunch(telefone) ){
+//      await launch(telefone);
+//    }else{
+//      print("não pode fazer a ligação");
+//    }
+    //Evia SMS
+//    if( await canLaunch("sms:$telefone") ){
+//      await launch("sms:$telefone");
+//    }else{
+//      print("não pode fazer a ligação");
+//    }
+    // vai para o telefone
+    if( await canLaunch("tel:$telefone") ){
+      await launch("tel:$telefone");
+    }else{
+      print("não pode fazer a ligação");
+    }
+  }
 
 
 
@@ -168,143 +193,196 @@ class _DetalhesState extends State<Detalhes>  {
       appBar: AppBar(
         title: Text("Detalhes do Imovel"),
       ),
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                children: <Widget>[
-                  CircleAvatar(
-                    radius: 110,
-                    child: Carousel(
-                      images: [
-                        _url != null
-                            ? NetworkImage(_url)
-                            : NetworkImage(''),
-                        _url2 != null
-                            ? NetworkImage(_url2)
-                            : NetworkImage(''),
-                        _url3 != null
-                            ? NetworkImage(_url3)
-                            : NetworkImage(''),
-                        _url4 != null
-                            ? NetworkImage(_url4)
-                            : NetworkImage(''),
-                        _url5 != null
-                            ? NetworkImage(_url5)
-                            : NetworkImage(''),
-                      ],
-                      dotSize: 4,
-                      dotSpacing: 15,
-                      dotBgColor: Colors.blue.withOpacity(0.5),
-                      indicatorBgPadding: 4,
-                      borderRadius: true,
-                    ),
-                  ),
-                  Divider(),
-                  GestureDetector(
-                    onTap: () {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text(
-                              'Informações Extras',
-                              textAlign: TextAlign.center,
-                            ),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text('4 Quartos, Sala, Cozinha', textAlign: TextAlign.center,),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  FlatButton(
-                                    child: Text('Voltar'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Card(
-                      color: Colors.white.withOpacity(0.8),
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            "Localização: ${_locali} - " + _sig,
-                            style: TextStyle(fontSize: 17),
-                          ),
-                          Text(
-                            _log + " - " + _bairro + " " +  _comp + " Nº ${_nume}" + "\nCEP: ${_cep}",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 17),
-                          ),
-                          Text(
-                            "Valor do Imóvel: " + _valor,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 17, ),
-                          ),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text(
-                            _deta,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 14, ),
-                          ),
-                        ],
+      body: Stack(
+        children: <Widget>[
+          ListView(
+            children: <Widget>[
+              SizedBox(
+                height: 250,
+
+                child: Carousel(
+                  images: [
+                    NetworkImage(_url),
+                    NetworkImage(_url2),
+                    NetworkImage(_url3),
+                    NetworkImage(_url4),
+                    NetworkImage(_url5),
+
+                  ],
+                  boxFit: BoxFit.fitWidth,
+                  dotSize: 8,
+                  dotBgColor: Colors.transparent,
+                  dotColor: Colors.white,
+                  autoplay: false,
+                  dotIncreasedColor: Colors.blue,
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      _valor,
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
                       ),
                     ),
-                  )
-
-
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 10, bottom: 10,  right: 10, left: 30),
-              child: RaisedButton(
-                child: Text(
-                  "Enviar Proposta de Aluguel",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 0, top: 3),
+                      child: Text(
+                        "Localização: ${_locali} - ${_sig}",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 0, top: 3),
+                      child: Text(
+                        "Logradouro: ${_log}",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 0, top: 3),
+                      child: Text(
+                        "Bairro: ${_bairro} - Nº: ${_nume}",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 0, top: 3),
+                      child: Text(
+                        "Complemento: ${_comp}",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Divider(),
+                    ),
+                    Text(
+                      "Descrição",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "${_deta}",
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Divider(),
+                    ),
+                    Text(
+                      "Contato",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 66),
+                      child: Text(
+                        "${widget.document['telefoneUsuario']}",
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                color: Colors.blue,
-                padding: EdgeInsets.fromLTRB(32, 16, 32, 16),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32)),
-                onPressed: () {
-                  if (_id != null) {
-                    _mandarProposta();
-                  } else {
-                    setState(() {
-                      _mensagem = 'Para mandar a proposta neste imovel é necessario ter cadastrado o cartão';
-                    });
-                  }
-                },
               ),
-
+            ],
+          ),
+          Positioned(
+            left: 16,
+            right: 16,
+            bottom: 16,
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: GestureDetector(
+                    child: Container(
+                      child: Text(
+                        "Ligar",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                      padding: EdgeInsets.all(16),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.purple,
+                        borderRadius: BorderRadius.circular(32)
+                      ),
+                    ),
+                    onTap: () {
+                      _ligarTelefone(widget.document['telefoneUsuario']);
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    child: Container(
+                      child: Text(
+                        "Negociar",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                      padding: EdgeInsets.all(16),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(32),
+                      ),
+                    ),
+                    onTap: () {
+                      if (_id != null) {
+                        _mandarProposta();
+                       } else {
+                          setState(() {
+                             _mensagem = 'Para mandar a proposta neste imovel é necessario ter cadastrado o cartão';
+                          });
+                      }
+                    },
+                  ),
+                ),
+                Center(
+                   child: Text(
+                      _mensagem,
+                       style: TextStyle(color: Colors.red, fontSize: 20),
+                     ),
+                   )
+                ],
             ),
-            Center(
-              child: Text(
-                _mensagem,
-                style: TextStyle(color: Colors.red, fontSize: 20),
-              ),
-            )
-          ],
-        ),
+          ),
+        ],
       ),
+
     );
   }
 }

@@ -32,7 +32,13 @@ class _MeuImovelState extends State<MeuImovel> {
       _cpfDoLocatario,
       _telefoneDoLocatario,
       _photoDoLocatario;
-  String _idEnvioLogado, _idEnvioDeslo, _idEnvioImovel, _idPagador, _idReceptor, _idPagador1, _idReceptor1;
+  String _idEnvioLogado,
+      _idEnvioDeslo,
+      _idEnvioImovel,
+      _idPagador,
+      _idReceptor,
+      _idPagador1,
+      _idReceptor1;
   List<String> itensMenu = [
     "Informações",
     "Recibo do Aluguel",
@@ -42,7 +48,6 @@ class _MeuImovelState extends State<MeuImovel> {
   Firestore db = Firestore.instance;
 
   Widget _buildList(BuildContext context, DocumentSnapshot document) {
-
     _informacaoImovel() {
       _idDoLocatario = document['idLocatario'];
       _photoDoLocatario = document['urlImagemDoLocatario'];
@@ -60,16 +65,21 @@ class _MeuImovelState extends State<MeuImovel> {
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                 Text(
-                  ' Tipo do Imóvel: ' + document['tipoDonoDoImovel'] +
-                    '\nLocalização: ' + document['cidadeDonoDoImovel'] + ' - ' +
-                      document['estadoDoImovel'] +
-                      "\nValor Alugado: " + document['valorDonoDoImovel'],
-                      textAlign: TextAlign.center,
+                  Text(
+                    ' Tipo do Imóvel: ' +
+                        document['tipoDonoDoImovel'] +
+                        '\nLocalização: ' +
+                        document['cidadeDonoDoImovel'] +
+                        ' - ' +
+                        document['estadoDoImovel'] +
+                        "\nValor Alugado: " +
+                        document['valorDonoDoImovel'],
+                    textAlign: TextAlign.center,
                   ),
                   Divider(),
                   CircleAvatar(
                     radius: 110,
+                    backgroundColor: Colors.transparent,
                     child: Carousel(
                       images: [
                         NetworkImage(document['urlImagensDonoDoImovel']),
@@ -78,23 +88,31 @@ class _MeuImovelState extends State<MeuImovel> {
                         NetworkImage(document['urlImagensDonoDoImovel4']),
                         NetworkImage(document['urlImagensDonoDoImovel5']),
                       ],
-                      dotSize: 4,
-                      dotSpacing: 15,
-                      dotBgColor: Colors.blue.withOpacity(0.5),
-                      indicatorBgPadding: 4,
+                      dotSize: 8,
+                      dotBgColor: Colors.transparent,
+                      dotColor: Colors.white,
+                      autoplay: false,
                       borderRadius: true,
+                      dotIncreasedColor: Colors.blue,
                     ),
                   ),
                   Divider(),
                   Text(
                     "Logadouro: " +
-                        document['logadouroDonoDoImovel'] + " - " + document['bairroDonoDoImovel']+
-                        "\nComplemento: " + document['complementoDonoDoImovel'] +
-                        '\nDetalhes: ' + document['detalhesDonoDoImovel'] +
-                        "\nCEP: " + document['cepDonoDoImovel'] + " N°: " + document['numeroDono'] +
+                        document['logadouroDonoDoImovel'] +
+                        " - " +
+                        document['bairroDonoDoImovel'] +
+                        "\nComplemento: " +
+                        document['complementoDonoDoImovel'] +
+                        '\nDetalhes: ' +
+                        document['detalhesDonoDoImovel'] +
+                        "\nCEP: " +
+                        document['cepDonoDoImovel'] +
+                        " N°: " +
+                        document['numeroDono'] +
                         '\nData Inicial do contrato: ' +
                         document['dataInicio'],
-                   textAlign: TextAlign.center,
+                    textAlign: TextAlign.center,
                   ),
 //                  Divider(),
 //                  Text(
@@ -253,7 +271,6 @@ class _MeuImovelState extends State<MeuImovel> {
           .get();
       Map<String, dynamic> dados14 = snapshot14.data;
 
-
       return showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -274,599 +291,611 @@ class _MeuImovelState extends State<MeuImovel> {
                           style: TextStyle(color: Colors.red),
                         )
                       : GestureDetector(
-                        onTap: () {
-                          return showDialog<void>(
-                            context: context,
-                            barrierDismissible: false, // user must tap button!
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                contentPadding: EdgeInsets.all(10),
-                                title: Text(
-                                  'Informação do Imóvel',
-                                  textAlign: TextAlign.center,
-                                ),
-                                content: SingleChildScrollView(
-                                  child: ListBody(
-                                    children: <Widget>[
-                                      Text(
-                                        "Para informações do Recibo vá na tela de recibos",
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
+                          onTap: () {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Text(
+                                    'Informação do Imóvel',
+                                    textAlign: TextAlign.center,
                                   ),
-                                ),
-                                actions: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      FlatButton(
-                                        child: Text('Voltar'),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ],
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          "Para informações do Recibo vá na tela de recibos",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        child: Text(
-                          'Recibo 1: OK\nData do Rec: ${dados3['dataDoPagamento']}',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.green),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Recibo 1: OK\nData do Rec: ${dados3['dataDoPagamento']}',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.green),
+                          ),
                         ),
-                      ),
                   dados4 == null || dados4['idDoPagador'] == null
                       ? Text(
-                    ' Recibo 2',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange),
-                  )
-                      : GestureDetector(
-                        onTap: () {
-                          return showDialog<void>(
-                            context: context,
-                            barrierDismissible: false, // user must tap button!
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                contentPadding: EdgeInsets.all(10),
-                                title: Text(
-                                  'Informação do Imóvel',
-                                  textAlign: TextAlign.center,
-                                ),
-                                content: SingleChildScrollView(
-                                  child: ListBody(
-                                    children: <Widget>[
-                                      Text(
-                                        "Para informações do Recibo vá na tela de recibos",
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                actions: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      FlatButton(
-                                        child: Text('Voltar'),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        child: Text(
-                          'Recibo 2: OK\nData do Rec: ${dados4['dataDoPagamento']} ',
+                          ' Recibo 2',
                           textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.green),
+                          style: TextStyle(color: Colors.orange),
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Text(
+                                    'Informação do Imóvel',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          "Para informações do Recibo vá na tela de recibos",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Recibo 2: OK\nData do Rec: ${dados4['dataDoPagamento']} ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.green),
+                          ),
                         ),
-                  ),
                   dados5 == null || dados5['idDoPagador'] == null
                       ? Text(
-                    ' Recibo 3',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange),
-                  )
+                          ' Recibo 3',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.orange),
+                        )
                       : GestureDetector(
-                    onTap: () {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            contentPadding: EdgeInsets.all(10),
-                            title: Text(
-                              'Informação do Imóvel',
-                              textAlign: TextAlign.center,
-                            ),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                    "Para informações do Recibo vá na tela de recibos",
+                          onTap: () {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Text(
+                                    'Informação do Imóvel',
                                     textAlign: TextAlign.center,
                                   ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  FlatButton(
-                                    child: Text('Voltar'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          "Para informações do Recibo vá na tela de recibos",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Text(
-                      'Recibo 3: OK\nData do Rec: ${dados5['dataDoPagamento']} ',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Recibo 3: OK\nData do Rec: ${dados5['dataDoPagamento']} ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
                   dados6 == null || dados6['idDoPagador'] == null
                       ? Text(
-                    ' Recibo 4',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange),
-                  )
+                          ' Recibo 4',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.orange),
+                        )
                       : GestureDetector(
-                    onTap: () {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            contentPadding: EdgeInsets.all(10),
-                            title: Text(
-                              'Informação do Imóvel',
-                              textAlign: TextAlign.center,
-                            ),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                    "Para informações do Recibo vá na tela de recibos",
+                          onTap: () {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Text(
+                                    'Informação do Imóvel',
                                     textAlign: TextAlign.center,
                                   ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  FlatButton(
-                                    child: Text('Voltar'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          "Para informações do Recibo vá na tela de recibos",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Text(
-                      'Recibo 4: OK\nData do Rec: ${dados6['dataDoPagamento']} ',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Recibo 4: OK\nData do Rec: ${dados6['dataDoPagamento']} ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
                   dados7 == null || dados7['idDoPagador'] == null
                       ? Text(
-                    ' Recibo 5',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange),
-                  )
+                          ' Recibo 5',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.orange),
+                        )
                       : GestureDetector(
-                    onTap: () {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            contentPadding: EdgeInsets.all(10),
-                            title: Text(
-                              'Informação do Imóvel',
-                              textAlign: TextAlign.center,
-                            ),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                    "Para informações do Recibo vá na tela de recibos",
+                          onTap: () {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Text(
+                                    'Informação do Imóvel',
                                     textAlign: TextAlign.center,
                                   ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  FlatButton(
-                                    child: Text('Voltar'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          "Para informações do Recibo vá na tela de recibos",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Text(
-                      'Recibo 5: OK\nData do Rec: ${dados7['dataDoPagamento']} ',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Recibo 5: OK\nData do Rec: ${dados7['dataDoPagamento']} ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
                   dados8 == null || dados8['idDoPagador'] == null
                       ? Text(
-                    ' Recibo 6',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange),
-                  )
+                          ' Recibo 6',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.orange),
+                        )
                       : GestureDetector(
-                    onTap: () {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            contentPadding: EdgeInsets.all(10),
-                            title: Text(
-                              'Informação do Imóvel',
-                              textAlign: TextAlign.center,
-                            ),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                    "Para informações do Recibo vá na tela de recibos",
+                          onTap: () {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Text(
+                                    'Informação do Imóvel',
                                     textAlign: TextAlign.center,
                                   ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  FlatButton(
-                                    child: Text('Voltar'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          "Para informações do Recibo vá na tela de recibos",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Text(
-                      'Recibo 6: OK\nData do Rec: ${dados8['dataDoPagamento']} ',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Recibo 6: OK\nData do Rec: ${dados8['dataDoPagamento']} ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
                   dados9 == null || dados9['idDoPagador'] == null
                       ? Text(
-                    ' Recibo 7',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange),
-                  )
+                          ' Recibo 7',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.orange),
+                        )
                       : GestureDetector(
-                    onTap: () {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            contentPadding: EdgeInsets.all(10),
-                            title: Text(
-                              'Informação do Imóvel',
-                              textAlign: TextAlign.center,
-                            ),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                    "Para informações do Recibo vá na tela de recibos",
+                          onTap: () {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Text(
+                                    'Informação do Imóvel',
                                     textAlign: TextAlign.center,
                                   ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  FlatButton(
-                                    child: Text('Voltar'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          "Para informações do Recibo vá na tela de recibos",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Text(
-                      'Recibo 7: OK\nData do Rec: ${dados9['dataDoPagamento']} ',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Recibo 7: OK\nData do Rec: ${dados9['dataDoPagamento']} ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
                   dados10 == null || dados10['idDoPagador'] == null
                       ? Text(
-                    ' Recibo 8',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange),
-                  )
+                          ' Recibo 8',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.orange),
+                        )
                       : GestureDetector(
-                    onTap: () {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            contentPadding: EdgeInsets.all(10),
-                            title: Text(
-                              'Informação do Imóvel',
-                              textAlign: TextAlign.center,
-                            ),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                    "Para informações do Recibo vá na tela de recibos",
+                          onTap: () {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Text(
+                                    'Informação do Imóvel',
                                     textAlign: TextAlign.center,
                                   ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  FlatButton(
-                                    child: Text('Voltar'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          "Para informações do Recibo vá na tela de recibos",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Text(
-                      'Recibo 8: OK\nData do Rec: ${dados10['dataDoPagamento']} ',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Recibo 8: OK\nData do Rec: ${dados10['dataDoPagamento']} ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
                   dados11 == null || dados11['idDoPagador'] == null
                       ? Text(
-                    ' Recibo 9',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange),
-                  )
+                          ' Recibo 9',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.orange),
+                        )
                       : GestureDetector(
-                    onTap: () {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            contentPadding: EdgeInsets.all(10),
-                            title: Text(
-                              'Informação do Imóvel',
-                              textAlign: TextAlign.center,
-                            ),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                    "Para informações do Recibo vá na tela de recibos",
+                          onTap: () {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Text(
+                                    'Informação do Imóvel',
                                     textAlign: TextAlign.center,
                                   ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  FlatButton(
-                                    child: Text('Voltar'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          "Para informações do Recibo vá na tela de recibos",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Text(
-                      'Recibo 9: OK\nData do Rec: ${dados11['dataDoPagamento']} ',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Recibo 9: OK\nData do Rec: ${dados11['dataDoPagamento']} ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
                   dados12 == null || dados12['idDoPagador'] == null
                       ? Text(
-                    ' Recibo 10',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange),
-                  )
+                          ' Recibo 10',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.orange),
+                        )
                       : GestureDetector(
-                    onTap: () {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            contentPadding: EdgeInsets.all(10),
-                            title: Text(
-                              'Informação do Imóvel',
-                              textAlign: TextAlign.center,
-                            ),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                    "Para informações do Recibo vá na tela de recibos",
+                          onTap: () {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Text(
+                                    'Informação do Imóvel',
                                     textAlign: TextAlign.center,
                                   ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  FlatButton(
-                                    child: Text('Voltar'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          "Para informações do Recibo vá na tela de recibos",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Text(
-                      'Recibo 10: OK\nData do Rec: ${dados12['dataDoPagamento']} ',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Recibo 10: OK\nData do Rec: ${dados12['dataDoPagamento']} ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
                   dados13 == null || dados13['idDoPagador'] == null
                       ? Text(
-                    ' Recibo 11',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange),
-                  )
+                          ' Recibo 11',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.orange),
+                        )
                       : GestureDetector(
-                    onTap: () {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            contentPadding: EdgeInsets.all(10),
-                            title: Text(
-                              'Informação do Imóvel',
-                              textAlign: TextAlign.center,
-                            ),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                    "Para informações do Recibo vá na tela de recibos",
+                          onTap: () {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Text(
+                                    'Informação do Imóvel',
                                     textAlign: TextAlign.center,
                                   ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  FlatButton(
-                                    child: Text('Voltar'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          "Para informações do Recibo vá na tela de recibos",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Text(
-                      'Recibo 11: OK\nData do Rec: ${dados13['dataDoPagamento']} ',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Recibo 11: OK\nData do Rec: ${dados13['dataDoPagamento']} ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
                   dados14 == null || dados14['idDoPagador'] == null
                       ? Text(
-                    ' Recibo 12',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.orange),
-                  )
+                          ' Recibo 12',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.orange),
+                        )
                       : GestureDetector(
-                    onTap: () {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            contentPadding: EdgeInsets.all(10),
-                            title: Text(
-                              'Informação do Imóvel',
-                              textAlign: TextAlign.center,
-                            ),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                    "Para informações do Recibo vá na tela de recibos",
+                          onTap: () {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  title: Text(
+                                    'Informação do Imóvel',
                                     textAlign: TextAlign.center,
                                   ),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  FlatButton(
-                                    child: Text('Voltar'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          "Para informações do Recibo vá na tela de recibos",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Text(
-                      'Recibo 12: OK\nData do Rec: ${dados14['dataDoPagamento']} ',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Recibo 12: OK\nData do Rec: ${dados14['dataDoPagamento']} ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ),
                 ],
               ),
             ),
@@ -929,7 +958,8 @@ class _MeuImovelState extends State<MeuImovel> {
                             imovel.idUsuario = document['idDono'];
                             imovel.tipoImovel = document['tipoDonoDoImovel'];
                             imovel.valor = document['valorDonoDoImovel'];
-                            imovel.urlImagens = document['urlImagensDonoDoImovel'];
+                            imovel.urlImagens =
+                                document['urlImagensDonoDoImovel'];
                             imovel.url2 = document['urlImagensDonoDoImovel2'];
                             imovel.url3 = document['urlImagensDonoDoImovel3'];
                             imovel.url4 = document['urlImagensDonoDoImovel4'];
@@ -939,11 +969,16 @@ class _MeuImovelState extends State<MeuImovel> {
                             imovel.cep = document['cepDonoDoImovel'];
                             imovel.bairro = document['bairroDonoDoImovel'];
                             imovel.numero = document['numeroDono'];
-                            imovel.nomeDaImagem = document['nomeDaImagemImovel'];
-                            imovel.nomeDaImagem2 = document['nomeDaImagemImovel2'];
-                            imovel.nomeDaImagem3 = document['nomeDaImagemImovel3'];
-                            imovel.nomeDaImagem4 = document['nomeDaImagemImovel4'];
-                            imovel.nomeDaImagem5 = document['nomeDaImagemImovel5'];
+                            imovel.nomeDaImagem =
+                                document['nomeDaImagemImovel'];
+                            imovel.nomeDaImagem2 =
+                                document['nomeDaImagemImovel2'];
+                            imovel.nomeDaImagem3 =
+                                document['nomeDaImagemImovel3'];
+                            imovel.nomeDaImagem4 =
+                                document['nomeDaImagemImovel4'];
+                            imovel.nomeDaImagem5 =
+                                document['nomeDaImagemImovel5'];
                             imovel.cpfUsuario = _cpf;
                             imovel.telefoneUsuario = _telefone;
                             db
@@ -955,10 +990,12 @@ class _MeuImovelState extends State<MeuImovel> {
                                 .document(document.documentID)
                                 .delete();
 
-                            db.collection("propostasDoLocador")
+                            db
+                                .collection("propostasDoLocador")
                                 .document(widget.uid)
                                 .delete();
-                            db.collection("propostasDoLocatario")
+                            db
+                                .collection("propostasDoLocatario")
                                 .document(document['idLocatario'])
                                 .delete();
 
@@ -997,7 +1034,9 @@ class _MeuImovelState extends State<MeuImovel> {
       return Card(
           child: ListTile(
         title: Text(
-          document['logadouroDonoDoImovel'] + ' - ' + document['bairroDonoDoImovel'],
+          document['logadouroDonoDoImovel'] +
+              ' - ' +
+              document['bairroDonoDoImovel'],
           textAlign: TextAlign.center,
         ),
         subtitle: Text(
@@ -1025,11 +1064,15 @@ class _MeuImovelState extends State<MeuImovel> {
           color: Colors.red,
           child: ListTile(
             title: Text(
-              document['logadouroDonoDoImovel'] + ' - ' + document['bairroDonoDoImovel'],
+              document['logadouroDonoDoImovel'],
               textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             subtitle: Text(
-              document['complementoDonoDoImovel'],
+              document['valorDonoDoImovel'],
               textAlign: TextAlign.center,
             ),
             leading: CircleAvatar(
@@ -1094,6 +1137,16 @@ class _MeuImovelState extends State<MeuImovel> {
 
   @override
   Widget build(BuildContext context) {
+
+    var carregandoDados = Center(
+      child: Column(
+        children: <Widget>[
+          Text("Carregando imóveis alugado"),
+          CircularProgressIndicator()
+        ],
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -1103,27 +1156,46 @@ class _MeuImovelState extends State<MeuImovel> {
         child: Column(
           children: <Widget>[
             Divider(),
-            Expanded(
-              child: StreamBuilder(
-                stream: Firestore.instance
-                    .collection('meuImovel')
-                    .where("idDono", isEqualTo: widget.uid)
-                    .snapshots(),
-                //print an integer every 2secs, 10 times
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Text("Loading..");
+            StreamBuilder(
+              stream: Firestore.instance
+                  .collection('meuImovel')
+                  .where("idDono", isEqualTo: widget.uid)
+                  .snapshots(),
+              //print an integer every 2secs, 10 times
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return carregandoDados;
+                    break;
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+
+                  var docs = snapshot.data.documents;
+                  if (docs.length == 0) {
+                    return Container(
+                      padding: EdgeInsets.all(25),
+                      child: Text(
+                        "Nenhum imóvel locado! :( ",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    );
                   }
-                  return ListView.builder(
-                    itemExtent: 80.0,
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (context, index) {
-                      return _buildList(
-                          context, snapshot.data.documents[index]);
-                    },
+
+                  return Expanded(
+                    child: ListView.builder(
+                      itemExtent: 80.0,
+                      itemCount: docs.length,
+                      itemBuilder: (context, index) {
+                        return _buildList(context, snapshot.data.documents[index]);
+                      },
+                    ),
                   );
-                },
-              ),
+                    break;
+                }
+                return Container();
+              },
             ),
           ],
         ),

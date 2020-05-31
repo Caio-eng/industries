@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +15,7 @@ import 'package:industries/ReciboImovel.dart';
 import 'package:industries/telas/PropostasDoLocador.dart';
 import 'package:industries/telas/PropostasDoLocatario.dart';
 import 'package:industries/telas/splash.dart';
+import 'package:industries/utils/Config.dart';
 import 'CadastroImoveis.dart';
 
 class Home extends StatefulWidget {
@@ -47,9 +50,17 @@ class _HomeState extends State<Home> {
   var _pes;
   String filter;
   var profile;
-
+  List<String> itensMenu = [];
+  List<DropdownMenuItem<String>> _listaItensDropTipos;
+  List<DropdownMenuItem<String>> _listaItensDropEstados;
   var imoveis;
   var imoveisList;
+
+  final _controller = StreamController<QuerySnapshot>.broadcast();
+
+  String _itemSelecionadoEstado;
+  String _itemLogradouro;
+  String _itemSelecionadoTipos;
 
 
   Widget _buildList(BuildContext context, var document) {
@@ -104,11 +115,7 @@ class _HomeState extends State<Home> {
       switch (itemEscolhido) {
         case "Editar":
           print("Editar");
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => EditarImovel(document, widget.user,
-                      widget.photo, widget.emai, widget.uid)));
+
           break;
         case "Deletar":
           print("Deletar");
@@ -125,7 +132,7 @@ class _HomeState extends State<Home> {
                     widget.photo, widget.emai, widget.uid))),
         child: Card(
           child: Padding(
-            padding: EdgeInsets.all(1),
+            padding: EdgeInsets.all(12),
             child: Row(
               children: <Widget>[
                 SizedBox(
@@ -162,7 +169,7 @@ class _HomeState extends State<Home> {
         onTap: (){},
         child:  Card(
           child: Padding(
-            padding: EdgeInsets.all(1),
+            padding: EdgeInsets.all(12),
             child: Row(
               children: <Widget>[
                 SizedBox(
@@ -199,20 +206,31 @@ class _HomeState extends State<Home> {
                 Expanded(
                   flex: 1,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      PopupMenuButton<String>(
-                        onSelected: _escolhaMenuItem,
-                        itemBuilder: (context) {
-                          return itensMenu.map((String item) {
-                            return PopupMenuItem<String>(
-                              value: item,
-                              child: Text(item),
-                           );
-                         }).toList();
+                      FlatButton(
+                        padding: EdgeInsets.all(10),
+                        color: Colors.blue,
+                        onPressed: (){
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditarImovel(document, widget.user,
+                                      widget.photo, widget.emai, widget.uid)));
                         },
-                      )
+                        child: Icon(Icons.edit, color: Colors.white,),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      FlatButton(
+                        padding: EdgeInsets.all(10),
+                        color: Colors.red,
+                        onPressed: () {
+                          _deletarImovel();
+                        },
+                        child: Icon(Icons.delete, color: Colors.white,),
+                      ),
                     ],
                   ),
                 ),
@@ -223,56 +241,53 @@ class _HomeState extends State<Home> {
       );
     }
 
-
-//    return Card(
-//      child: document['idUsuario'] != _idUsuarioLogado
-//          ? ListTile(
-//        onTap: () => Navigator.push(
-//            context,
-//            MaterialPageRoute(
-//                builder: (context) => Detalhes(document, widget.user,
-//                    widget.photo, widget.emai, widget.uid))),
-//        title: Text(
-//          document['logadouro'] + '\n' + document['bairro'],
-//          textAlign: TextAlign.center,
-//        ),
-//        subtitle: Text(
-//          'Valor: ${document['valor']}',
-//          textAlign: TextAlign.center,
-//        ),
-//        leading: CircleAvatar(
-//          radius: 25,
-//          backgroundImage: document['urlImagens'] != null
-//            ? NetworkImage(document['urlImagens'])
-//            : NetworkImage(''),
-//        ),
-//      )
-//          : ListTile(
-//        title: Text(
-//          document['logadouro'] + '\n' + document['bairro'],
-//          textAlign: TextAlign.center,
-//        ),
-//        subtitle: Text(
-//          'Valor: ${document['valor']}' ,
-//          textAlign: TextAlign.center,
-//        ),
-//        leading: Icon(Icons.home),
-//        trailing: PopupMenuButton<String>(
-//          onSelected: _escolhaMenuItem,
-//          itemBuilder: (context) {
-//            return itensMenu.map((String item) {
-//              return PopupMenuItem<String>(
-//                value: item,
-//                child: Text(item),
-//              );
-//            }).toList();
-//          },
-//        ),
-//      ),
-//    );
   }
 
-  _pesquisar() async {
+
+
+  _carregarItensDropdown() {
+    //Estados
+    _listaItensDropEstados = Config.getEstados();
+
+    //Tipos
+    _listaItensDropTipos = Config.getTipos();
+  }
+
+  Future<Stream<QuerySnapshot>> _adicionarListenerImoveis() async {
+
+    Firestore db = Firestore.instance;
+    Stream<QuerySnapshot> stream = db
+        .collection("imoveis")
+        .snapshots();
+
+    stream.listen((dados){
+      _controller.add(dados);
+    });
+
+  }
+
+  Future<Stream<QuerySnapshot>> _filtrarImoveis() async {
+    Firestore db = Firestore.instance;
+    Query query = db.collection("imoveis");
+
+    if (_itemSelecionadoEstado != null) {
+      query = query.where("siglaEstado", isEqualTo: _itemSelecionadoEstado);
+    }
+
+    if (_itemSelecionadoTipos != null) {
+      query = query.where("tipoImovel", isEqualTo: _itemSelecionadoTipos);
+    }
+
+
+    Stream<QuerySnapshot> stream = query.snapshots();
+
+    stream.listen((dados) {
+      _controller.add(dados);
+    });
+  }
+
+
+    _pesquisar() async {
     _pes = editingController.text;
     QuerySnapshot querySnapshot = await db.collection("imoveis")
         .where("logadouro" , isGreaterThanOrEqualTo: _pes)
@@ -303,6 +318,7 @@ class _HomeState extends State<Home> {
     DocumentSnapshot snapshot =
     await db.collection("usuarios").document(widget.uid).get();
     Map<String, dynamic> dados = snapshot.data;
+
     setState(() {
       /* _id = dados['idUsuario'];
       _nome = dados['nome'];
@@ -323,39 +339,24 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _pesquisar();
-    _pes = [];
-    Firestore.instance.collection('imoveis').snapshots().listen((QuerySnapshot snapshot) {
-      print('entrou');
-      print(snapshot.documents.first.data.keys.toString());
-      var docs = [];
-      for (var i = 0; i < snapshot.documents.length; i++) {
-        docs.add(snapshot.documents[i].data);
-      }
-      setState(() {
-        imoveis = docs;
-        imoveisList = docs;
-      });
-
-
-    });
+    _carregarItensDropdown();
     _recuperarDados();
-    controller.addListener(() {
-      setState(() {
-        filter = controller.text;
-      });
-    });
-
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+    _adicionarListenerImoveis();
+    _pesquisar();
   }
 
   @override
   Widget build(BuildContext context) {
+
+    var carregandoDados = Center(
+      child: Column(
+        children: <Widget>[
+          Text("Carregando imóveis"),
+          CircularProgressIndicator()
+        ],
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -372,20 +373,7 @@ class _HomeState extends State<Home> {
                           builder: (context) => Configuracoes(widget.user,
                               widget.photo, widget.emai, widget.uid)));
                 },
-                child: Icon(Icons.person),
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CadastroImoveis(
-                              widget.user, widget.photo, widget.emai, widget.uid)));
-                },
-                child: Icon(Icons.add),
+                child: Icon(Icons.person_pin),
               ),
             ],
           ),
@@ -393,6 +381,19 @@ class _HomeState extends State<Home> {
             padding: EdgeInsets.only(right: 18),
           ),
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+          foregroundColor: Colors.white,
+          icon: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CadastroImoveis(
+                        widget.user, widget.photo, widget.emai, widget.uid)));
+          },
+          label: Text("Cadastrar", style: TextStyle(fontSize: 18),),
       ),
       drawer: Drawer(
         child: ListView(
@@ -792,63 +793,101 @@ class _HomeState extends State<Home> {
       body: Container(
         child: Column(
           children: <Widget>[
-            Divider(),
-            Padding(
-              padding: EdgeInsets.all(7),
-              child: TextField(
-                controller: editingController,
-                onChanged: (texto) {
-
-                  if (texto.length > 3 ) {
-                    var new_imovies = [];
-                    print('texto pesquisa' + texto);
-                    for (var i = 0; i < imoveis.length; i++) {
-                      if (imoveis[i]['logadouro'].toLowerCase().contains(texto.toLowerCase())) {
-                        new_imovies.add(imoveis[i]);
-                      }
-
-                    }
-
-                    setState(() {
-                      imoveis = new_imovies;
-                    });
-                  } else {
-                    setState(() {
-                      imoveis = imoveisList;
-                    });
-                  }
-                },
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: "Pesquisar Imóveis",
-                  hintText: "Informe o endereço",
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(32))
+            Row(
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: DropdownButtonHideUnderline(
+                    child: Center(
+                      child: DropdownButton(
+                        iconEnabledColor: Colors.blue,
+                        value: _itemSelecionadoEstado,
+                        items: _listaItensDropEstados,
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black
+                        ),
+                        onChanged: (estado){
+                          setState(() {
+                            _itemSelecionadoEstado = estado;
+                            _filtrarImoveis();
+                          });
+                        },
+                      ),
+                    ),
                   ),
                 ),
-
-
-              ),
+                Container(
+                  color: Colors.grey[200],
+                  width: 1,
+                  height: 50,
+                ),
+                Expanded(
+                  flex: 2,
+                  child: DropdownButtonHideUnderline(
+                    child: Center(
+                      child: DropdownButton(
+                        iconEnabledColor: Colors.blue,
+                        value: _itemSelecionadoTipos,
+                        items: _listaItensDropTipos,
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black
+                        ),
+                        onChanged: (tipos){
+                          setState(() {
+                            _itemSelecionadoTipos = tipos;
+                            _filtrarImoveis();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             Divider(),
-            this.imoveis == null ? Text("Loading..") :
+            StreamBuilder(
+              stream: _controller.stream,
+              builder: (context, snapshot) {
+                switch(snapshot.connectionState){
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return carregandoDados;
+                    break;
+                  case ConnectionState.active:
+                  case ConnectionState.done:
 
-            Expanded(
-                child:
+                  var docs = snapshot.data.documents;
 
-                ListView.builder(
-                  itemExtent: 80,
-                  itemCount: imoveis.length,
-                  itemBuilder: (_, index) {
-                    return _buildList(
-                        context, imoveis[index]);
-                  },
-                )
+                  if( docs.length == 0 ){
+                    return Container(
+                      padding: EdgeInsets.all(25),
+                      child: Text("Nenhum imóvel! :( ",style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold
+                      ),),
+                    );
+                  }
 
 
-            )
-            ,
+                  return Expanded(
+                    child: ListView.builder(
+                        itemCount: docs.length,
+                        itemBuilder: (_, indice){
+                          return _buildList(
+                            context, docs[indice]
+                          );
+                        },
+                    ),
+                  );
+
+                  break;
+
+                }
+                return Container();
+              },
+            ),
           ],
         ),
       ),

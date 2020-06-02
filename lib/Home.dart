@@ -308,21 +308,21 @@ class _HomeState extends State<Home> {
     setState(() {
       _idLocatario = dados2['idLocatario'];
       _idLocador = dados2['idLocador'];
-      print("Aqui" + _idLocatario);
     });
   }
 
   @override
   void initState() {
     super.initState();
+    _recuperarDados();
     _adicionarListenerImoveis();
     _carregarItensDropdown();
-    _recuperarDados();
     _pesquisar();
   }
 
   @override
   Widget build(BuildContext context) {
+
 
     var carregandoDados = Center(
       child: Column(
@@ -351,7 +351,7 @@ class _HomeState extends State<Home> {
             },
           ),
           Padding(
-            padding: EdgeInsets.only(right: 18),
+            padding: EdgeInsets.only(right: 4),
           ),
         ],
       ),

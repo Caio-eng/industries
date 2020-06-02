@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_format/date_format.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,6 +26,7 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
   File _imagem;
   bool _subindoImagem = false;
   Firestore db = Firestore.instance;
+  String _id;
 
   final _controller = StreamController<QuerySnapshot>.broadcast();
 
@@ -183,7 +183,7 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
     }
 
     return Card(
-      child:ListTile(
+      child: ListTile(
 
         contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
         leading: Icon(Icons.business_center),
@@ -443,6 +443,7 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
     super.initState();
     _adicionarListenerPropostas();
   }
+
   @override
   Widget build(BuildContext context) {
 
@@ -476,6 +477,7 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
                     case ConnectionState.done:
 
                     var docs = snapshot.data.documents;
+
                     if( docs.length == 0 ){
                       return Container(
                         padding: EdgeInsets.all(25),

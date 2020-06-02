@@ -25,6 +25,7 @@ class _ConfiguracoesState extends State<Configuracoes> {
   TextEditingController _controllerNome = TextEditingController();
   File _imagem;
   String _urlImagemRecuperada;
+  String _idUsuario;
   String _idUsuarioLogado, _nome, _idCar;
   bool _subindoImagem = false;
   var controllerTelefone = new MaskedTextController(mask: '(00) 00000 - 0000');
@@ -150,6 +151,7 @@ class _ConfiguracoesState extends State<Configuracoes> {
     } else {
        _controllerNome.text = dados['nome'];
     }
+    _idUsuario = dados['idUsuario'];
     controllerCPF.text = dados['cpf'];
     controllerTelefone.text = dados['telefone'];
     print(dados['urlImagem']);
@@ -283,7 +285,9 @@ class _ConfiguracoesState extends State<Configuracoes> {
                     padding: EdgeInsets.only(top: 16, bottom: 10),
                     child: RaisedButton(
                       child: Text(
-                        "Salvar",
+                        _idUsuario != null
+                        ? "Atualizar"
+                        : "Salvar",
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                       color: Colors.blue,

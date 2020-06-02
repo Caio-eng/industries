@@ -97,8 +97,7 @@ class _ReciboImovelState extends State<ReciboImovel> {
         child: Column(
           children: <Widget>[
             Divider(),
-            Expanded(
-              child: StreamBuilder(
+            StreamBuilder(
                 stream: Firestore.instance
                     .collection('pagarImoveis')
                     .document(widget.uid)
@@ -109,17 +108,18 @@ class _ReciboImovelState extends State<ReciboImovel> {
                   if (!snapshot.hasData) {
                     return Text("Loading..");
                   }
-                  return ListView.builder(
-                    itemExtent: 185,
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (context, index) {
-                      return _buildList(
-                          context, snapshot.data.documents[index]);
-                    },
+                  return Expanded(
+                    child: ListView.builder(
+                      itemExtent: 230,
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (context, index) {
+                        return _buildList(
+                            context, snapshot.data.documents[index]);
+                      },
+                    ),
                   );
                 },
               ),
-            ),
 
           ],
         ),

@@ -291,8 +291,8 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
 
       final todayDate = DateTime.now();
       print(todayDate.month + 1);
-      String diaIni, diaFeve;
-      String dia, dia2;
+      String diaIni;
+      String dia;
       String mes1,
           mes2,
           mes3,
@@ -308,15 +308,13 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
       String ano, ano2;
       dia = document['dataFinal'].toString();
       diaIni = document['dataInicio'].toString();
-      diaFeve = '28';
-      dia2 = '5';
       mes1 = (todayDate.month + 1).toString();
       mes2 = (todayDate.month + 2).toString();
       mes3 = (todayDate.month + 3).toString();
       mes4 = (todayDate.month + 4).toString();
       mes5 = (todayDate.month + 5).toString();
       mes6 = (todayDate.month + 6).toString();
-      mes7 = (todayDate.month + 7).toString();
+      mes7 = (todayDate.month - 5).toString();
       mes8 = (todayDate.month - 4).toString();
       mes9 = (todayDate.month - 3).toString();
       mes10 = (todayDate.month - 2).toString();
@@ -619,6 +617,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                  Divider(),
                   dados4 == null ||
                           dados4['idDoPagador'] == null ||
                           _idUsuarioDoCartao == null
@@ -701,7 +700,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           Text(
                                             'Data Limite: ' +
                                                 dia.substring(0, 2) +
-                                                '/' +
                                                 mes1 +
                                                 '/' +
                                                 ano,
@@ -904,7 +902,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                       _valor +
                                       "\nData de Venc: " +
                                       dia.substring(0, 2) +
-                                      '/' +
                                       mes1 +
                                       '/' +
                                       ano,
@@ -957,6 +954,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                  Divider(),
                   dados5 == null ||
                           dados5['idDoPagador'] == null ||
                           _idUsuarioLogado == null
@@ -1030,7 +1028,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           Text(
                                             'Data Inicial: ' +
                                                 diaIni.substring(0, 2) +
-                                                '/' +
                                                 mes2 +
                                                 '/' +
                                                 ano,
@@ -1039,7 +1036,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           Text(
                                             'Data Limite: ' +
                                                 dia.substring(0, 2) +
-                                                '/' +
                                                 mes2 +
                                                 '/' +
                                                 ano,
@@ -1242,7 +1238,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                       _valor +
                                       "\nData de Venc: " +
                                       dia.substring(0, 2) +
-                                      '/' +
                                       mes2 +
                                       '/' +
                                       ano,
@@ -1295,6 +1290,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                  Divider(),
                   dados6 == null ||
                           dados6['idDoPagador'] == null ||
                           _idUsuarioLogado == null
@@ -1379,7 +1375,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           Text(
                                             'Data Limite: ' +
                                                 dia.substring(0, 2) +
-                                                '/' +
                                                 mes3 +
                                                 '/' +
                                                 ano,
@@ -1582,7 +1577,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                       _valor +
                                       "\nData de Venc: " +
                                       dia.substring(0, 2) +
-                                      '/' +
                                       mes3 +
                                       '/' +
                                       ano,
@@ -1635,6 +1629,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                  Divider(),
                   dados7 == null ||
                           dados7['idDoPagador'] == null ||
                           _idUsuarioLogado == null
@@ -1720,7 +1715,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           Text(
                                             'Data Limite: ' +
                                                 dia.substring(0, 2) +
-                                                '/' +
                                                 mes4 +
                                                 '/' +
                                                 ano,
@@ -1923,7 +1917,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                       _valor +
                                       "\nData de Venc: " +
                                       dia.substring(0, 2) +
-                                      '/' +
                                       mes4 +
                                       '/' +
                                       ano,
@@ -1976,6 +1969,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                  Divider(),
                   dados8 == null ||
                           dados8['idDoPagador'] == null ||
                           _idUsuarioLogado == null
@@ -2062,7 +2056,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           Text(
                                             'Data Limite: ' +
                                                 dia.substring(0, 2) +
-                                                '/' +
                                                 mes5 +
                                                 '/' +
                                                 ano,
@@ -2265,7 +2258,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                       _valor +
                                       "\nData de Venc: " +
                                       dia.substring(0, 2) +
-                                      '/' +
                                       mes5 +
                                       '/' +
                                       ano,
@@ -2318,6 +2310,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                  Divider(),
                   dados9 == null ||
                           dados9['idDoPagador'] == null ||
                           _idUsuarioLogado == null
@@ -2405,7 +2398,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           Text(
                                             'Data Limite: ' +
                                                 dia.substring(0, 2) +
-                                                '/' +
                                                 mes6 +
                                                 '/' +
                                                 ano,
@@ -2608,7 +2600,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                       _valor +
                                       "\nData de Venc: " +
                                       dia.substring(0, 2) +
-                                      '/' +
                                       mes6 +
                                       '/' +
                                       ano,
@@ -2661,6 +2652,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                  Divider(),
                   dados10 == null ||
                           dados10['idDoPagador'] == null ||
                           _idUsuarioLogado == null
@@ -2749,7 +2741,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           Text(
                                             'Data Limite: ' +
                                                 dia.substring(0, 2) +
-                                                '/' +
                                                 mes7 +
                                                 '/' +
                                                 ano,
@@ -2952,7 +2943,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                       _valor +
                                       "\nData de Venc: " +
                                       dia.substring(0, 2) +
-                                      '/' +
                                       mes7 +
                                       '/' +
                                       ano,
@@ -3005,6 +2995,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                  Divider(),
                   dados11 == null ||
                           dados11['idDoPagador'] == null ||
                           _idUsuarioLogado == null
@@ -3094,7 +3085,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           Text(
                                             'Data Limite: ' +
                                                 dia.substring(0, 2) +
-                                                '/' +
                                                 mes8 +
                                                 '/' +
                                                 ano2,
@@ -3297,7 +3287,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                       _valor +
                                       "\nData de Venc: " +
                                       dia.substring(0, 2) +
-                                      '/' +
                                       mes8 +
                                       '/' +
                                       ano2,
@@ -3350,6 +3339,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                  Divider(),
                   dados12 == null ||
                           dados12['idDoPagador'] == null ||
                           _idUsuarioLogado == null
@@ -3430,7 +3420,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           ),
                                           Text(
                                             'Data Inicial: ' +
-                                                diaFeve +
+                                                diaIni.substring(0, 2) +
                                                 '/' +
                                                 mes9 +
                                                 '/' +
@@ -3439,8 +3429,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           ),
                                           Text(
                                             'Data Limite: ' +
-                                                dia2 +
-                                                '/' +
+                                                dia.substring(0, 2) +
                                                 mes9 +
                                                 '/' +
                                                 ano2,
@@ -3642,8 +3631,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                       " - Valor: " +
                                       _valor +
                                       "\nData de Venc: " +
-                                      dia2 +
-                                      '/' +
+                                      dia.substring(0, 2) +
                                       mes9 +
                                       '/' +
                                       ano2,
@@ -3696,6 +3684,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                  Divider(),
                   dados13 == null ||
                           dados13['idDoPagador'] == null ||
                           _idUsuarioLogado == null
@@ -3787,7 +3776,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           Text(
                                             'Data Limite: ' +
                                                 dia.substring(0, 2) +
-                                                '/' +
                                                 mes10 +
                                                 '/' +
                                                 ano2,
@@ -3990,7 +3978,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                       _valor +
                                       "\nData de Venc: " +
                                       dia.substring(0, 2) +
-                                      '/' +
                                       mes10 +
                                       '/' +
                                       ano2,
@@ -4043,6 +4030,7 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                  Divider(),
                   dados14 == null ||
                           dados14['idDoPagador'] == null ||
                           _idUsuarioLogado == null
@@ -4135,7 +4123,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                           Text(
                                             'Data Limite: ' +
                                                 dia.substring(0, 2) +
-                                                '/' +
                                                 mes11 +
                                                 '/' +
                                                 ano2,
@@ -4338,7 +4325,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                       _valor +
                                       "\nData de Venc: " +
                                       dia.substring(0, 2) +
-                                      '/' +
                                       mes11 +
                                       '/' +
                                       ano2,

@@ -314,9 +314,9 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _recuperarDados();
     _adicionarListenerImoveis();
     _carregarItensDropdown();
+    _recuperarDados();
     _pesquisar();
   }
 

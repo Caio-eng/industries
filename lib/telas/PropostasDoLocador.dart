@@ -27,6 +27,7 @@ class _PropostasDoLocadorState extends State<PropostasDoLocador> {
   String _urlImagemRecuperada;
   File _imagem;
   bool _subindoImagem = false;
+  BuildContext _dialogContext;
 
   Future<List<PropostaDoLocador>> _recuperarPropostas() async {
     Firestore db = Firestore.instance;
@@ -127,12 +128,35 @@ class _PropostasDoLocadorState extends State<PropostasDoLocador> {
                             PropostaDoLocador propostaDoLocador =
                                 listaItens[indice];
 
+                            _abrirDialog(BuildContext context){
+
+                              showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context){
+                                    return AlertDialog(
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          CircularProgressIndicator(),
+                                          SizedBox(height: 20,),
+                                          Text("Carregando...")
+                                        ],
+                                      ),
+                                    );
+                                  }
+                              );
+
+                            }
+
+
                             _atualizarUrlImagemFirestore(String url) {
                               Map<String, dynamic> dadosAtualizar = {"url": url};
 
                               Firestore db = Firestore.instance;
                               db.collection("propostasDoLocador").document(widget.uid).updateData(dadosAtualizar);
                               db.collection("propostasDoLocatario").document(propostaDoLocador.idLocatario).updateData(dadosAtualizar);
+                              Navigator.pop(_dialogContext);
                               Navigator.pop(context);
                             }
 
@@ -146,6 +170,7 @@ class _PropostasDoLocadorState extends State<PropostasDoLocador> {
                             }
 
                             Future _uploadImagem() async {
+                              _abrirDialog(_dialogContext);
                               String nomeImagem = DateTime.now().millisecondsSinceEpoch.toString();
                               FirebaseStorage storage = FirebaseStorage.instance;
                               StorageReference pastaRaiz = storage.ref();
@@ -622,6 +647,8 @@ class _PropostasDoLocadorState extends State<PropostasDoLocador> {
                                                         shape: RoundedRectangleBorder(
                                                             borderRadius: BorderRadius.circular(32)),
                                                         onPressed: () {
+                                                          //Configura dialog context
+                                                          _dialogContext = context;
                                                           _recuperarImagem("galeria");
                                                         },
                                                       )

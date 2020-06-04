@@ -14,6 +14,10 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: null,
+        title: Text(''),
+      ),
       body: Container(
         decoration: BoxDecoration(color: Colors.white),
         padding: EdgeInsets.all(20),
@@ -32,7 +36,7 @@ class Login extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(bottom: 30),
+                  padding: EdgeInsets.only(bottom: 30, top: 30),
                   child: Image.asset(
                     "imagens/logo.png",
                     width: 200,
@@ -40,7 +44,7 @@ class Login extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(20),
                   child: Container(
                     height: 60,
                     width: 60,

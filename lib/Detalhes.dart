@@ -26,7 +26,7 @@ class Detalhes extends StatefulWidget {
 
 class _DetalhesState extends State<Detalhes>  {
   String _idUsuarioLogado = "";
-  String _id;
+  String _id, _idMeu;
   String _idImovel = "";
   String _url, _url2, _url3, _url4, _url5;
   String _log = "";
@@ -172,6 +172,12 @@ class _DetalhesState extends State<Detalhes>  {
     setState(() {
       _id = dados3['idUsuario'];
       print("Aqui: " + _id);
+    });
+    DocumentSnapshot snapshot4 =
+    await db.collection("cartao").document(widget.uid).get();
+    Map<String, dynamic> dados4 = snapshot4.data;
+    setState(() {
+      _idMeu = dados4['idUsuario'];
     });
     DocumentSnapshot snapshot =
     await db.collection("usuarios").document(widget.uid).get();
@@ -364,16 +370,51 @@ class _DetalhesState extends State<Detalhes>  {
                       ),
                     ),
                     onTap: () {
-                      if (_id != null) {
+                      if (_id != null && _idMeu != null) {
                         _mandarProposta();
                        } else {
                           setState(() {
-                             _mensagem = 'Para mandar a proposta neste imovel é necessario ter cadastrado o cartão';
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible: false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(
+                                    'Atenção',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                          'Necessario Cadastrar o cartão de credito!',
+                                          textAlign: TextAlign.center,),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        FlatButton(
+                                          child: Text('Voltar'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           });
                       }
                     },
                   ),
                 ),
+
+
+
                 Center(
                    child: Text(
                       _mensagem,

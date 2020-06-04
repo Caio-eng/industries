@@ -27,16 +27,40 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
   bool _subindoImagem = false;
   Firestore db = Firestore.instance;
   String _id;
+  BuildContext _dialogContext;
 
   final _controller = StreamController<QuerySnapshot>.broadcast();
 
   Widget _buildList(BuildContext context, var document) {
+
+    _abrirDialog(BuildContext context){
+
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context){
+            return AlertDialog(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  CircularProgressIndicator(),
+                  SizedBox(height: 20,),
+                  Text("Carregando...")
+                ],
+              ),
+            );
+          }
+      );
+
+    }
+
     _atualizarUrlImagemFirestore(String url) {
       Map<String, dynamic> dadosAtualizar = {"url2": url};
 
       Firestore db = Firestore.instance;
       db.collection("propostasDoLocatario").document(widget.uid).updateData(dadosAtualizar);
       db.collection("propostasDoLocador").document(document['idLocador']).updateData(dadosAtualizar);
+      Navigator.pop(_dialogContext);
       Navigator.pop(context);
     }
 
@@ -49,7 +73,10 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
       });
     }
 
+
+
     Future _uploadImagem() async {
+      _abrirDialog(_dialogContext);
       String nomeImagem = DateTime.now().millisecondsSinceEpoch.toString();
       FirebaseStorage storage = FirebaseStorage.instance;
       StorageReference pastaRaiz = storage.ref();
@@ -219,6 +246,8 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
               }
 
             }
+
+
             return showDialog<void>(
               context: context,
               barrierDismissible: false, // user must tap button!
@@ -300,6 +329,8 @@ class _PropostasDoLocatarioState extends State<PropostasDoLocatario> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(32)),
                             onPressed: () {
+                              //Configura dialog context
+                              _dialogContext = context;
                               _recuperarImagem("galeria");
                             },
                           ),

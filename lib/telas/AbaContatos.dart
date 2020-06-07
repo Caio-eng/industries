@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/model/Conversa.dart';
@@ -43,8 +45,6 @@ class _AbaContatosState extends State<AbaContatos> {
   }
 
   _recuperarDadosUsuario() async {
-
-
     setState(() {
       _idUsuarioLogado = widget.uid;
     });
@@ -60,55 +60,70 @@ class _AbaContatosState extends State<AbaContatos> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Usuario>>(
-      future: _recuperarContatos(),
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-          case ConnectionState.waiting:
-            return Center(
-              child: Column(
-                children: <Widget>[
-                  Text("Carregando contatos"),
-                  CircularProgressIndicator()
-                ],
-              ),
-            );
-            break;
-          case ConnectionState.active:
-          case ConnectionState.done:
-            return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (_, indice) {
-                  List<Usuario> listaItens = snapshot.data;
-                  Usuario usuario = listaItens[indice];
+    return Scaffold(
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Divider(),
+            FutureBuilder<List<Usuario>>(
+              future: _recuperarContatos(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return Center(
+                      child: Column(
+                        children: <Widget>[
+                          Text("Carregando contatos"),
+                          CircularProgressIndicator()
+                        ],
+                      ),
+                    );
+                    break;
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    return Expanded(
+                      child: ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (_, indice) {
+                            List<Usuario> listaItens = snapshot.data;
+                            Usuario usuario = listaItens[indice];
 
-
-                  return ListTile(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Mensagens(usuario, widget.user, widget.photo, widget.emai, widget.uid)));
-                    },
-                    contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    leading: CircleAvatar(
-                        maxRadius: 30,
-                        backgroundColor: Colors.grey,
-                        backgroundImage: usuario.urlImagem != null
-                            ? NetworkImage(usuario.urlImagem)
-                            : NetworkImage(usuario.photo)),
-                    title: Text(
-                      usuario.nome,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  );
-                });
-            break;
-        }
-        return Container();
-      },
+                            return ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Mensagens(
+                                            usuario,
+                                            widget.user,
+                                            widget.photo,
+                                            widget.emai,
+                                            widget.uid)));
+                              },
+                              contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                              leading: CircleAvatar(
+                                  maxRadius: 30,
+                                  backgroundColor: Colors.grey,
+                                  backgroundImage: usuario.urlImagem != null
+                                      ? NetworkImage(usuario.urlImagem)
+                                      : NetworkImage(usuario.photo)),
+                              title: Text(
+                                usuario.nome,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            );
+                          }),
+                    );
+                    break;
+                }
+                return Container();
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -14,6 +14,7 @@ import 'package:industries/MeuImovel.dart';
 import 'package:industries/ReciboImovel.dart';
 import 'package:industries/telas/PropostasDoLocador.dart';
 import 'package:industries/telas/PropostasDoLocatario.dart';
+import 'package:industries/telas/Sobre.dart';
 import 'package:industries/telas/splash.dart';
 import 'package:industries/utils/Config.dart';
 import 'CadastroImoveis.dart';
@@ -672,7 +673,14 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(color: Colors.grey.shade400))),
                 child: InkWell(
                   splashColor: Colors.blue,
-                  onTap: () => {},
+                  onTap: () => {
+                    Navigator.push(
+                        context,
+                       MaterialPageRoute(
+                         builder: (context) => Sobre()
+                       )
+                    )
+                  },
                   child: Container(
                     height: 50,
                     child: Row(

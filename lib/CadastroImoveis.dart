@@ -1076,16 +1076,9 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(32)),
                       onPressed: () {
-                        if (_idCar == null) {
-                          setState(() {
-                            _mensagemErro =
-                                'Cadastre o seu Cartão para poder usufluir do aplicativo!';
-                          });
-                        } else if (_idCar == widget.uid ) {
                           if (_formKey.currentState.validate()) {
                             print("entrou aqui");
                             _validarCampos();
-                          }
                         }
                       },
                     ),

@@ -18,6 +18,7 @@ class ImoveisAnunciado extends StatefulWidget {
 
 class _ImoveisAnunciadoState extends State<ImoveisAnunciado> {
   Firestore db = Firestore.instance;
+  String _idCar;
 
   final _controller = StreamController<QuerySnapshot>.broadcast();
 
@@ -162,10 +163,24 @@ class _ImoveisAnunciadoState extends State<ImoveisAnunciado> {
 
   }
 
+  _recuperarDadosCartao() async {
+    Firestore db = Firestore.instance;
+
+    DocumentSnapshot snapshot =
+        await db.collection("cartao").document(widget.uid).get();
+    Map<String, dynamic> dados = snapshot.data;
+
+    setState(() {
+      _idCar = dados['idUsuario'];
+    });
+
+  }
+
   @override
   void initState() {
     super.initState();
     _adicionarListenerImoveis();
+    _recuperarDadosCartao();
   }
 
 
@@ -191,11 +206,50 @@ class _ImoveisAnunciadoState extends State<ImoveisAnunciado> {
         foregroundColor: Colors.white,
         icon: Icon(Icons.add),
         onPressed: (){
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CadastroImoveis(
-                      widget.user, widget.photo, widget.emai, widget.uid)));
+          if (_idCar == null) {
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                    'Atenção',
+                    textAlign: TextAlign.center,
+                  ),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text(
+                          'Cadastre o seu Cartão para poder usufluir do aplicativo!',
+                          textAlign: TextAlign.center,),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        FlatButton(
+                          child: Text('Voltar'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            );
+          } else if (_idCar == widget.uid) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        CadastroImoveis(
+                            widget.user, widget.photo, widget.emai,
+                            widget.uid)));
+          }
+          return Container();
         },
         label: Text("Cadastrar", style: TextStyle(fontSize: 18),),
       ),

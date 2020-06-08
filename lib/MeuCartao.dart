@@ -18,7 +18,7 @@ class MeuCartao extends StatefulWidget {
 class _MeuCartaoState extends State<MeuCartao> {
   String _idUsuarioLogado = "";
   String _id = "";
-  String _nome;
+  String _nome, _idCar, _cpfUsuario;
   String _photo;
   Firestore db = Firestore.instance;
   final _controller = StreamController<QuerySnapshot>.broadcast();
@@ -246,8 +246,20 @@ class _MeuCartaoState extends State<MeuCartao> {
       _id = dados['idUsuario'];
       _nome = dados['nome'];
       _photo = dados['urlImagem'];
+      _cpfUsuario = dados['cpf'];
 
       print("_id: " + _id);
+    });
+  }
+
+  _recuperarDadosCartao() async {
+    Firestore db = Firestore.instance;
+    DocumentSnapshot snapshot2 =
+        await db.collection("cartao").document(widget.uid).get();
+    Map<String, dynamic> dados2 = snapshot2.data;
+
+    setState(() {
+      _idCar = dados2['idUsuario'];
     });
   }
 
@@ -267,6 +279,7 @@ class _MeuCartaoState extends State<MeuCartao> {
     super.initState();
     _adicionarListenerCartao();
     _recuperarDados();
+    _recuperarDadosCartao();
   }
 
   @override
@@ -290,11 +303,84 @@ class _MeuCartaoState extends State<MeuCartao> {
         foregroundColor: Colors.white,
         icon: Icon(Icons.credit_card),
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CadastrarCartaoDeCredito(
-                      widget.user, widget.photo, widget.emai, widget.uid)));
+          if (_idCar == widget.uid) {
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                    'Atenção',
+                    textAlign: TextAlign.center,
+                  ),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text(
+                          'Existe um cadastro, se quiser edite o mesmo!',
+                          textAlign: TextAlign.center,),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        FlatButton(
+                          child: Text('Voltar'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            );
+          } else if (_cpfUsuario == null) {
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                    'Atenção',
+                    textAlign: TextAlign.center,
+                  ),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text(
+                          'Cadastre o CPF do usuário, para cadastrar o cartão!',
+                          textAlign: TextAlign.center,),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        FlatButton(
+                          child: Text('Voltar'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            );
+          }else {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        CadastrarCartaoDeCredito(
+                            widget.user, widget.photo, widget.emai,
+                            widget.uid)));
+          }
+          return Container();
         },
         label: Text(
           "Cadastrar Cartão",

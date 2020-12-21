@@ -76,7 +76,12 @@ class _MeuCartaoState extends State<MeuCartao> {
                 child: ListBody(
                   children: <Widget>[
                     Text(
-                        'Você cadastrou seu CPF, delete seu usuario para deletar o cartão!'),
+                        'Você cadastrou seu CPF, delete seu usuario para deletar o cartão!',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                      ),
+                    ),
                   ],
                 ),
               ),

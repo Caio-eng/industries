@@ -2,14 +2,12 @@ import 'dart:async';
 
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:industries/model/PropostaDoLocador.dart';
 import 'package:industries/model/PropostaDoLocatario.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'model/Imovel.dart';
 
 
 class Detalhes extends StatefulWidget {
@@ -113,20 +111,7 @@ class _DetalhesState extends State<Detalhes>  {
   String _mensagem = '';
 
   _ligarTelefone(String telefone) async {
-    //telefone = _imovel.fotos[0];
 
-    //Abre link passado
-//    if( await canLaunch(telefone) ){
-//      await launch(telefone);
-//    }else{
-//      print("não pode fazer a ligação");
-//    }
-    //Evia SMS
-//    if( await canLaunch("sms:$telefone") ){
-//      await launch("sms:$telefone");
-//    }else{
-//      print("não pode fazer a ligação");
-//    }
     // vai para o telefone
     if( await canLaunch("tel:$telefone") ){
       await launch("tel:$telefone");

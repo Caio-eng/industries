@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:industries/model/CartaoDeCredito.dart';
@@ -37,9 +36,6 @@ class _CadastrarCartaoDeCreditoState extends State<CadastrarCartaoDeCredito> {
     String cvv = controllerCvv.text;
     String cpf = controllerCPF.text;
     String data = controllerDataDeVencimento.text;
-    String mesDeHoje = _date.month.toString();
-    String anoDeHoje = _date.year.toString();
-    String junte = mesDeHoje + '/' + anoDeHoje;
 
     if (nome.isNotEmpty && nome.length > 4) {
       if (numero.isNotEmpty && numero.length == 19) {
@@ -198,7 +194,6 @@ class _CadastrarCartaoDeCreditoState extends State<CadastrarCartaoDeCredito> {
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
                       controller: controllerNumeroDoCartao,
-                      //autofocus: true,
                       keyboardType: TextInputType.number,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
@@ -216,7 +211,6 @@ class _CadastrarCartaoDeCreditoState extends State<CadastrarCartaoDeCredito> {
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
                       controller: controllerDataDeVencimento,
-                      //autofocus: true,
                       keyboardType: TextInputType.number,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
@@ -234,7 +228,6 @@ class _CadastrarCartaoDeCreditoState extends State<CadastrarCartaoDeCredito> {
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
                       controller: controllerCvv,
-                      //autofocus: true,
                       keyboardType: TextInputType.number,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(

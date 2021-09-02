@@ -119,24 +119,6 @@ class _ConfiguracoesState extends State<Configuracoes> {
     }
   }
 
-/*
-  _atualizarNomeFirestore(){
-
-    String nome = _controllerNome.text;
-    Firestore db = Firestore.instance;
-
-    Map<String, dynamic> dadosAtualizar = {
-      "nome" : nome
-    };
-    Usuario usuario = Usuario();
-    usuario.nome = nome;
-    db.collection("usuarios")
-        .document(widget.uid)
-        .updateData( dadosAtualizar );
-
-
-  }
-*/
   _recuperarDadosUsuario() async {
     _idUsuarioLogado = widget.uid;
 

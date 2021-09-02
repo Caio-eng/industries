@@ -1,13 +1,7 @@
 import 'dart:convert' as JSON;
-import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:industries/CadastroImoveis.dart';
-import 'package:industries/model/Usuario.dart';
-import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/intl.dart';
 import 'Home.dart';
 import 'Login.dart';

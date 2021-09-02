@@ -48,8 +48,7 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
   bool _subindo4 = false;
   bool _subindo5 = false;
   File _imagem;
-  int _id;
-  String _nome, _idCar;
+  String  _idCar;
   String _sigla, _idImovel;
   String _telefoneUsuario;
   String _cpfUsuario;

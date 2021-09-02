@@ -1,12 +1,8 @@
-import 'dart:collection';
-import 'dart:io';
-
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:industries/model/IdEnviar.dart';
 import 'package:industries/model/PagarImovel.dart';
 
 import 'model/Imovel.dart';
@@ -465,13 +461,6 @@ class _ImovelAlugadoState extends State<ImovelAlugado> {
                                                 _nomeUsuarioDoCartao;
                                             pagarImovel.cpfUsuarioDoCartao =
                                                 _cpfUsuarioDoCartao;
-//                                      IdEnviar idEnviar = IdEnviar();
-//                                      idEnviar.idUsuarioLogado = widget.uid;
-//                                      idEnviar.idUsuarioDeslogado = _idDono;
-//                                      idEnviar.idDoImovel = document['idImovel'];
-//                                      db.collection("idEnvios").document(widget.uid).setData(idEnviar.toMap());
-//                                      db.collection('idEnvios').document(_idDono).setData(idEnviar.toMap());
-                                            //db.collection("idEnvios").document(_log).setData(idEnviar.toMap());
                                             PagarImovel pagarImovels =
                                                 PagarImovel();
                                             pagarImovels.idDoPagador = _idDono;

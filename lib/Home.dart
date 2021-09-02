@@ -8,16 +8,13 @@ import 'package:industries/MeuCartao.dart';
 import 'package:industries/Configuracoes.dart';
 import 'package:industries/Detalhes.dart';
 import 'package:industries/Chat.dart';
-import 'package:industries/EditarImovel.dart';
 import 'package:industries/ImovelAlugado.dart';
 import 'package:industries/MeuImovel.dart';
 import 'package:industries/ReciboImovel.dart';
 import 'package:industries/telas/PropostasDoLocador.dart';
 import 'package:industries/telas/PropostasDoLocatario.dart';
 import 'package:industries/telas/Sobre.dart';
-import 'package:industries/telas/splash.dart';
 import 'package:industries/utils/Config.dart';
-import 'CadastroImoveis.dart';
 import 'ImoveisAnunciado.dart';
 
 class Home extends StatefulWidget {
@@ -56,7 +53,6 @@ class _HomeState extends State<Home> {
   List<String> itensMenu = [];
   List<DropdownMenuItem<String>> _listaItensDropTipos;
   List<DropdownMenuItem<String>> _listaItensDropEstados;
-  List<DropdownMenuItem<String>> _listaMeusImoveis;
   List<String> escolha = ['Perfil', 'Meus Imóveis'];
 
   var imoveis;
@@ -297,11 +293,6 @@ class _HomeState extends State<Home> {
     Map<String, dynamic> dados = snapshot.data;
 
     setState(() {
-      /* _id = dados['idUsuario'];
-      _nome = dados['nome'];
-      _photo = dados['urlImagem'];
-      _cpf = dados['cpf'];
-      print("_id: " + _id); */
     });
 
     DocumentSnapshot snapshot2 = await db.collection('propostasDoLocatario').document(widget.uid).get();

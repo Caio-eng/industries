@@ -42,8 +42,7 @@ class _EditarImovelState extends State<EditarImovel> {
   bool _subindo3 = false;
   bool _subindo4 = false;
   bool _subindo5 = false;
-  String _logadouro, _numero, _complemento, _tipoImovel, _cidade, _estado, _cep;
-  String _bairro, _detalhes, _valor, _idUsuario, _urlImagens, _idImovel;
+  String _idUsuario, _idImovel;
   String _nomeDaImagem,
       _nomeDaImagem2,
       _nomeDaImagem3,
@@ -731,33 +730,6 @@ class _EditarImovelState extends State<EditarImovel> {
                       ),
                     ],
                   ),
-                  /*
-                Padding(
-                  padding: EdgeInsets.only(bottom: 8, left: 10),
-                  child: Row(
-                    //crossAxisAlignment: CrossAxisAlignment.center,
-                    //mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text('Estado de: ', style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold), ),
-                      SizedBox(width: 30,),
-                      DropdownButton(
-                        icon: Icon(Icons.arrow_downward, color: Colors.blue,),
-                        value: _selectedEstado,
-                        items: _dropdownMenuItens,
-                        onChanged: onCgangeDropdownItem,
-                        underline: Container(
-                          height: 2,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      /*
-                      SizedBox(height: 20,),
-                      Text('Selecione: ${_selectedEstado.nome}'),
-                        */
-                    ],
-                  ),
-                ),*/
                   Padding(
                     padding: EdgeInsets.only(bottom: 8, top: 8),
                     child: TextFormField(
@@ -769,7 +741,6 @@ class _EditarImovelState extends State<EditarImovel> {
                             .maxLength(9, msg: "CEP, possui 8 digitos")
                             .valido(valor);
                       },
-                      //autofocus: true,
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
                       style: TextStyle(fontSize: 20),
@@ -923,7 +894,6 @@ class _EditarImovelState extends State<EditarImovel> {
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextFormField(
                       controller: _controllerBairro,
-                      //autofocus: true,
                       validator: (valor) {
                         return Validador()
                             .add(Validar.OBRIGATORIO, msg: "Campo obrogatório")

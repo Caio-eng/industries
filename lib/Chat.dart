@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:industries/Configuracoes.dart';
 import 'package:industries/telas/AbaContatos.dart';
 import 'package:industries/telas/AbaConversas.dart';
 
@@ -26,8 +24,6 @@ class _MensagemUsuarioState extends State<MensagemUsuario> with SingleTickerProv
 
   Future _recuperarDadosUsuario() async {
 
-    //FirebaseAuth auth = FirebaseAuth.instance;
-    //FirebaseUser usuarioLogado = await auth.currentUser();
 
     setState(() {
       _emailUsuario = widget.emai;

@@ -277,13 +277,6 @@ class _EditarCartaoDeCreditoState extends State<EditarCartaoDeCredito> {
                         if (_formKey.currentState.validate()) {
                           _atualizarCartao();
                         }
-//                        if (_idCartao == widget.uid || _idCartao == _idEnvioLogado) {
-//                          setState(() {
-//                            _mensagemErro = "No momento você está alugando um imovel, so da para iditar se o cartão não estiver sendo utilizado!";
-//                          });
-//                        } else {
-//
-//                        }
                       },
                     ),
                   ),

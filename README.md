@@ -1,16 +1,19 @@
-# industries
+# SIMOB - Sistema de Imóveis Mobile
 
-A new Flutter application.
 
-## Getting Started
+## DESCRIÇÃO DO PROBLEMA
+Sistema tem como objetivo um usuário pode ser um Locatário ou um locador, podendo cadastrar seu imóvel,
+Locar, e manitorar o mesmo ele tem a parte de enviar um contrato,
+Alguar se necessidade do contrato com possibilidade de pagar
+O aluguel pelo App, e mandar mensagem.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+Layout
+Utilize a criatividade e monte um layout amigavel.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Telas Obrigatórias
+Crud de Cadastro
+Lista de participantes com suas opções
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Envio do Desafio
+Deverá ser hospedado no heroku ou outro servidor de aplicação e disponibilizado o link da aplicação + o link no github. Lembrando que este teste não é eliminatório serve apenas para avaliar seu nível de conhecimento :)

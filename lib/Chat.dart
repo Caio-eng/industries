@@ -18,13 +18,9 @@ class MensagemUsuario extends StatefulWidget {
 class _MensagemUsuarioState extends State<MensagemUsuario> with SingleTickerProviderStateMixin {
 
   TabController _tabController;
-
-
   String _emailUsuario= "";
 
   Future _recuperarDadosUsuario() async {
-
-
     setState(() {
       _emailUsuario = widget.emai;
     });

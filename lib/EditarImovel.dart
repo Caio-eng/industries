@@ -799,7 +799,6 @@ class _EditarImovelState extends State<EditarImovel> {
                             .valido(valor);
                       },
                       controller: _controllerSigla,
-                      //autofocus: true,
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20),
                       enabled: false,
@@ -826,7 +825,6 @@ class _EditarImovelState extends State<EditarImovel> {
                             msg: "Campo obrogatório")
                             .valido(valor);
                       },
-                      //autofocus: true,
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(
@@ -851,7 +849,6 @@ class _EditarImovelState extends State<EditarImovel> {
                             msg: "Campo obrogatório")
                             .valido(valor);
                       },
-                      //autofocus: true,
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20),
                       enabled: false,
@@ -871,7 +868,6 @@ class _EditarImovelState extends State<EditarImovel> {
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextFormField(
                       controller: _controllerLogadouro,
-                      //autofocus: true,
                       validator: (valor) {
                         return Validador()
                             .add(Validar.OBRIGATORIO, msg: "Campo obrogatório")

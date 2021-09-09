@@ -237,6 +237,16 @@ class _DetalhesState extends State<Detalhes>  {
                     Padding(
                       padding: const EdgeInsets.only(left: 0, top: 3),
                       child: Text(
+                        "CEP: ${_cep}",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 0, top: 3),
+                      child: Text(
                         "Logradouro: ${_log}",
                         style: TextStyle(
                           fontSize: 20,

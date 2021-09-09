@@ -109,13 +109,10 @@ class _CadastrarCartaoDeCreditoState extends State<CadastrarCartaoDeCredito> {
 
   @override
   void initState() {
-    //_dropdownMenuItens = buildDropdownMenuItens(_estados);
-    //_selectedEstado = _dropdownMenuItens[8].value;
     super.initState();
 
     _recuperarDadosUsuario();
     _recuperarDadosCartao();
-    //listaTela.add(_imagem);
   }
 
   @override

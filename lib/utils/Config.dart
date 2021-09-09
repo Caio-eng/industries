@@ -1,6 +1,5 @@
 import 'package:brasil_fields/modelos/estados.dart';
 import 'package:flutter/material.dart';
-import 'package:industries/model/Imovel.dart';
 
 class Config {
 

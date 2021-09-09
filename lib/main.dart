@@ -64,8 +64,6 @@ class _MainState extends State<Main>  {
   GoogleSignInAccount account;
   bool _isLoggedIn = false;
   Map userProfile;
-  //final facebookLogin = FacebookLogin();
-
 
   @override
   void initState() {
@@ -75,7 +73,6 @@ class _MainState extends State<Main>  {
       setState(() {
         this.account = account;
       });
-      //_onLoginStatusChange(true);
       if (this.account != null) {
         setState(() {
           this.user = this.account.displayName;
@@ -84,13 +81,10 @@ class _MainState extends State<Main>  {
           this.uid = this.account.id;
         });
       }
-
-
-
     });
-
     _googleSignIn.signInSilently();
   }
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Future<bool> googleSignIn() async {
     try {

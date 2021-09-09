@@ -30,13 +30,10 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-
 class _HomeState extends State<Home> {
   Firestore db = Firestore.instance;
 
-
   TextEditingController controller = TextEditingController();
-
 
   TextEditingController editingController = TextEditingController();
 
@@ -65,7 +62,6 @@ class _HomeState extends State<Home> {
   String _itemSelecionadoTipos;
   String _itemSelecionadoMeus;
 
-
   Widget _buildList(BuildContext context, var document) {
     _informacao() async {
       return showDialog<void>(
@@ -81,8 +77,9 @@ class _HomeState extends State<Home> {
               child: ListBody(
                 children: <Widget>[
                   Text(
-                      'Este é seu imóvel, vá em meus imoveis para ter acesso!',
-                    textAlign: TextAlign.center,),
+                    'Este é seu imóvel, vá em meus imoveis para ter acesso!',
+                    textAlign: TextAlign.center,
+                  ),
                 ],
               ),
             ),
@@ -118,7 +115,10 @@ class _HomeState extends State<Home> {
                 SizedBox(
                   width: 100,
                   height: 100,
-                  child: Image.network(document['urlImagens'], fit: BoxFit.cover,),
+                  child: Image.network(
+                    document['urlImagens'],
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 Expanded(
                   flex: 3,
@@ -127,10 +127,13 @@ class _HomeState extends State<Home> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(document['logadouro'], style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),),
+                        Text(
+                          document['logadouro'],
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         SizedBox(
                           height: 5,
                         ),
@@ -146,10 +149,10 @@ class _HomeState extends State<Home> {
       );
     } else {
       return GestureDetector(
-        onTap: (){
+        onTap: () {
           _informacao();
         },
-        child:  Card(
+        child: Card(
           child: Padding(
             padding: EdgeInsets.all(12),
             child: Row(
@@ -180,7 +183,6 @@ class _HomeState extends State<Home> {
                           height: 5,
                         ),
                         Text(document['valor']),
-
                       ],
                     ),
                   ),
@@ -191,10 +193,7 @@ class _HomeState extends State<Home> {
         ),
       );
     }
-
   }
-
-
 
   _carregarItensDropdown() {
     //Estados
@@ -202,21 +201,15 @@ class _HomeState extends State<Home> {
 
     //Tipos
     _listaItensDropTipos = Config.getTipos();
-
-
   }
 
   Future<Stream<QuerySnapshot>> _adicionarListenerImoveis() async {
-
     Firestore db = Firestore.instance;
-    Stream<QuerySnapshot> stream = db
-        .collection("imoveis")
-        .snapshots();
+    Stream<QuerySnapshot> stream = db.collection("imoveis").snapshots();
 
-    stream.listen((dados){
+    stream.listen((dados) {
       _controller.add(dados);
     });
-
   }
 
   Future<Stream<QuerySnapshot>> _filtrarImoveis() async {
@@ -230,11 +223,10 @@ class _HomeState extends State<Home> {
     if (_itemSelecionadoTipos != null) {
       query = query.where("tipoImovel", isEqualTo: _itemSelecionadoTipos);
     }
-    
+
     if (_itemSelecionadoMeus != null) {
       query = query.where('idUsuario', isEqualTo: widget.uid);
     }
-
 
     Stream<QuerySnapshot> stream = query.snapshots();
 
@@ -243,44 +235,43 @@ class _HomeState extends State<Home> {
     });
   }
 
-  _escolhaMenuItem(String itemEscolhido){
-
-    switch( itemEscolhido ) {
+  _escolhaMenuItem(String itemEscolhido) {
+    switch (itemEscolhido) {
       case "Perfil":
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Configuracoes(widget.user,
-                    widget.photo, widget.emai, widget.uid)));
+                builder: (context) => Configuracoes(
+                    widget.user, widget.photo, widget.emai, widget.uid)));
         break;
       case "Meus Imóveis":
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ImoveisAnunciado(widget.user,
-                  widget.photo, widget.emai, widget.uid)
-            ));
+                builder: (context) => ImoveisAnunciado(
+                    widget.user, widget.photo, widget.emai, widget.uid)));
         break;
     }
-
   }
 
+  _pesquisar() async {
+    Firestore db = Firestore.instance;
+    Query query = db.collection("imoveis");
 
-    _pesquisar() async {
-      Firestore db = Firestore.instance;
-      Query query = db.collection("imoveis");
+    if (_pes != null) {
+      query = query
+          .where("logadouro", isGreaterThanOrEqualTo: editingController.text)
+          .where("logadouro",
+              isLessThanOrEqualTo: editingController.text + "\uf8ff");
+    }
 
-       if (_pes != null) {
-         query = query .where("logadouro" , isGreaterThanOrEqualTo: editingController.text)
-             .where("logadouro" , isLessThanOrEqualTo: editingController.text + "\uf8ff"  );
-       }
+    Stream<QuerySnapshot> stream = query.snapshots();
 
-       Stream<QuerySnapshot> stream = query.snapshots();
-
-       stream.listen((dados){
-         _controller.add(dados);
-       });
+    stream.listen((dados) {
+      _controller.add(dados);
+    });
   }
+
   FirebaseAuth _auth = FirebaseAuth.instance;
   _recuperarDados() async {
     FirebaseUser usuarioLogado = await _auth.currentUser();
@@ -289,13 +280,13 @@ class _HomeState extends State<Home> {
 
     Firestore db = Firestore.instance;
     DocumentSnapshot snapshot =
-    await db.collection("usuarios").document(widget.uid).get();
+        await db.collection("usuarios").document(widget.uid).get();
     Map<String, dynamic> dados = snapshot.data;
 
-    setState(() {
-    });
+    setState(() {});
 
-    DocumentSnapshot snapshot2 = await db.collection('propostasDoLocatario').document(widget.uid).get();
+    DocumentSnapshot snapshot2 =
+        await db.collection('propostasDoLocatario').document(widget.uid).get();
     Map<String, dynamic> dados2 = snapshot2.data;
     setState(() {
       _idLocatario = dados2['idLocatario'];
@@ -314,8 +305,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-
-
     var carregandoDados = Center(
       child: Column(
         children: <Widget>[
@@ -352,22 +341,22 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             _idUsuarioLogado == _id
                 ? UserAccountsDrawerHeader(
-              accountName: Text('${_nome}'),
-              accountEmail: Text("${widget.emai}"),
-              currentAccountPicture: CircleAvatar(
-                  backgroundImage: _photo != null
-                      ? NetworkImage('${_photo}')
-                      : NetworkImage('${widget.photo}')),
-            )
+                    accountName: Text('${_nome}'),
+                    accountEmail: Text("${widget.emai}"),
+                    currentAccountPicture: CircleAvatar(
+                        backgroundImage: _photo != null
+                            ? NetworkImage('${_photo}')
+                            : NetworkImage('${widget.photo}')),
+                  )
                 : UserAccountsDrawerHeader(
-              accountName: Text('${widget.user}'),
-              accountEmail: Text("${widget.emai}"),
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: _photo != null
-                    ? NetworkImage('${_photo}')
-                    : NetworkImage('${widget.photo}'),
-              ),
-            ),
+                    accountName: Text('${widget.user}'),
+                    accountEmail: Text("${widget.emai}"),
+                    currentAccountPicture: CircleAvatar(
+                      backgroundImage: _photo != null
+                          ? NetworkImage('${_photo}')
+                          : NetworkImage('${widget.photo}'),
+                    ),
+                  ),
             Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
               child: Container(
@@ -520,8 +509,8 @@ class _HomeState extends State<Home> {
                   onTap: () => {
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ReciboImovel(widget.uid))
-                    )
+                        MaterialPageRoute(
+                            builder: (context) => ReciboImovel(widget.uid)))
                   },
                   child: Container(
                     height: 50,
@@ -564,21 +553,28 @@ class _HomeState extends State<Home> {
                 child: InkWell(
                   splashColor: Colors.blue,
                   onTap: () => {
-                    if (_idLocatario != null) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PropostasDoLocatario(widget.user,
-                                  widget.photo, widget.emai, widget.uid)
-                          ))
-                    } else  {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PropostasDoLocador(widget.user,
-                                  widget.photo, widget.emai, widget.uid)
-                          ))
-                    }
+                    if (_idLocatario != null)
+                      {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PropostasDoLocatario(
+                                    widget.user,
+                                    widget.photo,
+                                    widget.emai,
+                                    widget.uid)))
+                      }
+                    else
+                      {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PropostasDoLocador(
+                                    widget.user,
+                                    widget.photo,
+                                    widget.emai,
+                                    widget.uid)))
+                      }
                   },
                   child: Container(
                     height: 50,
@@ -621,8 +617,11 @@ class _HomeState extends State<Home> {
                 child: InkWell(
                   splashColor: Colors.blue,
                   onTap: () => {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => MeuCartao(widget.user,
-                        widget.photo, widget.emai, widget.uid)))
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MeuCartao(widget.user,
+                                widget.photo, widget.emai, widget.uid)))
                   },
                   child: Container(
                     height: 50,
@@ -665,12 +664,8 @@ class _HomeState extends State<Home> {
                 child: InkWell(
                   splashColor: Colors.blue,
                   onTap: () => {
-                    Navigator.push(
-                        context,
-                       MaterialPageRoute(
-                         builder: (context) => Sobre()
-                       )
-                    )
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Sobre()))
                   },
                   child: Container(
                     height: 50,
@@ -704,7 +699,6 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
               child: Container(
@@ -762,11 +756,8 @@ class _HomeState extends State<Home> {
                         iconEnabledColor: Colors.blue,
                         value: _itemSelecionadoEstado,
                         items: _listaItensDropEstados,
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black
-                        ),
-                        onChanged: (estado){
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                        onChanged: (estado) {
                           setState(() {
                             _itemSelecionadoEstado = estado;
                             _filtrarImoveis();
@@ -789,11 +780,8 @@ class _HomeState extends State<Home> {
                         iconEnabledColor: Colors.blue,
                         value: _itemSelecionadoTipos,
                         items: _listaItensDropTipos,
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black
-                        ),
-                        onChanged: (tipos){
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                        onChanged: (tipos) {
                           setState(() {
                             _itemSelecionadoTipos = tipos;
                             _filtrarImoveis();
@@ -806,7 +794,6 @@ class _HomeState extends State<Home> {
               ],
             ),
             Divider(),
-
             Padding(
               padding: EdgeInsets.only(left: 8, right: 8),
               child: TextField(
@@ -818,8 +805,7 @@ class _HomeState extends State<Home> {
                 keyboardType: TextInputType.text,
                 style: TextStyle(fontSize: 20),
                 decoration: InputDecoration(
-                  contentPadding:
-                  EdgeInsets.fromLTRB(32, 16, 32, 16),
+                  contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
                   hintText: "Digite seu endereço",
                   labelText: 'Pesquisar',
                   filled: true,
@@ -828,47 +814,42 @@ class _HomeState extends State<Home> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(32)),
                 ),
-
               ),
             ),
             Divider(),
             StreamBuilder(
               stream: _controller.stream,
               builder: (context, snapshot) {
-                switch(snapshot.connectionState){
+                switch (snapshot.connectionState) {
                   case ConnectionState.none:
                   case ConnectionState.waiting:
                     return carregandoDados;
                     break;
                   case ConnectionState.active:
                   case ConnectionState.done:
+                    var docs = snapshot.data.documents;
 
-                  var docs = snapshot.data.documents;
+                    if (docs.length == 0) {
+                      return Container(
+                        padding: EdgeInsets.all(25),
+                        child: Text(
+                          "Nenhum imóvel! :( ",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      );
+                    }
 
-                  if( docs.length == 0 ){
-                    return Container(
-                      padding: EdgeInsets.all(25),
-                      child: Text("Nenhum imóvel! :( ",style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold
-                      ),),
-                    );
-                  }
-
-
-                  return Expanded(
-                    child: ListView.builder(
+                    return Expanded(
+                      child: ListView.builder(
                         itemCount: docs.length,
-                        itemBuilder: (_, indice){
-                          return _buildList(
-                            context, docs[indice]
-                          );
+                        itemBuilder: (_, indice) {
+                          return _buildList(context, docs[indice]);
                         },
-                    ),
-                  );
+                      ),
+                    );
 
-                  break;
-
+                    break;
                 }
                 return Container();
               },

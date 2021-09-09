@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:image_picker/image_picker.dart';
@@ -204,10 +203,6 @@ class _ConfiguracoesState extends State<Configuracoes> {
                       autofocus: true,
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20),
-                      /*
-                    onChanged: (texto) {
-                      _atualizarUrlImagemFirestore(_urlImagemRecuperada, texto);
-                    },*/
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.fromLTRB(32, 16, 32, 16),
                         hintText: "Nome",
@@ -278,7 +273,6 @@ class _ConfiguracoesState extends State<Configuracoes> {
                           borderRadius: BorderRadius.circular(32)),
                       onPressed: () {
                           if (_formKey.currentState.validate()) {
-                            //_atualizarNomeFirestore();
                             _atualizarUrlImagemFirestore(_urlImagemRecuperada);
                           }
                       },

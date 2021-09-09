@@ -497,7 +497,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
     setState(() {
       _idCar = dados2['idUsuario'];
     });
-    print("Aqui: " + _idCar);
   }
 
   @override
@@ -780,7 +779,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                   .valido(valor);
                             },
                             controller: _controllerSigla,
-                            //autofocus: true,
                             keyboardType: TextInputType.text,
                             style: TextStyle(fontSize: 20),
                             decoration: InputDecoration(
@@ -805,7 +803,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                   .valido(valor);
                             },
                             controller: _controllerSigla,
-                            //autofocus: true,
                             keyboardType: TextInputType.text,
                             style: TextStyle(fontSize: 20),
                             enabled: false,
@@ -832,7 +829,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                       msg: "Campo obrogatório")
                                   .valido(valor);
                             },
-                            //autofocus: true,
                             keyboardType: TextInputType.text,
                             style: TextStyle(fontSize: 20),
                             decoration: InputDecoration(
@@ -857,7 +853,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                                       msg: "Campo obrogatório")
                                   .valido(valor);
                             },
-                            //autofocus: true,
                             keyboardType: TextInputType.text,
                             style: TextStyle(fontSize: 20),
                             enabled: false,
@@ -877,7 +872,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextFormField(
                       controller: _controllerLogadouro,
-                      //autofocus: true,
                       validator: (valor) {
                         return Validador()
                             .add(Validar.OBRIGATORIO, msg: "Campo obrogatório")
@@ -900,7 +894,6 @@ class _CadastroImoveisState extends State<CadastroImoveis> {
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextFormField(
                       controller: _controllerBairro,
-                      //autofocus: true,
                       validator: (valor) {
                         return Validador()
                             .add(Validar.OBRIGATORIO, msg: "Campo obrogatório")

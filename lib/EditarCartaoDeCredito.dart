@@ -35,9 +35,6 @@ class _EditarCartaoDeCreditoState extends State<EditarCartaoDeCredito> {
     String cvv = controllerCvv.text;
     String cpf = controllerCPF.text;
     String data = controllerDataDeVencimento.text;
-    String mesDeHoje = _date.month.toString();
-    String anoDeHoje = _date.year.toString();
-    String junte = mesDeHoje + '/' + anoDeHoje;
 
     if (nome.isNotEmpty && nome.length > 4) {
       if (numero.isNotEmpty && numero.length == 19) {
@@ -128,12 +125,9 @@ class _EditarCartaoDeCreditoState extends State<EditarCartaoDeCredito> {
 
   @override
   void initState() {
-    //_dropdownMenuItens = buildDropdownMenuItens(_estados);
-    //_selectedEstado = _dropdownMenuItens[8].value;
     super.initState();
 
     _recuperarDadosUsuario();
-    //listaTela.add(_imagem);
   }
 
   @override
@@ -212,7 +206,6 @@ class _EditarCartaoDeCreditoState extends State<EditarCartaoDeCredito> {
                     padding: EdgeInsets.only(bottom: 8),
                     child: TextField(
                       controller: controllerNumeroDoCartao,
-                      //autofocus: true,
                       keyboardType: TextInputType.number,
                       style: TextStyle(fontSize: 20),
                       decoration: InputDecoration(

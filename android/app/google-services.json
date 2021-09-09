@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "228853815546-u9a91lb21oduvff7ja23rqn5dajcn1u7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.imoveis.kc.industries",
+            "certificate_hash": "a94d0228553f0bcd838708398eb264b19e7d48c5"
+          }
+        },
+        {
           "client_id": "228853815546-v2pod23e273sigh3vmp5ru5atnk7gcf6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
